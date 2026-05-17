@@ -145,6 +145,9 @@
     <Compile Include="Views\CreateCalcCardDialog.xaml.cs">
       <DependentUpon>CreateCalcCardDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DatabaseSetupWindow.xaml.cs">
+      <DependentUpon>DatabaseSetupWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\EditCalcCardDialog.xaml.cs">
       <DependentUpon>EditCalcCardDialog.xaml</DependentUpon>
     </Compile>
@@ -306,6 +309,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\DatabaseSetupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\EditCalcCardDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -413,6 +420,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Help\Справка.html" />
     <Content Include="ModelMenuStolovayaDB.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ModelMenuStolovayaDB.edmx</DependentUpon>

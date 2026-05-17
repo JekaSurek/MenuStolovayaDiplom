@@ -56,5 +56,22 @@ namespace MenuStolovaya.Views
             ButtonLogin.IsEnabled = !string.IsNullOrWhiteSpace(LoginTextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(PasswordBox.Password);
         }
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            string helpPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Help", "help.html");
+
+            if (System.IO.File.Exists(helpPath))
+            {
+                System.Diagnostics.Process.Start(helpPath);
+            }
+            else
+            {
+                MessageBox.Show("Файл справки не найден!\n\n" +
+                               "Ожидаемый путь: " + helpPath,
+                               "Ошибка",
+                               MessageBoxButton.OK,
+                               MessageBoxImage.Error);
+            }
+        }
     }
 }

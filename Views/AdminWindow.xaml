@@ -268,6 +268,11 @@
                                TextWrapping="Wrap"
                                Foreground="#FF666666"/>
                             </Border>
+                            <Button Content="📖 Справка" 
+        Click="HelpButton_Click"
+        Style="{StaticResource PrimaryButtonStyle}"
+        Width="100"
+        Margin="10"/>
                         </StackPanel>
                     </Border>
                 </Grid>

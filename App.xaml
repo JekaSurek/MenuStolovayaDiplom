@@ -1,8 +1,8 @@
 ﻿<Application x:Class="MenuStolovaya.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:MenuStolovaya"
-             StartupUri="Views/LoginWindow.xaml">
+             xmlns:local="clr-namespace:MenuStolovaya">
+
     <Application.Resources>
         <!-- Основные цвета -->
         <Color x:Key="PrimaryColor">#FF4CAF50</Color>
@@ -84,30 +84,26 @@
             <Setter Property="BorderBrush" Value="#FFDDDDDD"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="8,0,8,0"/>
-            <!-- Убедитесь, что вертикальные отступы 0 -->
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Height" Value="38"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <!-- Это важно -->
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <!-- Добавьте это -->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border x:Name="border" 
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="3">
-                            <!-- Убрать Margin из ScrollViewer -->
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3">
                             <ScrollViewer x:Name="PART_ContentHost" 
-                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  HorizontalAlignment="Stretch"/>
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalAlignment="Stretch"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter TargetName="border" Property="BorderBrush" 
-                                Value="{StaticResource PrimaryBrush}"/>
+                                        Value="{StaticResource PrimaryBrush}"/>
                                 <Setter TargetName="border" Property="BorderThickness" Value="2"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -115,7 +111,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <!-- Стиль карточки -->
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource CardBrush}"/>
@@ -126,8 +122,8 @@
             <Setter Property="Effect">
                 <Setter.Value>
                     <DropShadowEffect BlurRadius="10" 
-                                    ShadowDepth="2" 
-                                    Opacity="0.1"/>
+                                      ShadowDepth="2" 
+                                      Opacity="0.1"/>
                 </Setter.Value>
             </Setter>
         </Style>
@@ -212,21 +208,22 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="border" 
-                        Background="{TemplateBinding Background}">
+                                Background="{TemplateBinding Background}">
                             <ContentPresenter HorizontalAlignment="Left" 
-                                    VerticalAlignment="Center"
-                                    Margin="{TemplateBinding Padding}"/>
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="Background" 
-                                Value="{StaticResource PrimaryLightBrush}"/>
+                                        Value="{StaticResource PrimaryLightBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
         <SolidColorBrush x:Key="WarningBrush" Color="#FFC107"/>
         <SolidColorBrush x:Key="DangerBrush" Color="#F44336"/>
         <SolidColorBrush x:Key="InfoBrush" Color="#2196F3"/>

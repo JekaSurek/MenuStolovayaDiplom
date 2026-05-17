@@ -605,6 +605,11 @@
                                     <TextBlock Text="Email: " FontWeight="SemiBold" Width="150"/>
                                     <TextBlock Text="vinogradovfedya48@gmail.com"/>
                                 </StackPanel>
+                                <Button Content="📖 Справка" 
+        Click="HelpButton_Click"
+        Style="{StaticResource PrimaryButtonStyle}"
+        Width="100"
+        Margin="10"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>

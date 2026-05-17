@@ -616,7 +616,13 @@
                                 <TextBlock Text="Для получения обратной связи по работе с программным обеспечением обращайтесь по указанным контактам."
                            TextWrapping="Wrap"
                            Foreground="#FF666666"/>
+
                             </Border>
+                            <Button Content="📖 Справка" 
+        Click="HelpButton_Click"
+        Style="{StaticResource PrimaryButtonStyle}"
+        Width="100"
+        Margin="10"/>
                         </StackPanel>
                     </Border>
                 </Grid>

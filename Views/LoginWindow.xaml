@@ -84,6 +84,12 @@
                HorizontalAlignment="Center"
                Margin="0,5,0,0"
                Foreground="White"/>
+            <Button Content="📖 Справка" 
+        Click="HelpButton_Click"
+        Style="{StaticResource PrimaryButtonStyle}"
+        Width="100"
+        Margin="10"/>
+
         </StackPanel>
 
         <!-- Правая часть с формой входа -->
