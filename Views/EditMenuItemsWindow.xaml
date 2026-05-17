@@ -1,0 +1,254 @@
+﻿<Window x:Class="MenuStolovaya.Views.EditMenuItemsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Редактирование блюд в меню" 
+        Height="750" 
+        Width="900"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="10,5,10,10"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="10,10,10,5"/>
+            <Setter Property="Foreground" Value="#FF333333"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <Border Grid.Row="0" Background="#FF4CAF50" Padding="10">
+            <StackPanel>
+                <TextBlock Text="Редактирование блюд в меню" 
+                           FontSize="18" 
+                           FontWeight="Bold" 
+                           Foreground="White"/>
+                <TextBlock x:Name="MenuInfoText" 
+                           FontSize="14" 
+                           Foreground="White"
+                           Margin="0,5,0,0"/>
+                <TextBlock x:Name="CaloriesInfoText" 
+                           FontSize="12" 
+                           Foreground="White"
+                           Margin="0,2,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Основной контент -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Левая панель - добавление блюда -->
+            <Border Grid.Column="0" 
+                    Background="White" 
+                    Margin="10" 
+                    Padding="10"
+                    BorderBrush="#FFDDDDDD" 
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Добавить блюдо" 
+                               FontSize="16" 
+                               FontWeight="Bold" 
+                               Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Блюдо:"/>
+                    <ComboBox x:Name="DishComboBox" 
+                              DisplayMemberPath="Наименование"
+                              SelectedValuePath="Id"
+                              Height="30" 
+                              Margin="0,5,0,10"
+                              SelectionChanged="DishComboBox_SelectionChanged"/>
+
+                    <TextBlock Text="Калорийность блюда:"/>
+                    <TextBlock x:Name="DishCaloriesText" 
+                               FontWeight="Bold"
+                               Foreground="#FF4CAF50"
+                               Margin="0,2,0,10"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                            <TextBlock Text="Количество порций:"/>
+                            <TextBox x:Name="PortionsTextBox" 
+                                     Text="1" 
+                                     Margin="0,5,0,10"
+                                     PreviewTextInput="NumberValidationTextBox"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                            <TextBlock Text="Выход на порцию (г):"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="OutputTextBox" 
+                                         Margin="0,5,5,10"
+                                         PreviewTextInput="DecimalValidationTextBox"/>
+                                <Button x:Name="UseStandardOutputButton"
+                                        Content="⚡"
+                                        Grid.Column="1"
+                                        Width="30"
+                                        Height="30"
+                                        Margin="0,5,0,10"
+                                        ToolTip="Использовать стандартный выход"
+                                        Click="UseStandardOutputButton_Click"/>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="Стандартный выход блюда:"/>
+                    <TextBlock x:Name="StandardOutputText" 
+                               FontWeight="Bold"
+                               Foreground="#FF2196F3"
+                               Margin="0,2,0,10"/>
+
+                    <TextBlock Text="Время подачи:"/>
+                    <ComboBox x:Name="TimeComboBox" 
+                              SelectedIndex="0"
+                              Height="30" 
+                              Margin="0,5,0,20">
+                        <ComboBoxItem Content="Обед"/>
+                        <ComboBoxItem Content="Ужин"/>
+                        <ComboBoxItem Content="Завтрак"/>
+                        <ComboBoxItem Content="Полдник"/>
+                    </ComboBox>
+
+                    <Button Content="Добавить" 
+                            Background="#FF4CAF50" 
+                            Foreground="White"
+                            Click="AddDishButton_Click"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Правая панель - список блюд -->
+            <Border Grid.Column="1" 
+                    Background="White" 
+                    Margin="10" 
+                    Padding="10"
+                    BorderBrush="#FFDDDDDD" 
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Блюда в меню" 
+                               FontSize="16" 
+                               FontWeight="Bold" 
+                               Margin="0,0,0,10"/>
+
+                    <DataGrid x:Name="MenuItemsDataGrid" 
+                              Height="400"
+                              AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Порядок" 
+                                                Binding="{Binding Порядок_подачи}" 
+                                                Width="60"/>
+                            <DataGridTextColumn Header="Блюдо" 
+                                                Binding="{Binding Блюдо}" 
+                                                Width="200"/>
+                            <DataGridTextColumn Header="Вид" 
+                                                Binding="{Binding Вид_блюда}" 
+                                                Width="120"/>
+                            <DataGridTextColumn Header="Порции" 
+                                                Binding="{Binding Количество_порций}" 
+                                                Width="80"/>
+                            <DataGridTextColumn Header="Выход (г)" 
+                                                Binding="{Binding Выход_на_порцию, StringFormat={}{0:F0}}" 
+                                                Width="80"/>
+                            <DataGridTextColumn Header="Калорий/порц" 
+                    Binding="{Binding Калорийность_на_порцию, StringFormat={}{0:F0}}" 
+                    Width="80"/>
+                            <DataGridTextColumn Header="Калорий всего" 
+                    Binding="{Binding Калорийность_всего, StringFormat={}{0:F0}}" 
+                    Width="90"/>
+                            <DataGridTextColumn Header="Время" 
+                                                Binding="{Binding Время_подачи}" 
+                                                Width="80"/>
+                            <DataGridTemplateColumn Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="✏" 
+                                                    Width="30" 
+                                                    Margin="2"
+                                                    Background="#FFFF9800" 
+                                                    Foreground="White"
+                                                    Click="EditMenuItemButton_Click"/>
+                                            <Button Content="✕" 
+                                                    Width="30" 
+                                                    Margin="2"
+                                                    Background="#FFF44336" 
+                                                    Foreground="White"
+                                                    Click="DeleteMenuItemButton_Click"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Orientation="Horizontal" 
+                                Margin="0,-10,0,0"
+                                HorizontalAlignment="Right">
+                        <Button Content="Вверх" 
+                                Click="MoveUpButton_Click"/>
+                        <Button Content="Вниз" 
+                                Click="MoveDownButton_Click"
+                                Margin="5,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Кнопки сохранения -->
+        <Border Grid.Row="2" Background="#FFEEEEEE" Padding="10">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Сохранить и закрыть" 
+                        Background="#FF4CAF50" 
+                        Foreground="White"
+                        Width="150"
+                        Click="SaveButton_Click"/>
+                <Button Content="Отмена" 
+                        Background="#FF9E9E9E" 
+                        Foreground="White"
+                        Width="100"
+                        Click="CancelButton_Click"
+                        Margin="10,0,0,0"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

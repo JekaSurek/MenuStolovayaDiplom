@@ -1,0 +1,1432 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище MenuStolovayaDBModel" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Блюда">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Наименование" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Полное_наименование" Type="nvarchar" MaxLength="255" />
+          <Property Name="Вид_блюда_id" Type="int" />
+          <Property Name="Выход_стандартный" Type="decimal" Precision="10" Scale="3" />
+          <Property Name="Время_приготовления" Type="int" />
+          <Property Name="Калорийность_расчетная" Type="decimal" Precision="10" Scale="3" />
+          <Property Name="Активно" Type="bit" />
+          <Property Name="Дата_создания" Type="datetime" />
+          <Property Name="Кто_создал_id" Type="int" />
+        </EntityType>
+        <EntityType Name="Виды_блюд">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Наименование" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Описание" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Калькуляционные_карточки">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Номер" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Технологическая_карта_id" Type="int" Nullable="false" />
+          <Property Name="Дата_составления" Type="datetime" />
+          <Property Name="Процент_наценки" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="Себестоимость" Type="money" />
+          <Property Name="Цена_реализации" Type="money" />
+          <Property Name="Food_Cost" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="Статус" Type="nvarchar" MaxLength="20" />
+          <Property Name="Кто_утвердил_id" Type="int" />
+          <Property Name="Дата_утверждения" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Категории_продуктов">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Наименование" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Описание" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Меню_на_день">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Дата" Type="date" Nullable="false" />
+          <Property Name="Ответственный_id" Type="int" Nullable="false" />
+          <Property Name="Дата_составления" Type="datetime" />
+          <Property Name="Калорийность_общая" Type="decimal" Precision="10" Scale="3" />
+          <Property Name="Статус" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Пользователи">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Логин" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Пароль" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Фамилия" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Имя" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Отчество" Type="nvarchar" MaxLength="50" />
+          <Property Name="Роль_id" Type="int" Nullable="false" />
+          <Property Name="Блокировка" Type="bit" />
+          <Property Name="Дата_регистрации" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Продукты">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Артикул" Type="nvarchar" MaxLength="50" />
+          <Property Name="Наименование" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Категория_id" Type="int" />
+          <Property Name="Единица_измерения" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Потери_холодной_обработки" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="Потери_горячей_обработки" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="Белки" Type="decimal" Precision="10" Scale="3" />
+          <Property Name="Жиры" Type="decimal" Precision="10" Scale="3" />
+          <Property Name="Углеводы" Type="decimal" Precision="10" Scale="3" />
+          <Property Name="Калорийность" Type="decimal" Precision="10" Scale="3" />
+          <Property Name="Цена" Type="money" />
+          <Property Name="Утверждена_цена" Type="bit" />
+          <Property Name="Кто_утвердил_цену_id" Type="int" />
+          <Property Name="Дата_утверждения_цены" Type="datetime" />
+          <Property Name="Активен" Type="bit" />
+        </EntityType>
+        <EntityType Name="Рецептуры">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Технологическая_карта_id" Type="int" Nullable="false" />
+          <Property Name="Продукт_id" Type="int" Nullable="false" />
+          <Property Name="Количество_брутто" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Количество_нетто" Type="decimal" Precision="10" Scale="3" />
+          <Property Name="Порядок_закладки" Type="int" />
+        </EntityType>
+        <EntityType Name="Роли">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Наименование" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Описание" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Строки_калькуляции">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Калькуляционная_карточка_id" Type="int" Nullable="false" />
+          <Property Name="Продукт_id" Type="int" Nullable="false" />
+          <Property Name="Норма_расхода" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Цена_за_единицу" Type="money" Nullable="false" />
+          <Property Name="Сумма" Type="money" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Строки_меню">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Меню_id" Type="int" Nullable="false" />
+          <Property Name="Блюдо_id" Type="int" Nullable="false" />
+          <Property Name="Количество_порций" Type="int" />
+          <Property Name="Выход_на_порцию" Type="decimal" Precision="10" Scale="3" />
+          <Property Name="Время_подачи" Type="nvarchar" MaxLength="20" />
+          <Property Name="Порядок_подачи" Type="int" />
+        </EntityType>
+        <EntityType Name="Технологические_карты">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Номер" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Блюдо_id" Type="int" Nullable="false" />
+          <Property Name="Выход" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Технология_приготовления" Type="nvarchar(max)" />
+          <Property Name="Дата_создания" Type="datetime" />
+          <Property Name="Статус" Type="nvarchar" MaxLength="20" />
+          <Property Name="Кто_утвердил_id" Type="int" />
+          <Property Name="Дата_утверждения" Type="datetime" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "MenuStolovayaDB.dbo.vw_Анализ_себестоимости" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="vw_Анализ_себестоимости">
+          <Key>
+            <PropertyRef Name="Блюдо" />
+            <PropertyRef Name="Выход_порции_г" />
+          </Key>
+          <Property Name="Блюдо" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Выход_порции_г" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Себестоимость_общая" Type="money" />
+          <Property Name="Себестоимость_за_кг" Type="decimal" Precision="38" Scale="15" />
+          <Property Name="Количество_ингредиентов" Type="int" />
+          <Property Name="Макс_стоимость_ингредиента" Type="money" />
+          <Property Name="Мин_стоимость_ингредиента" Type="money" />
+          <Property Name="Сред_стоимость_ингредиента" Type="money" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "MenuStolovayaDB.dbo.vw_Калькуляционные_карточки_полные" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="vw_Калькуляционные_карточки_полные">
+          <Key>
+            <PropertyRef Name="Номер" />
+            <PropertyRef Name="Блюдо" />
+            <PropertyRef Name="Выход_порции_г" />
+            <PropertyRef Name="Маржинальность" />
+            <PropertyRef Name="Кто_утвердил" />
+            <PropertyRef Name="Тех_карта" />
+          </Key>
+          <Property Name="Номер" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Блюдо" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Выход_порции_г" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Дата_составления" Type="datetime" />
+          <Property Name="Себестоимость" Type="money" />
+          <Property Name="Цена_реализации" Type="money" />
+          <Property Name="Фудкост_процент" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="Процент_наценки" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="Маржинальность" Type="varchar" MaxLength="18" Nullable="false" />
+          <Property Name="Статус" Type="nvarchar" MaxLength="20" />
+          <Property Name="Кто_утвердил" Type="nvarchar" MaxLength="53" Nullable="false" />
+          <Property Name="Тех_карта" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "MenuStolovayaDB.dbo.vw_Меню_с_ценами" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="vw_Меню_с_ценами">
+          <Key>
+            <PropertyRef Name="Дата" />
+            <PropertyRef Name="Блюдо" />
+            <PropertyRef Name="Вид_блюда" />
+          </Key>
+          <Property Name="№п/п" Type="bigint" />
+          <Property Name="Дата" Type="date" Nullable="false" />
+          <Property Name="Блюдо" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Вид_блюда" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Цена" Type="money" />
+          <Property Name="Фудкост_процент" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="Количество_порций" Type="int" />
+          <Property Name="Выход_г" Type="decimal" Precision="10" Scale="3" />
+          <Property Name="Общая_выручка" Type="money" />
+          <Property Name="Калорийность_на_порцию" Type="decimal" Precision="10" Scale="3" />
+          <Property Name="Статус_меню" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "MenuStolovayaDB.dbo.vw_Рентабельность_блюд" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="vw_Рентабельность_блюд">
+          <Key>
+            <PropertyRef Name="Блюдо" />
+            <PropertyRef Name="Выход_порции_г" />
+            <PropertyRef Name="Кальк_карта" />
+            <PropertyRef Name="Оценка_рентабельности" />
+          </Key>
+          <Property Name="Блюдо" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Выход_порции_г" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Кальк_карта" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Себестоимость" Type="money" />
+          <Property Name="Цена_реализации" Type="money" />
+          <Property Name="Фудкост_процент" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="Процент_наценки" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="Прибыль_на_порцию" Type="money" />
+          <Property Name="Маржа_процент" Type="money" />
+          <Property Name="Оценка_рентабельности" Type="varchar" MaxLength="7" Nullable="false" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "MenuStolovayaDB.dbo.vw_Технологические_карты_полные" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="vw_Технологические_карты_полные">
+          <Key>
+            <PropertyRef Name="Номер" />
+            <PropertyRef Name="Блюдо" />
+            <PropertyRef Name="Выход_порции_г" />
+            <PropertyRef Name="Кто_утвердил" />
+          </Key>
+          <Property Name="Номер" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Блюдо" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Выход_порции_г" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Технология_приготовления" Type="nvarchar(max)" />
+          <Property Name="Дата_создания" Type="datetime" />
+          <Property Name="Статус" Type="nvarchar" MaxLength="20" />
+          <Property Name="Кто_утвердил" Type="nvarchar" MaxLength="53" Nullable="false" />
+          <Property Name="Дата_утверждения" Type="datetime" />
+          <Property Name="Количество_ингредиентов" Type="int" />
+        </EntityType>
+        <Association Name="FK__Блюда__Вид_блюда__4F7CD00D">
+          <End Role="Виды_блюд" Type="Self.Виды_блюд" Multiplicity="0..1" />
+          <End Role="Блюда" Type="Self.Блюда" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Виды_блюд">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Блюда">
+              <PropertyRef Name="Вид_блюда_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Блюда__Кто_созда__5070F446">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
+          <End Role="Блюда" Type="Self.Блюда" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Блюда">
+              <PropertyRef Name="Кто_создал_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Калькуляц__Кто_у__628FA481">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
+          <End Role="Калькуляционные_карточки" Type="Self.Калькуляционные_карточки" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Калькуляционные_карточки">
+              <PropertyRef Name="Кто_утвердил_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Калькуляц__Техно__619B8048">
+          <End Role="Технологические_карты" Type="Self.Технологические_карты" Multiplicity="1" />
+          <End Role="Калькуляционные_карточки" Type="Self.Калькуляционные_карточки" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Технологические_карты">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Калькуляционные_карточки">
+              <PropertyRef Name="Технологическая_карта_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Меню_на_д__Ответ__6B24EA82">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="1" />
+          <End Role="Меню_на_день" Type="Self.Меню_на_день" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Меню_на_день">
+              <PropertyRef Name="Ответственный_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Пользоват__Роль___3D5E1FD2">
+          <End Role="Роли" Type="Self.Роли" Multiplicity="1" />
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Роли">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Пользователи">
+              <PropertyRef Name="Роль_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Продукты__Катего__47DBAE45">
+          <End Role="Категории_продуктов" Type="Self.Категории_продуктов" Multiplicity="0..1" />
+          <End Role="Продукты" Type="Self.Продукты" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Категории_продуктов">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Продукты">
+              <PropertyRef Name="Категория_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Продукты__Кто_ут__48CFD27E">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
+          <End Role="Продукты" Type="Self.Продукты" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Продукты">
+              <PropertyRef Name="Кто_утвердил_цену_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Рецептуры__Проду__5AEE82B9">
+          <End Role="Продукты" Type="Self.Продукты" Multiplicity="1" />
+          <End Role="Рецептуры" Type="Self.Рецептуры" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Продукты">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Рецептуры">
+              <PropertyRef Name="Продукт_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Рецептуры__Техно__59FA5E80">
+          <End Role="Технологические_карты" Type="Self.Технологические_карты" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Рецептуры" Type="Self.Рецептуры" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Технологические_карты">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Рецептуры">
+              <PropertyRef Name="Технологическая_карта_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Строки_ка__Кальк__656C112C">
+          <End Role="Калькуляционные_карточки" Type="Self.Калькуляционные_карточки" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Строки_калькуляции" Type="Self.Строки_калькуляции" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Калькуляционные_карточки">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Строки_калькуляции">
+              <PropertyRef Name="Калькуляционная_карточка_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Строки_ка__Проду__66603565">
+          <End Role="Продукты" Type="Self.Продукты" Multiplicity="1" />
+          <End Role="Строки_калькуляции" Type="Self.Строки_калькуляции" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Продукты">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Строки_калькуляции">
+              <PropertyRef Name="Продукт_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Строки_ме__Блюдо__6FE99F9F">
+          <End Role="Блюда" Type="Self.Блюда" Multiplicity="1" />
+          <End Role="Строки_меню" Type="Self.Строки_меню" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Блюда">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Строки_меню">
+              <PropertyRef Name="Блюдо_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Строки_ме__Меню___6EF57B66">
+          <End Role="Меню_на_день" Type="Self.Меню_на_день" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Строки_меню" Type="Self.Строки_меню" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Меню_на_день">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Строки_меню">
+              <PropertyRef Name="Меню_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Технологи__Блюдо__5629CD9C">
+          <End Role="Блюда" Type="Self.Блюда" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Технологические_карты" Type="Self.Технологические_карты" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Блюда">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Технологические_карты">
+              <PropertyRef Name="Блюдо_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Технологи__Кто_у__571DF1D5">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
+          <End Role="Технологические_карты" Type="Self.Технологические_карты" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Технологические_карты">
+              <PropertyRef Name="Кто_утвердил_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище MenuStolovayaDBModelContainer">
+          <EntitySet Name="Блюда" EntityType="Self.Блюда" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Виды_блюд" EntityType="Self.Виды_блюд" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Калькуляционные_карточки" EntityType="Self.Калькуляционные_карточки" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Категории_продуктов" EntityType="Self.Категории_продуктов" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Меню_на_день" EntityType="Self.Меню_на_день" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Пользователи" EntityType="Self.Пользователи" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Продукты" EntityType="Self.Продукты" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Рецептуры" EntityType="Self.Рецептуры" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Роли" EntityType="Self.Роли" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Строки_калькуляции" EntityType="Self.Строки_калькуляции" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Строки_меню" EntityType="Self.Строки_меню" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Технологические_карты" EntityType="Self.Технологические_карты" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vw_Анализ_себестоимости" EntityType="Self.vw_Анализ_себестоимости" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[vw_Анализ_себестоимости].[Блюдо] AS [Блюдо], 
+[vw_Анализ_себестоимости].[Выход_порции_г] AS [Выход_порции_г], 
+[vw_Анализ_себестоимости].[Себестоимость_общая] AS [Себестоимость_общая], 
+[vw_Анализ_себестоимости].[Себестоимость_за_кг] AS [Себестоимость_за_кг], 
+[vw_Анализ_себестоимости].[Количество_ингредиентов] AS [Количество_ингредиентов], 
+[vw_Анализ_себестоимости].[Макс_стоимость_ингредиента] AS [Макс_стоимость_ингредиента], 
+[vw_Анализ_себестоимости].[Мин_стоимость_ингредиента] AS [Мин_стоимость_ингредиента], 
+[vw_Анализ_себестоимости].[Сред_стоимость_ингредиента] AS [Сред_стоимость_ингредиента]
+FROM [dbo].[vw_Анализ_себестоимости] AS [vw_Анализ_себестоимости]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vw_Калькуляционные_карточки_полные" EntityType="Self.vw_Калькуляционные_карточки_полные" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[vw_Калькуляционные_карточки_полные].[Номер] AS [Номер], 
+[vw_Калькуляционные_карточки_полные].[Блюдо] AS [Блюдо], 
+[vw_Калькуляционные_карточки_полные].[Выход_порции_г] AS [Выход_порции_г], 
+[vw_Калькуляционные_карточки_полные].[Дата_составления] AS [Дата_составления], 
+[vw_Калькуляционные_карточки_полные].[Себестоимость] AS [Себестоимость], 
+[vw_Калькуляционные_карточки_полные].[Цена_реализации] AS [Цена_реализации], 
+[vw_Калькуляционные_карточки_полные].[Фудкост_процент] AS [Фудкост_процент], 
+[vw_Калькуляционные_карточки_полные].[Процент_наценки] AS [Процент_наценки], 
+[vw_Калькуляционные_карточки_полные].[Маржинальность] AS [Маржинальность], 
+[vw_Калькуляционные_карточки_полные].[Статус] AS [Статус], 
+[vw_Калькуляционные_карточки_полные].[Кто_утвердил] AS [Кто_утвердил], 
+[vw_Калькуляционные_карточки_полные].[Тех_карта] AS [Тех_карта]
+FROM [dbo].[vw_Калькуляционные_карточки_полные] AS [vw_Калькуляционные_карточки_полные]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vw_Меню_с_ценами" EntityType="Self.vw_Меню_с_ценами" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[vw_Меню_с_ценами].[№п/п] AS [№п/п], 
+[vw_Меню_с_ценами].[Дата] AS [Дата], 
+[vw_Меню_с_ценами].[Блюдо] AS [Блюдо], 
+[vw_Меню_с_ценами].[Вид_блюда] AS [Вид_блюда], 
+[vw_Меню_с_ценами].[Цена] AS [Цена], 
+[vw_Меню_с_ценами].[Фудкост_процент] AS [Фудкост_процент], 
+[vw_Меню_с_ценами].[Количество_порций] AS [Количество_порций], 
+[vw_Меню_с_ценами].[Выход_г] AS [Выход_г], 
+[vw_Меню_с_ценами].[Общая_выручка] AS [Общая_выручка], 
+[vw_Меню_с_ценами].[Калорийность_на_порцию] AS [Калорийность_на_порцию], 
+[vw_Меню_с_ценами].[Статус_меню] AS [Статус_меню]
+FROM [dbo].[vw_Меню_с_ценами] AS [vw_Меню_с_ценами]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vw_Рентабельность_блюд" EntityType="Self.vw_Рентабельность_блюд" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[vw_Рентабельность_блюд].[Блюдо] AS [Блюдо], 
+[vw_Рентабельность_блюд].[Выход_порции_г] AS [Выход_порции_г], 
+[vw_Рентабельность_блюд].[Кальк_карта] AS [Кальк_карта], 
+[vw_Рентабельность_блюд].[Себестоимость] AS [Себестоимость], 
+[vw_Рентабельность_блюд].[Цена_реализации] AS [Цена_реализации], 
+[vw_Рентабельность_блюд].[Фудкост_процент] AS [Фудкост_процент], 
+[vw_Рентабельность_блюд].[Процент_наценки] AS [Процент_наценки], 
+[vw_Рентабельность_блюд].[Прибыль_на_порцию] AS [Прибыль_на_порцию], 
+[vw_Рентабельность_блюд].[Маржа_процент] AS [Маржа_процент], 
+[vw_Рентабельность_блюд].[Оценка_рентабельности] AS [Оценка_рентабельности]
+FROM [dbo].[vw_Рентабельность_блюд] AS [vw_Рентабельность_блюд]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vw_Технологические_карты_полные" EntityType="Self.vw_Технологические_карты_полные" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[vw_Технологические_карты_полные].[Номер] AS [Номер], 
+[vw_Технологические_карты_полные].[Блюдо] AS [Блюдо], 
+[vw_Технологические_карты_полные].[Выход_порции_г] AS [Выход_порции_г], 
+[vw_Технологические_карты_полные].[Технология_приготовления] AS [Технология_приготовления], 
+[vw_Технологические_карты_полные].[Дата_создания] AS [Дата_создания], 
+[vw_Технологические_карты_полные].[Статус] AS [Статус], 
+[vw_Технологические_карты_полные].[Кто_утвердил] AS [Кто_утвердил], 
+[vw_Технологические_карты_полные].[Дата_утверждения] AS [Дата_утверждения], 
+[vw_Технологические_карты_полные].[Количество_ингредиентов] AS [Количество_ингредиентов]
+FROM [dbo].[vw_Технологические_карты_полные] AS [vw_Технологические_карты_полные]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK__Блюда__Вид_блюда__4F7CD00D" Association="Self.FK__Блюда__Вид_блюда__4F7CD00D">
+            <End Role="Виды_блюд" EntitySet="Виды_блюд" />
+            <End Role="Блюда" EntitySet="Блюда" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Блюда__Кто_созда__5070F446" Association="Self.FK__Блюда__Кто_созда__5070F446">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Блюда" EntitySet="Блюда" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Калькуляц__Кто_у__628FA481" Association="Self.FK__Калькуляц__Кто_у__628FA481">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Калькуляционные_карточки" EntitySet="Калькуляционные_карточки" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Калькуляц__Техно__619B8048" Association="Self.FK__Калькуляц__Техно__619B8048">
+            <End Role="Технологические_карты" EntitySet="Технологические_карты" />
+            <End Role="Калькуляционные_карточки" EntitySet="Калькуляционные_карточки" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Меню_на_д__Ответ__6B24EA82" Association="Self.FK__Меню_на_д__Ответ__6B24EA82">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Меню_на_день" EntitySet="Меню_на_день" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Пользоват__Роль___3D5E1FD2" Association="Self.FK__Пользоват__Роль___3D5E1FD2">
+            <End Role="Роли" EntitySet="Роли" />
+            <End Role="Пользователи" EntitySet="Пользователи" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Продукты__Катего__47DBAE45" Association="Self.FK__Продукты__Катего__47DBAE45">
+            <End Role="Категории_продуктов" EntitySet="Категории_продуктов" />
+            <End Role="Продукты" EntitySet="Продукты" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Продукты__Кто_ут__48CFD27E" Association="Self.FK__Продукты__Кто_ут__48CFD27E">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Продукты" EntitySet="Продукты" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Рецептуры__Проду__5AEE82B9" Association="Self.FK__Рецептуры__Проду__5AEE82B9">
+            <End Role="Продукты" EntitySet="Продукты" />
+            <End Role="Рецептуры" EntitySet="Рецептуры" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Рецептуры__Техно__59FA5E80" Association="Self.FK__Рецептуры__Техно__59FA5E80">
+            <End Role="Технологические_карты" EntitySet="Технологические_карты" />
+            <End Role="Рецептуры" EntitySet="Рецептуры" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Строки_ка__Кальк__656C112C" Association="Self.FK__Строки_ка__Кальк__656C112C">
+            <End Role="Калькуляционные_карточки" EntitySet="Калькуляционные_карточки" />
+            <End Role="Строки_калькуляции" EntitySet="Строки_калькуляции" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Строки_ка__Проду__66603565" Association="Self.FK__Строки_ка__Проду__66603565">
+            <End Role="Продукты" EntitySet="Продукты" />
+            <End Role="Строки_калькуляции" EntitySet="Строки_калькуляции" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Строки_ме__Блюдо__6FE99F9F" Association="Self.FK__Строки_ме__Блюдо__6FE99F9F">
+            <End Role="Блюда" EntitySet="Блюда" />
+            <End Role="Строки_меню" EntitySet="Строки_меню" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Строки_ме__Меню___6EF57B66" Association="Self.FK__Строки_ме__Меню___6EF57B66">
+            <End Role="Меню_на_день" EntitySet="Меню_на_день" />
+            <End Role="Строки_меню" EntitySet="Строки_меню" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Технологи__Блюдо__5629CD9C" Association="Self.FK__Технологи__Блюдо__5629CD9C">
+            <End Role="Блюда" EntitySet="Блюда" />
+            <End Role="Технологические_карты" EntitySet="Технологические_карты" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Технологи__Кто_у__571DF1D5" Association="Self.FK__Технологи__Кто_у__571DF1D5">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Технологические_карты" EntitySet="Технологические_карты" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MenuStolovayaDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Блюда">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Наименование" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Полное_наименование" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Вид_блюда_id" Type="Int32" />
+          <Property Name="Выход_стандартный" Type="Decimal" Precision="10" Scale="3" />
+          <Property Name="Время_приготовления" Type="Int32" />
+          <Property Name="Калорийность_расчетная" Type="Decimal" Precision="10" Scale="3" />
+          <Property Name="Активно" Type="Boolean" />
+          <Property Name="Дата_создания" Type="DateTime" Precision="3" />
+          <Property Name="Кто_создал_id" Type="Int32" />
+          <NavigationProperty Name="Виды_блюд" Relationship="Self.FK__Блюда__Вид_блюда__4F7CD00D" FromRole="Блюда" ToRole="Виды_блюд" />
+          <NavigationProperty Name="Пользователи" Relationship="Self.FK__Блюда__Кто_созда__5070F446" FromRole="Блюда" ToRole="Пользователи" />
+          <NavigationProperty Name="Строки_меню" Relationship="Self.FK__Строки_ме__Блюдо__6FE99F9F" FromRole="Блюда" ToRole="Строки_меню" />
+          <NavigationProperty Name="Технологические_карты" Relationship="Self.FK__Технологи__Блюдо__5629CD9C" FromRole="Блюда" ToRole="Технологические_карты" />
+        </EntityType>
+        <EntityType Name="Виды_блюд">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Наименование" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Описание" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Блюда" Relationship="Self.FK__Блюда__Вид_блюда__4F7CD00D" FromRole="Виды_блюд" ToRole="Блюда" />
+        </EntityType>
+        <EntityType Name="Калькуляционные_карточки">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Номер" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Технологическая_карта_id" Type="Int32" Nullable="false" />
+          <Property Name="Дата_составления" Type="DateTime" Precision="3" />
+          <Property Name="Процент_наценки" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="Себестоимость" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Цена_реализации" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Food_Cost" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="Статус" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Кто_утвердил_id" Type="Int32" />
+          <Property Name="Дата_утверждения" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Пользователи" Relationship="Self.FK__Калькуляц__Кто_у__628FA481" FromRole="Калькуляционные_карточки" ToRole="Пользователи" />
+          <NavigationProperty Name="Технологические_карты" Relationship="Self.FK__Калькуляц__Техно__619B8048" FromRole="Калькуляционные_карточки" ToRole="Технологические_карты" />
+          <NavigationProperty Name="Строки_калькуляции" Relationship="Self.FK__Строки_ка__Кальк__656C112C" FromRole="Калькуляционные_карточки" ToRole="Строки_калькуляции" />
+        </EntityType>
+        <EntityType Name="Категории_продуктов">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Наименование" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Описание" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Продукты" Relationship="Self.FK__Продукты__Катего__47DBAE45" FromRole="Категории_продуктов" ToRole="Продукты" />
+        </EntityType>
+        <EntityType Name="Меню_на_день">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Дата" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Ответственный_id" Type="Int32" Nullable="false" />
+          <Property Name="Дата_составления" Type="DateTime" Precision="3" />
+          <Property Name="Калорийность_общая" Type="Decimal" Precision="10" Scale="3" />
+          <Property Name="Статус" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Пользователи" Relationship="Self.FK__Меню_на_д__Ответ__6B24EA82" FromRole="Меню_на_день" ToRole="Пользователи" />
+          <NavigationProperty Name="Строки_меню" Relationship="Self.FK__Строки_ме__Меню___6EF57B66" FromRole="Меню_на_день" ToRole="Строки_меню" />
+        </EntityType>
+        <EntityType Name="Пользователи">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Логин" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Пароль" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Фамилия" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Имя" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Отчество" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Роль_id" Type="Int32" Nullable="false" />
+          <Property Name="Блокировка" Type="Boolean" />
+          <Property Name="Дата_регистрации" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Блюда" Relationship="Self.FK__Блюда__Кто_созда__5070F446" FromRole="Пользователи" ToRole="Блюда" />
+          <NavigationProperty Name="Калькуляционные_карточки" Relationship="Self.FK__Калькуляц__Кто_у__628FA481" FromRole="Пользователи" ToRole="Калькуляционные_карточки" />
+          <NavigationProperty Name="Меню_на_день" Relationship="Self.FK__Меню_на_д__Ответ__6B24EA82" FromRole="Пользователи" ToRole="Меню_на_день" />
+          <NavigationProperty Name="Роли" Relationship="Self.FK__Пользоват__Роль___3D5E1FD2" FromRole="Пользователи" ToRole="Роли" />
+          <NavigationProperty Name="Продукты" Relationship="Self.FK__Продукты__Кто_ут__48CFD27E" FromRole="Пользователи" ToRole="Продукты" />
+          <NavigationProperty Name="Технологические_карты" Relationship="Self.FK__Технологи__Кто_у__571DF1D5" FromRole="Пользователи" ToRole="Технологические_карты" />
+        </EntityType>
+        <EntityType Name="Продукты">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Артикул" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Наименование" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Категория_id" Type="Int32" />
+          <Property Name="Единица_измерения" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Потери_холодной_обработки" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="Потери_горячей_обработки" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="Белки" Type="Decimal" Precision="10" Scale="3" />
+          <Property Name="Жиры" Type="Decimal" Precision="10" Scale="3" />
+          <Property Name="Углеводы" Type="Decimal" Precision="10" Scale="3" />
+          <Property Name="Калорийность" Type="Decimal" Precision="10" Scale="3" />
+          <Property Name="Цена" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Утверждена_цена" Type="Boolean" />
+          <Property Name="Кто_утвердил_цену_id" Type="Int32" />
+          <Property Name="Дата_утверждения_цены" Type="DateTime" Precision="3" />
+          <Property Name="Активен" Type="Boolean" />
+          <NavigationProperty Name="Категории_продуктов" Relationship="Self.FK__Продукты__Катего__47DBAE45" FromRole="Продукты" ToRole="Категории_продуктов" />
+          <NavigationProperty Name="Пользователи" Relationship="Self.FK__Продукты__Кто_ут__48CFD27E" FromRole="Продукты" ToRole="Пользователи" />
+          <NavigationProperty Name="Рецептуры" Relationship="Self.FK__Рецептуры__Проду__5AEE82B9" FromRole="Продукты" ToRole="Рецептуры" />
+          <NavigationProperty Name="Строки_калькуляции" Relationship="Self.FK__Строки_ка__Проду__66603565" FromRole="Продукты" ToRole="Строки_калькуляции" />
+        </EntityType>
+        <EntityType Name="Рецептуры">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Технологическая_карта_id" Type="Int32" Nullable="false" />
+          <Property Name="Продукт_id" Type="Int32" Nullable="false" />
+          <Property Name="Количество_брутто" Type="Decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Количество_нетто" Type="Decimal" Precision="10" Scale="3" />
+          <Property Name="Порядок_закладки" Type="Int32" />
+          <NavigationProperty Name="Продукты" Relationship="Self.FK__Рецептуры__Проду__5AEE82B9" FromRole="Рецептуры" ToRole="Продукты" />
+          <NavigationProperty Name="Технологические_карты" Relationship="Self.FK__Рецептуры__Техно__59FA5E80" FromRole="Рецептуры" ToRole="Технологические_карты" />
+        </EntityType>
+        <EntityType Name="Роли">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Наименование" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Описание" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Пользователи" Relationship="Self.FK__Пользоват__Роль___3D5E1FD2" FromRole="Роли" ToRole="Пользователи" />
+        </EntityType>
+        <EntityType Name="Строки_калькуляции">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Калькуляционная_карточка_id" Type="Int32" Nullable="false" />
+          <Property Name="Продукт_id" Type="Int32" Nullable="false" />
+          <Property Name="Норма_расхода" Type="Decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Цена_за_единицу" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Сумма" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <NavigationProperty Name="Калькуляционные_карточки" Relationship="Self.FK__Строки_ка__Кальк__656C112C" FromRole="Строки_калькуляции" ToRole="Калькуляционные_карточки" />
+          <NavigationProperty Name="Продукты" Relationship="Self.FK__Строки_ка__Проду__66603565" FromRole="Строки_калькуляции" ToRole="Продукты" />
+        </EntityType>
+        <EntityType Name="Строки_меню">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Меню_id" Type="Int32" Nullable="false" />
+          <Property Name="Блюдо_id" Type="Int32" Nullable="false" />
+          <Property Name="Количество_порций" Type="Int32" />
+          <Property Name="Выход_на_порцию" Type="Decimal" Precision="10" Scale="3" />
+          <Property Name="Время_подачи" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Порядок_подачи" Type="Int32" />
+          <NavigationProperty Name="Блюда" Relationship="Self.FK__Строки_ме__Блюдо__6FE99F9F" FromRole="Строки_меню" ToRole="Блюда" />
+          <NavigationProperty Name="Меню_на_день" Relationship="Self.FK__Строки_ме__Меню___6EF57B66" FromRole="Строки_меню" ToRole="Меню_на_день" />
+        </EntityType>
+        <EntityType Name="Технологические_карты">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Номер" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Блюдо_id" Type="Int32" Nullable="false" />
+          <Property Name="Выход" Type="Decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Технология_приготовления" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Дата_создания" Type="DateTime" Precision="3" />
+          <Property Name="Статус" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Кто_утвердил_id" Type="Int32" />
+          <Property Name="Дата_утверждения" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Блюда" Relationship="Self.FK__Технологи__Блюдо__5629CD9C" FromRole="Технологические_карты" ToRole="Блюда" />
+          <NavigationProperty Name="Калькуляционные_карточки" Relationship="Self.FK__Калькуляц__Техно__619B8048" FromRole="Технологические_карты" ToRole="Калькуляционные_карточки" />
+          <NavigationProperty Name="Пользователи" Relationship="Self.FK__Технологи__Кто_у__571DF1D5" FromRole="Технологические_карты" ToRole="Пользователи" />
+          <NavigationProperty Name="Рецептуры" Relationship="Self.FK__Рецептуры__Техно__59FA5E80" FromRole="Технологические_карты" ToRole="Рецептуры" />
+        </EntityType>
+        <EntityType Name="vw_Анализ_себестоимости">
+          <Key>
+            <PropertyRef Name="Блюдо" />
+            <PropertyRef Name="Выход_порции_г" />
+          </Key>
+          <Property Name="Блюдо" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Выход_порции_г" Type="Decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Себестоимость_общая" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Себестоимость_за_кг" Type="Decimal" Precision="38" Scale="15" />
+          <Property Name="Количество_ингредиентов" Type="Int32" />
+          <Property Name="Макс_стоимость_ингредиента" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Мин_стоимость_ингредиента" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Сред_стоимость_ингредиента" Type="Decimal" Precision="19" Scale="4" />
+        </EntityType>
+        <EntityType Name="vw_Калькуляционные_карточки_полные">
+          <Key>
+            <PropertyRef Name="Номер" />
+            <PropertyRef Name="Блюдо" />
+            <PropertyRef Name="Выход_порции_г" />
+            <PropertyRef Name="Маржинальность" />
+            <PropertyRef Name="Кто_утвердил" />
+            <PropertyRef Name="Тех_карта" />
+          </Key>
+          <Property Name="Номер" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Блюдо" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Выход_порции_г" Type="Decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Дата_составления" Type="DateTime" Precision="3" />
+          <Property Name="Себестоимость" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Цена_реализации" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Фудкост_процент" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="Процент_наценки" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="Маржинальность" Type="String" MaxLength="18" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Статус" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Кто_утвердил" Type="String" MaxLength="53" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Тех_карта" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="vw_Меню_с_ценами">
+          <Key>
+            <PropertyRef Name="Дата" />
+            <PropertyRef Name="Блюдо" />
+            <PropertyRef Name="Вид_блюда" />
+          </Key>
+          <Property Name="C_п_п" Type="Int64" />
+          <Property Name="Дата" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Блюдо" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Вид_блюда" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Цена" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Фудкост_процент" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="Количество_порций" Type="Int32" />
+          <Property Name="Выход_г" Type="Decimal" Precision="10" Scale="3" />
+          <Property Name="Общая_выручка" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Калорийность_на_порцию" Type="Decimal" Precision="10" Scale="3" />
+          <Property Name="Статус_меню" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="vw_Рентабельность_блюд">
+          <Key>
+            <PropertyRef Name="Блюдо" />
+            <PropertyRef Name="Выход_порции_г" />
+            <PropertyRef Name="Кальк_карта" />
+            <PropertyRef Name="Оценка_рентабельности" />
+          </Key>
+          <Property Name="Блюдо" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Выход_порции_г" Type="Decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Кальк_карта" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Себестоимость" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Цена_реализации" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Фудкост_процент" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="Процент_наценки" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="Прибыль_на_порцию" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Маржа_процент" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Оценка_рентабельности" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="vw_Технологические_карты_полные">
+          <Key>
+            <PropertyRef Name="Номер" />
+            <PropertyRef Name="Блюдо" />
+            <PropertyRef Name="Выход_порции_г" />
+            <PropertyRef Name="Кто_утвердил" />
+          </Key>
+          <Property Name="Номер" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Блюдо" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Выход_порции_г" Type="Decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="Технология_приготовления" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Дата_создания" Type="DateTime" Precision="3" />
+          <Property Name="Статус" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Кто_утвердил" Type="String" MaxLength="53" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Дата_утверждения" Type="DateTime" Precision="3" />
+          <Property Name="Количество_ингредиентов" Type="Int32" />
+        </EntityType>
+        <Association Name="FK__Блюда__Вид_блюда__4F7CD00D">
+          <End Role="Виды_блюд" Type="Self.Виды_блюд" Multiplicity="0..1" />
+          <End Role="Блюда" Type="Self.Блюда" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Виды_блюд">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Блюда">
+              <PropertyRef Name="Вид_блюда_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Блюда__Кто_созда__5070F446">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
+          <End Role="Блюда" Type="Self.Блюда" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Блюда">
+              <PropertyRef Name="Кто_создал_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Строки_ме__Блюдо__6FE99F9F">
+          <End Role="Блюда" Type="Self.Блюда" Multiplicity="1" />
+          <End Role="Строки_меню" Type="Self.Строки_меню" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Блюда">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Строки_меню">
+              <PropertyRef Name="Блюдо_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Технологи__Блюдо__5629CD9C">
+          <End Role="Блюда" Type="Self.Блюда" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Технологические_карты" Type="Self.Технологические_карты" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Блюда">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Технологические_карты">
+              <PropertyRef Name="Блюдо_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Калькуляц__Кто_у__628FA481">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
+          <End Role="Калькуляционные_карточки" Type="Self.Калькуляционные_карточки" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Калькуляционные_карточки">
+              <PropertyRef Name="Кто_утвердил_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Калькуляц__Техно__619B8048">
+          <End Role="Технологические_карты" Type="Self.Технологические_карты" Multiplicity="1" />
+          <End Role="Калькуляционные_карточки" Type="Self.Калькуляционные_карточки" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Технологические_карты">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Калькуляционные_карточки">
+              <PropertyRef Name="Технологическая_карта_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Строки_ка__Кальк__656C112C">
+          <End Role="Калькуляционные_карточки" Type="Self.Калькуляционные_карточки" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Строки_калькуляции" Type="Self.Строки_калькуляции" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Калькуляционные_карточки">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Строки_калькуляции">
+              <PropertyRef Name="Калькуляционная_карточка_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Продукты__Катего__47DBAE45">
+          <End Role="Категории_продуктов" Type="Self.Категории_продуктов" Multiplicity="0..1" />
+          <End Role="Продукты" Type="Self.Продукты" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Категории_продуктов">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Продукты">
+              <PropertyRef Name="Категория_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Меню_на_д__Ответ__6B24EA82">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="1" />
+          <End Role="Меню_на_день" Type="Self.Меню_на_день" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Меню_на_день">
+              <PropertyRef Name="Ответственный_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Строки_ме__Меню___6EF57B66">
+          <End Role="Меню_на_день" Type="Self.Меню_на_день" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Строки_меню" Type="Self.Строки_меню" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Меню_на_день">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Строки_меню">
+              <PropertyRef Name="Меню_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Пользоват__Роль___3D5E1FD2">
+          <End Role="Роли" Type="Self.Роли" Multiplicity="1" />
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Роли">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Пользователи">
+              <PropertyRef Name="Роль_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Продукты__Кто_ут__48CFD27E">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
+          <End Role="Продукты" Type="Self.Продукты" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Продукты">
+              <PropertyRef Name="Кто_утвердил_цену_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Технологи__Кто_у__571DF1D5">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
+          <End Role="Технологические_карты" Type="Self.Технологические_карты" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Технологические_карты">
+              <PropertyRef Name="Кто_утвердил_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Рецептуры__Проду__5AEE82B9">
+          <End Role="Продукты" Type="Self.Продукты" Multiplicity="1" />
+          <End Role="Рецептуры" Type="Self.Рецептуры" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Продукты">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Рецептуры">
+              <PropertyRef Name="Продукт_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Строки_ка__Проду__66603565">
+          <End Role="Продукты" Type="Self.Продукты" Multiplicity="1" />
+          <End Role="Строки_калькуляции" Type="Self.Строки_калькуляции" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Продукты">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Строки_калькуляции">
+              <PropertyRef Name="Продукт_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Рецептуры__Техно__59FA5E80">
+          <End Role="Технологические_карты" Type="Self.Технологические_карты" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Рецептуры" Type="Self.Рецептуры" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Технологические_карты">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Рецептуры">
+              <PropertyRef Name="Технологическая_карта_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MenuStolovayaDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Блюда" EntityType="Self.Блюда" />
+          <EntitySet Name="Виды_блюд" EntityType="Self.Виды_блюд" />
+          <EntitySet Name="Калькуляционные_карточки" EntityType="Self.Калькуляционные_карточки" />
+          <EntitySet Name="Категории_продуктов" EntityType="Self.Категории_продуктов" />
+          <EntitySet Name="Меню_на_день" EntityType="Self.Меню_на_день" />
+          <EntitySet Name="Пользователи" EntityType="Self.Пользователи" />
+          <EntitySet Name="Продукты" EntityType="Self.Продукты" />
+          <EntitySet Name="Рецептуры" EntityType="Self.Рецептуры" />
+          <EntitySet Name="Роли" EntityType="Self.Роли" />
+          <EntitySet Name="Строки_калькуляции" EntityType="Self.Строки_калькуляции" />
+          <EntitySet Name="Строки_меню" EntityType="Self.Строки_меню" />
+          <EntitySet Name="Технологические_карты" EntityType="Self.Технологические_карты" />
+          <EntitySet Name="vw_Анализ_себестоимости" EntityType="Self.vw_Анализ_себестоимости" />
+          <EntitySet Name="vw_Калькуляционные_карточки_полные" EntityType="Self.vw_Калькуляционные_карточки_полные" />
+          <EntitySet Name="vw_Меню_с_ценами" EntityType="Self.vw_Меню_с_ценами" />
+          <EntitySet Name="vw_Рентабельность_блюд" EntityType="Self.vw_Рентабельность_блюд" />
+          <EntitySet Name="vw_Технологические_карты_полные" EntityType="Self.vw_Технологические_карты_полные" />
+          <AssociationSet Name="FK__Блюда__Вид_блюда__4F7CD00D" Association="Self.FK__Блюда__Вид_блюда__4F7CD00D">
+            <End Role="Виды_блюд" EntitySet="Виды_блюд" />
+            <End Role="Блюда" EntitySet="Блюда" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Блюда__Кто_созда__5070F446" Association="Self.FK__Блюда__Кто_созда__5070F446">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Блюда" EntitySet="Блюда" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Строки_ме__Блюдо__6FE99F9F" Association="Self.FK__Строки_ме__Блюдо__6FE99F9F">
+            <End Role="Блюда" EntitySet="Блюда" />
+            <End Role="Строки_меню" EntitySet="Строки_меню" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Технологи__Блюдо__5629CD9C" Association="Self.FK__Технологи__Блюдо__5629CD9C">
+            <End Role="Блюда" EntitySet="Блюда" />
+            <End Role="Технологические_карты" EntitySet="Технологические_карты" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Калькуляц__Кто_у__628FA481" Association="Self.FK__Калькуляц__Кто_у__628FA481">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Калькуляционные_карточки" EntitySet="Калькуляционные_карточки" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Калькуляц__Техно__619B8048" Association="Self.FK__Калькуляц__Техно__619B8048">
+            <End Role="Технологические_карты" EntitySet="Технологические_карты" />
+            <End Role="Калькуляционные_карточки" EntitySet="Калькуляционные_карточки" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Строки_ка__Кальк__656C112C" Association="Self.FK__Строки_ка__Кальк__656C112C">
+            <End Role="Калькуляционные_карточки" EntitySet="Калькуляционные_карточки" />
+            <End Role="Строки_калькуляции" EntitySet="Строки_калькуляции" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Продукты__Катего__47DBAE45" Association="Self.FK__Продукты__Катего__47DBAE45">
+            <End Role="Категории_продуктов" EntitySet="Категории_продуктов" />
+            <End Role="Продукты" EntitySet="Продукты" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Меню_на_д__Ответ__6B24EA82" Association="Self.FK__Меню_на_д__Ответ__6B24EA82">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Меню_на_день" EntitySet="Меню_на_день" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Строки_ме__Меню___6EF57B66" Association="Self.FK__Строки_ме__Меню___6EF57B66">
+            <End Role="Меню_на_день" EntitySet="Меню_на_день" />
+            <End Role="Строки_меню" EntitySet="Строки_меню" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Пользоват__Роль___3D5E1FD2" Association="Self.FK__Пользоват__Роль___3D5E1FD2">
+            <End Role="Роли" EntitySet="Роли" />
+            <End Role="Пользователи" EntitySet="Пользователи" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Продукты__Кто_ут__48CFD27E" Association="Self.FK__Продукты__Кто_ут__48CFD27E">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Продукты" EntitySet="Продукты" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Технологи__Кто_у__571DF1D5" Association="Self.FK__Технологи__Кто_у__571DF1D5">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Технологические_карты" EntitySet="Технологические_карты" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Рецептуры__Проду__5AEE82B9" Association="Self.FK__Рецептуры__Проду__5AEE82B9">
+            <End Role="Продукты" EntitySet="Продукты" />
+            <End Role="Рецептуры" EntitySet="Рецептуры" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Строки_ка__Проду__66603565" Association="Self.FK__Строки_ка__Проду__66603565">
+            <End Role="Продукты" EntitySet="Продукты" />
+            <End Role="Строки_калькуляции" EntitySet="Строки_калькуляции" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Рецептуры__Техно__59FA5E80" Association="Self.FK__Рецептуры__Техно__59FA5E80">
+            <End Role="Технологические_карты" EntitySet="Технологические_карты" />
+            <End Role="Рецептуры" EntitySet="Рецептуры" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище MenuStolovayaDBModelContainer" CdmEntityContainer="MenuStolovayaDBEntities">
+          <EntitySetMapping Name="Блюда">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Блюда">
+              <MappingFragment StoreEntitySet="Блюда">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Наименование" ColumnName="Наименование" />
+                <ScalarProperty Name="Полное_наименование" ColumnName="Полное_наименование" />
+                <ScalarProperty Name="Вид_блюда_id" ColumnName="Вид_блюда_id" />
+                <ScalarProperty Name="Выход_стандартный" ColumnName="Выход_стандартный" />
+                <ScalarProperty Name="Время_приготовления" ColumnName="Время_приготовления" />
+                <ScalarProperty Name="Калорийность_расчетная" ColumnName="Калорийность_расчетная" />
+                <ScalarProperty Name="Активно" ColumnName="Активно" />
+                <ScalarProperty Name="Дата_создания" ColumnName="Дата_создания" />
+                <ScalarProperty Name="Кто_создал_id" ColumnName="Кто_создал_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Виды_блюд">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Виды_блюд">
+              <MappingFragment StoreEntitySet="Виды_блюд">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Наименование" ColumnName="Наименование" />
+                <ScalarProperty Name="Описание" ColumnName="Описание" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Калькуляционные_карточки">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Калькуляционные_карточки">
+              <MappingFragment StoreEntitySet="Калькуляционные_карточки">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Номер" ColumnName="Номер" />
+                <ScalarProperty Name="Технологическая_карта_id" ColumnName="Технологическая_карта_id" />
+                <ScalarProperty Name="Дата_составления" ColumnName="Дата_составления" />
+                <ScalarProperty Name="Процент_наценки" ColumnName="Процент_наценки" />
+                <ScalarProperty Name="Себестоимость" ColumnName="Себестоимость" />
+                <ScalarProperty Name="Цена_реализации" ColumnName="Цена_реализации" />
+                <ScalarProperty Name="Food_Cost" ColumnName="Food_Cost" />
+                <ScalarProperty Name="Статус" ColumnName="Статус" />
+                <ScalarProperty Name="Кто_утвердил_id" ColumnName="Кто_утвердил_id" />
+                <ScalarProperty Name="Дата_утверждения" ColumnName="Дата_утверждения" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Категории_продуктов">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Категории_продуктов">
+              <MappingFragment StoreEntitySet="Категории_продуктов">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Наименование" ColumnName="Наименование" />
+                <ScalarProperty Name="Описание" ColumnName="Описание" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Меню_на_день">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Меню_на_день">
+              <MappingFragment StoreEntitySet="Меню_на_день">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Дата" ColumnName="Дата" />
+                <ScalarProperty Name="Ответственный_id" ColumnName="Ответственный_id" />
+                <ScalarProperty Name="Дата_составления" ColumnName="Дата_составления" />
+                <ScalarProperty Name="Калорийность_общая" ColumnName="Калорийность_общая" />
+                <ScalarProperty Name="Статус" ColumnName="Статус" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Пользователи">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Пользователи">
+              <MappingFragment StoreEntitySet="Пользователи">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Логин" ColumnName="Логин" />
+                <ScalarProperty Name="Пароль" ColumnName="Пароль" />
+                <ScalarProperty Name="Фамилия" ColumnName="Фамилия" />
+                <ScalarProperty Name="Имя" ColumnName="Имя" />
+                <ScalarProperty Name="Отчество" ColumnName="Отчество" />
+                <ScalarProperty Name="Роль_id" ColumnName="Роль_id" />
+                <ScalarProperty Name="Блокировка" ColumnName="Блокировка" />
+                <ScalarProperty Name="Дата_регистрации" ColumnName="Дата_регистрации" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Продукты">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Продукты">
+              <MappingFragment StoreEntitySet="Продукты">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Артикул" ColumnName="Артикул" />
+                <ScalarProperty Name="Наименование" ColumnName="Наименование" />
+                <ScalarProperty Name="Категория_id" ColumnName="Категория_id" />
+                <ScalarProperty Name="Единица_измерения" ColumnName="Единица_измерения" />
+                <ScalarProperty Name="Потери_холодной_обработки" ColumnName="Потери_холодной_обработки" />
+                <ScalarProperty Name="Потери_горячей_обработки" ColumnName="Потери_горячей_обработки" />
+                <ScalarProperty Name="Белки" ColumnName="Белки" />
+                <ScalarProperty Name="Жиры" ColumnName="Жиры" />
+                <ScalarProperty Name="Углеводы" ColumnName="Углеводы" />
+                <ScalarProperty Name="Калорийность" ColumnName="Калорийность" />
+                <ScalarProperty Name="Цена" ColumnName="Цена" />
+                <ScalarProperty Name="Утверждена_цена" ColumnName="Утверждена_цена" />
+                <ScalarProperty Name="Кто_утвердил_цену_id" ColumnName="Кто_утвердил_цену_id" />
+                <ScalarProperty Name="Дата_утверждения_цены" ColumnName="Дата_утверждения_цены" />
+                <ScalarProperty Name="Активен" ColumnName="Активен" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Рецептуры">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Рецептуры">
+              <MappingFragment StoreEntitySet="Рецептуры">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Технологическая_карта_id" ColumnName="Технологическая_карта_id" />
+                <ScalarProperty Name="Продукт_id" ColumnName="Продукт_id" />
+                <ScalarProperty Name="Количество_брутто" ColumnName="Количество_брутто" />
+                <ScalarProperty Name="Количество_нетто" ColumnName="Количество_нетто" />
+                <ScalarProperty Name="Порядок_закладки" ColumnName="Порядок_закладки" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Роли">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Роли">
+              <MappingFragment StoreEntitySet="Роли">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Наименование" ColumnName="Наименование" />
+                <ScalarProperty Name="Описание" ColumnName="Описание" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Строки_калькуляции">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Строки_калькуляции">
+              <MappingFragment StoreEntitySet="Строки_калькуляции">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Калькуляционная_карточка_id" ColumnName="Калькуляционная_карточка_id" />
+                <ScalarProperty Name="Продукт_id" ColumnName="Продукт_id" />
+                <ScalarProperty Name="Норма_расхода" ColumnName="Норма_расхода" />
+                <ScalarProperty Name="Цена_за_единицу" ColumnName="Цена_за_единицу" />
+                <ScalarProperty Name="Сумма" ColumnName="Сумма" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Строки_меню">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Строки_меню">
+              <MappingFragment StoreEntitySet="Строки_меню">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Меню_id" ColumnName="Меню_id" />
+                <ScalarProperty Name="Блюдо_id" ColumnName="Блюдо_id" />
+                <ScalarProperty Name="Количество_порций" ColumnName="Количество_порций" />
+                <ScalarProperty Name="Выход_на_порцию" ColumnName="Выход_на_порцию" />
+                <ScalarProperty Name="Время_подачи" ColumnName="Время_подачи" />
+                <ScalarProperty Name="Порядок_подачи" ColumnName="Порядок_подачи" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Технологические_карты">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Технологические_карты">
+              <MappingFragment StoreEntitySet="Технологические_карты">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Номер" ColumnName="Номер" />
+                <ScalarProperty Name="Блюдо_id" ColumnName="Блюдо_id" />
+                <ScalarProperty Name="Выход" ColumnName="Выход" />
+                <ScalarProperty Name="Технология_приготовления" ColumnName="Технология_приготовления" />
+                <ScalarProperty Name="Дата_создания" ColumnName="Дата_создания" />
+                <ScalarProperty Name="Статус" ColumnName="Статус" />
+                <ScalarProperty Name="Кто_утвердил_id" ColumnName="Кто_утвердил_id" />
+                <ScalarProperty Name="Дата_утверждения" ColumnName="Дата_утверждения" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_Анализ_себестоимости">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.vw_Анализ_себестоимости">
+              <MappingFragment StoreEntitySet="vw_Анализ_себестоимости">
+                <ScalarProperty Name="Блюдо" ColumnName="Блюдо" />
+                <ScalarProperty Name="Выход_порции_г" ColumnName="Выход_порции_г" />
+                <ScalarProperty Name="Себестоимость_общая" ColumnName="Себестоимость_общая" />
+                <ScalarProperty Name="Себестоимость_за_кг" ColumnName="Себестоимость_за_кг" />
+                <ScalarProperty Name="Количество_ингредиентов" ColumnName="Количество_ингредиентов" />
+                <ScalarProperty Name="Макс_стоимость_ингредиента" ColumnName="Макс_стоимость_ингредиента" />
+                <ScalarProperty Name="Мин_стоимость_ингредиента" ColumnName="Мин_стоимость_ингредиента" />
+                <ScalarProperty Name="Сред_стоимость_ингредиента" ColumnName="Сред_стоимость_ингредиента" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_Калькуляционные_карточки_полные">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.vw_Калькуляционные_карточки_полные">
+              <MappingFragment StoreEntitySet="vw_Калькуляционные_карточки_полные">
+                <ScalarProperty Name="Номер" ColumnName="Номер" />
+                <ScalarProperty Name="Блюдо" ColumnName="Блюдо" />
+                <ScalarProperty Name="Выход_порции_г" ColumnName="Выход_порции_г" />
+                <ScalarProperty Name="Дата_составления" ColumnName="Дата_составления" />
+                <ScalarProperty Name="Себестоимость" ColumnName="Себестоимость" />
+                <ScalarProperty Name="Цена_реализации" ColumnName="Цена_реализации" />
+                <ScalarProperty Name="Фудкост_процент" ColumnName="Фудкост_процент" />
+                <ScalarProperty Name="Процент_наценки" ColumnName="Процент_наценки" />
+                <ScalarProperty Name="Маржинальность" ColumnName="Маржинальность" />
+                <ScalarProperty Name="Статус" ColumnName="Статус" />
+                <ScalarProperty Name="Кто_утвердил" ColumnName="Кто_утвердил" />
+                <ScalarProperty Name="Тех_карта" ColumnName="Тех_карта" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_Меню_с_ценами">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.vw_Меню_с_ценами">
+              <MappingFragment StoreEntitySet="vw_Меню_с_ценами">
+                <ScalarProperty Name="C_п_п" ColumnName="№п/п" />
+                <ScalarProperty Name="Дата" ColumnName="Дата" />
+                <ScalarProperty Name="Блюдо" ColumnName="Блюдо" />
+                <ScalarProperty Name="Вид_блюда" ColumnName="Вид_блюда" />
+                <ScalarProperty Name="Цена" ColumnName="Цена" />
+                <ScalarProperty Name="Фудкост_процент" ColumnName="Фудкост_процент" />
+                <ScalarProperty Name="Количество_порций" ColumnName="Количество_порций" />
+                <ScalarProperty Name="Выход_г" ColumnName="Выход_г" />
+                <ScalarProperty Name="Общая_выручка" ColumnName="Общая_выручка" />
+                <ScalarProperty Name="Калорийность_на_порцию" ColumnName="Калорийность_на_порцию" />
+                <ScalarProperty Name="Статус_меню" ColumnName="Статус_меню" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_Рентабельность_блюд">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.vw_Рентабельность_блюд">
+              <MappingFragment StoreEntitySet="vw_Рентабельность_блюд">
+                <ScalarProperty Name="Блюдо" ColumnName="Блюдо" />
+                <ScalarProperty Name="Выход_порции_г" ColumnName="Выход_порции_г" />
+                <ScalarProperty Name="Кальк_карта" ColumnName="Кальк_карта" />
+                <ScalarProperty Name="Себестоимость" ColumnName="Себестоимость" />
+                <ScalarProperty Name="Цена_реализации" ColumnName="Цена_реализации" />
+                <ScalarProperty Name="Фудкост_процент" ColumnName="Фудкост_процент" />
+                <ScalarProperty Name="Процент_наценки" ColumnName="Процент_наценки" />
+                <ScalarProperty Name="Прибыль_на_порцию" ColumnName="Прибыль_на_порцию" />
+                <ScalarProperty Name="Маржа_процент" ColumnName="Маржа_процент" />
+                <ScalarProperty Name="Оценка_рентабельности" ColumnName="Оценка_рентабельности" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_Технологические_карты_полные">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.vw_Технологические_карты_полные">
+              <MappingFragment StoreEntitySet="vw_Технологические_карты_полные">
+                <ScalarProperty Name="Номер" ColumnName="Номер" />
+                <ScalarProperty Name="Блюдо" ColumnName="Блюдо" />
+                <ScalarProperty Name="Выход_порции_г" ColumnName="Выход_порции_г" />
+                <ScalarProperty Name="Технология_приготовления" ColumnName="Технология_приготовления" />
+                <ScalarProperty Name="Дата_создания" ColumnName="Дата_создания" />
+                <ScalarProperty Name="Статус" ColumnName="Статус" />
+                <ScalarProperty Name="Кто_утвердил" ColumnName="Кто_утвердил" />
+                <ScalarProperty Name="Дата_утверждения" ColumnName="Дата_утверждения" />
+                <ScalarProperty Name="Количество_ингредиентов" ColumnName="Количество_ингредиентов" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

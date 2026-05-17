@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7f16178e12664be98c6e9aa4e0ea45a6" Name="Diagram1">
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Блюда" Width="1.5" PointX="5.25" PointY="9.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Виды_блюд" Width="1.5" PointX="3" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Калькуляционные_карточки" Width="1.5" PointX="12.75" PointY="9.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Категории_продуктов" Width="1.5" PointX="6" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Меню_на_день" Width="1.5" PointX="5.25" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Пользователи" Width="1.5" PointX="3" PointY="9.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Продукты" Width="1.5" PointX="8.25" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Рецептуры" Width="1.5" PointX="15.75" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Роли" Width="1.5" PointX="0.75" PointY="10.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Строки_калькуляции" Width="1.5" PointX="18" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Строки_меню" Width="1.5" PointX="7.5" PointY="15.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Технологические_карты" Width="1.5" PointX="10.5" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.vw_Анализ_себестоимости" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.vw_Калькуляционные_карточки_полные" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.vw_Меню_с_ценами" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.vw_Рентабельность_блюд" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.vw_Технологические_карты_полные" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Блюда__Вид_блюда__4F7CD00D" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Блюда__Кто_созда__5070F446" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Строки_ме__Блюдо__6FE99F9F" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Технологи__Блюдо__5629CD9C" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Калькуляц__Кто_у__628FA481" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Калькуляц__Техно__619B8048" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Строки_ка__Кальк__656C112C" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Продукты__Катего__47DBAE45" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Меню_на_д__Ответ__6B24EA82" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Строки_ме__Меню___6EF57B66" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Пользоват__Роль___3D5E1FD2" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Продукты__Кто_ут__48CFD27E" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Технологи__Кто_у__571DF1D5" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Рецептуры__Проду__5AEE82B9" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Строки_ка__Проду__66603565" ManuallyRouted="false" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Рецептуры__Техно__59FA5E80" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

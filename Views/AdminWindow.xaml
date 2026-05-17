@@ -1,0 +1,277 @@
+﻿<Window x:Class="MenuStolovaya.Views.AdminWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Меню столовой - Администратор" 
+        Height="700" 
+        Width="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="#FFF5F5F5">
+
+    <Window.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Name="Border" 
+                                BorderThickness="1,1,1,0" 
+                                BorderBrush="#FF4CAF50" 
+                                CornerRadius="5,5,0,0" 
+                                Margin="2,0">
+                            <ContentPresenter x:Name="ContentSite"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              ContentSource="Header"
+                                              Margin="10,5"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FF4CAF50"/>
+                                <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="White"/>
+                                <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="#FF333333"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Background" Value="#FF4CAF50"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF45A049"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#FFCCCCCC"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FFCCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#FFEEEEEE"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#FFEEEEEE"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel>
+        <!-- Заголовок с информацией о пользователе -->
+        <Border DockPanel.Dock="Top" 
+                Background="#FF4CAF50" 
+                Height="60">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" 
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center" 
+                            Margin="20,0">
+                    <TextBlock Text="🍽️" 
+               FontSize="24"
+               Margin="0,0,10,0"
+               VerticalAlignment="Center"/>
+                    <TextBlock Text="Меню столовой" 
+                               FontSize="20" 
+                               FontWeight="Bold" 
+                               Foreground="White" 
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text=" - Администратор" 
+                               FontSize="18" 
+                               Foreground="White" 
+                               VerticalAlignment="Center" 
+                               Margin="10,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" 
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center" 
+                            Margin="0,0,20,0">
+                    <TextBlock Text="Пользователь: " 
+                               Foreground="White" 
+                               VerticalAlignment="Center"/>
+                    <TextBlock x:Name="CurrentUserText" 
+                               FontWeight="Bold" 
+                               Foreground="White" 
+                               VerticalAlignment="Center" 
+                               Margin="5,0,20,0"/>
+                    <Button Content="Выйти" 
+                            Width="80" 
+                            Click="LogoutButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Основное содержимое -->
+        <TabControl x:Name="MainTabControl" Margin="10">
+            <TabItem Header="Управление пользователями">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Панель поиска -->
+                    <Border Grid.Row="0" 
+                            Background="White" 
+                            CornerRadius="5" 
+                            Padding="10" 
+                            Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Поиск:" 
+                                       VerticalAlignment="Center" 
+                                       Margin="0,0,10,0"/>
+                            <TextBox x:Name="SearchTextBox" 
+                                     Width="300" 
+                                     Height="30" 
+                                     TextChanged="SearchTextBox_TextChanged"/>
+                            <Button Content="Очистить" 
+                                    Margin="10,0,0,0" 
+                                    Click="ClearSearchButton_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Панель инструментов -->
+                    <StackPanel Grid.Row="1" 
+                                Orientation="Horizontal" 
+                                Margin="0,0,0,10">
+                        <Button Content="Добавить" 
+                                Click="AddUserButton_Click"
+                                Background="#FF2196F3"/>
+                        <Button Content="Редактировать" 
+                                Click="EditUserButton_Click"
+                                Background="#FFFF9800"/>
+                        <Button Content="Удалить" 
+                                Click="DeleteUserButton_Click"
+                                Background="#FFF44336"/>
+                        <Button Content="Обновить" 
+                                Click="RefreshButton_Click"
+                                Margin="20,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- Таблица пользователей -->
+                    <DataGrid x:Name="UsersDataGrid" 
+          Grid.Row="2" 
+          Style="{StaticResource DataGridStyle}"
+          SelectionChanged="UsersDataGrid_SelectionChanged">
+                        <DataGrid.Columns>
+    <DataGridTextColumn Header="ID" 
+                        Binding="{Binding Id}" 
+                        Width="50"/>
+    <DataGridTextColumn Header="Логин" 
+                        Binding="{Binding Логин}" 
+                        Width="120"/>
+    <DataGridTextColumn Header="Пароль" 
+                        Binding="{Binding Пароль}" 
+                        Width="120"/>
+    <DataGridTextColumn Header="ФИО" 
+                        Binding="{Binding ФИО}" 
+                        Width="250"/>
+    <DataGridTextColumn Header="Роль" 
+                        Binding="{Binding Роль}" 
+                        Width="150"/>
+    <DataGridCheckBoxColumn Header="Блокировка" 
+                            Binding="{Binding Блокировка}" 
+                            Width="80"/>
+    <DataGridTextColumn Header="Дата регистрации" 
+                        Binding="{Binding Дата_регистрации}" 
+                        Width="120"/>
+</DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Справка">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" 
+                   Text="Справка" 
+                   FontSize="24" 
+                   FontWeight="Bold" 
+                   Margin="0,0,0,20"/>
+
+                    <Border Grid.Row="1" 
+                Background="White" 
+                CornerRadius="5" 
+                Padding="20">
+                        <StackPanel>
+                            <TextBlock Text="Обратная связь" 
+                           FontSize="18" 
+                           FontWeight="SemiBold" 
+                           Margin="0,0,0,20"/>
+
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <TextBlock Text="ФИО: " 
+                                   FontWeight="SemiBold" 
+                                   Width="120"/>
+                                    <TextBlock Text="Виноградов Евгений Фёдорович"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <TextBlock Text="Телефон: " 
+                                   FontWeight="SemiBold" 
+                                   Width="120"/>
+                                    <TextBlock Text="+7 (912) 369-87-62"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <TextBlock Text="Email: " 
+                                   FontWeight="SemiBold" 
+                                   Width="120"/>
+                                    <TextBlock Text="vinogradovfedya48@gmail.com"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <Border Margin="0,30,0,0" 
+                        Padding="15" 
+                        Background="#FFF5F5F5" 
+                        CornerRadius="5">
+                                <TextBlock Text="Для получения помощи по работе с программным обеспечением обращайтесь по указанным контактам."
+                               TextWrapping="Wrap"
+                               Foreground="#FF666666"/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

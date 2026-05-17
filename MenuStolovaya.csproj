@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{99A1A0B2-8459-4904-AA93-6EDAB9C18E72}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>MenuStolovaya</RootNamespace>
+    <AssemblyName>MenuStolovaya</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=10.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Configuration.ConfigurationManager.10.0.1\lib\net462\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="DatabaseHelper.cs" />
+    <Compile Include="DecimalConverter.cs" />
+    <Compile Include="FoodCostToColorConverter.cs" />
+    <Compile Include="MarginToColorConverter .cs" />
+    <Compile Include="ModelMenuStolovayaDB.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelMenuStolovayaDB.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelMenuStolovayaDB.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelMenuStolovayaDB.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelMenuStolovayaDB.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Category.cs" />
+    <Compile Include="Services\AccountantTechCardService.cs" />
+    <Compile Include="Services\CalcCardService.cs" />
+    <Compile Include="Services\CategoryService.cs" />
+    <Compile Include="Models\DailyMenuModel.cs" />
+    <Compile Include="Models\DishModel.cs" />
+    <Compile Include="Services\DishService.cs" />
+    <Compile Include="Models\DishTypeModel.cs" />
+    <Compile Include="Models\MenuItemModel.cs" />
+    <Compile Include="Models\Product.cs" />
+    <Compile Include="Services\MenuPrinterService.cs" />
+    <Compile Include="Services\NutrientCalculator.cs" />
+    <Compile Include="Services\ProductPriceService.cs" />
+    <Compile Include="Services\ProductService.cs" />
+    <Compile Include="Models\RecipeModel.cs" />
+    <Compile Include="Models\Role.cs" />
+    <Compile Include="Models\TechnologyCardModel.cs" />
+    <Compile Include="Models\ThisUser.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserDisplay.cs" />
+    <Compile Include="Models\UserService.cs" />
+    <Compile Include="Services\CalorieCalculator.cs" />
+    <Compile Include="Services\DishTypeService.cs" />
+    <Compile Include="Services\MenuService.cs" />
+    <Compile Include="Services\RecipeService.cs" />
+    <Compile Include="Services\TechnologyCardService.cs" />
+    <Compile Include="Views\AccountantWindow.xaml.cs">
+      <DependentUpon>AccountantWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddEditCategoryWindow.xaml.cs">
+      <DependentUpon>AddEditCategoryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddEditDishTypeWindow.xaml.cs">
+      <DependentUpon>AddEditDishTypeWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddEditDishWindow.xaml.cs">
+      <DependentUpon>AddEditDishWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddEditMenuWindow.xaml.cs">
+      <DependentUpon>AddEditMenuWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddEditProductWindow.xaml.cs">
+      <DependentUpon>AddEditProductWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddEditTechnologyCardWindow.xaml.cs">
+      <DependentUpon>AddEditTechnologyCardWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddEditUserWindow.xaml.cs">
+      <DependentUpon>AddEditUserWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AdminWindow.xaml.cs">
+      <DependentUpon>AdminWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CalcLinesDialog.xaml.cs">
+      <DependentUpon>CalcLinesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CreateCalcCardDialog.xaml.cs">
+      <DependentUpon>CreateCalcCardDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditCalcCardDialog.xaml.cs">
+      <DependentUpon>EditCalcCardDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditMenuItemsWindow.xaml.cs">
+      <DependentUpon>EditMenuItemsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditMenuItemWindow.xaml.cs">
+      <DependentUpon>EditMenuItemWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditProductPriceDialog.xaml.cs">
+      <DependentUpon>EditProductPriceDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditRecipeWindow.xaml.cs">
+      <DependentUpon>EditRecipeWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LoginWindow.xaml.cs">
+      <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TechCardDetailsDialog.xaml.cs">
+      <DependentUpon>TechCardDetailsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TechnologistWindow.xaml.cs">
+      <DependentUpon>TechnologistWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="vw_Анализ_себестоимости.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_Калькуляционные_карточки_полные.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_Меню_с_ценами.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_Рентабельность_блюд.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_Технологические_карты_полные.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Блюда.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Виды_блюд.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Калькуляционные_карточки.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Категории_продуктов.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Меню_на_день.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Пользователи.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Продукты.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Рецептуры.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Роли.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Строки_калькуляции.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Строки_меню.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Технологические_карты.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Page Include="Views\AccountantWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddEditCategoryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddEditDishTypeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddEditDishWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddEditMenuWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddEditProductWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddEditTechnologyCardWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddEditUserWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AdminWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CalcLinesDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CreateCalcCardDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditCalcCardDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditMenuItemsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditMenuItemWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditProductPriceDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditRecipeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LoginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Views\TechCardDetailsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TechnologistWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EntityDeploy Include="ModelMenuStolovayaDB.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ModelMenuStolovayaDB.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Installer\MenuStolovayaInstaller.msi" />
+    <None Include="ModelMenuStolovayaDB.edmx.diagram">
+      <DependentUpon>ModelMenuStolovayaDB.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installer\setup.exe" />
+    <Content Include="ModelMenuStolovayaDB.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ModelMenuStolovayaDB.edmx</DependentUpon>
+      <LastGenOutput>ModelMenuStolovayaDB.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="ModelMenuStolovayaDB.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ModelMenuStolovayaDB.edmx</DependentUpon>
+      <LastGenOutput>ModelMenuStolovayaDB.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

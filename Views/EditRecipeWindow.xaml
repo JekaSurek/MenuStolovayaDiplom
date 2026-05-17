@@ -1,0 +1,194 @@
+﻿<Window x:Class="MenuStolovaya.Views.EditRecipeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Редактирование рецептуры" 
+        Height="750" 
+        Width="900"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="10,5,10,10"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="10,10,10,5"/>
+            <Setter Property="Foreground" Value="#FF333333"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <Border Grid.Row="0" Background="#FF4CAF50" Padding="10">
+            <StackPanel>
+                <TextBlock Text="Редактирование рецептуры" 
+                           FontSize="18" 
+                           FontWeight="Bold" 
+                           Foreground="White"/>
+                <TextBlock x:Name="TechCardInfoText" 
+           FontSize="12" 
+           Foreground="White"
+           TextWrapping="Wrap"
+           Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Основной контент -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Левая панель - добавление продукта -->
+            <Border Grid.Column="0" 
+                    Background="White" 
+                    Margin="10" 
+                    Padding="10"
+                    BorderBrush="#FFDDDDDD" 
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Добавить продукт" 
+                               FontSize="16" 
+                               FontWeight="Bold" 
+                               Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Продукт:"/>
+                    <ComboBox x:Name="ProductComboBox" 
+                              DisplayMemberPath="Наименование"
+                              SelectedValuePath="Id"
+                              Height="30" 
+                              Margin="0,5,0,10"/>
+
+                    <TextBlock Text="Количество (брутто):"/>
+                    <TextBox x:Name="QuantityTextBox" 
+                             Text="0" 
+                             Margin="0,5,0,10"/>
+
+                    <TextBlock Text="Порядок закладки:"/>
+                    <TextBox x:Name="OrderTextBox" 
+                             Text="1" 
+                             Margin="0,5,0,20"/>
+
+                    <Button Content="Добавить" 
+                            Background="#FF4CAF50" 
+                            Foreground="White"
+                            Click="AddProductButton_Click"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Правая панель - список продуктов -->
+            <Border Grid.Column="1" 
+                    Background="White" 
+                    Margin="10" 
+                    Padding="10"
+                    BorderBrush="#FFDDDDDD" 
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Состав рецептуры" 
+                               FontSize="16" 
+                               FontWeight="Bold" 
+                               Margin="0,0,0,10"/>
+
+                    <DataGrid x:Name="RecipeDataGrid" 
+                              Height="400">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Порядок" 
+                                                Binding="{Binding Порядок_закладки}" 
+                                                Width="60"/>
+                            <DataGridTextColumn Header="Продукт" 
+                                                Binding="{Binding Продукт}" 
+                                                Width="200"/>
+                            <DataGridTextColumn Header="Артикул" 
+                                                Binding="{Binding Артикул}" 
+                                                Width="100"/>
+                            <DataGridTextColumn Header="Ед. изм." 
+                                                Binding="{Binding Единица_измерения}" 
+                                                Width="80"/>
+                            <DataGridTextColumn Header="Кол-во брутто" 
+                                                Binding="{Binding Количество_брутто, StringFormat={}{0:F3}}" 
+                                                Width="100"/>
+                            <DataGridTextColumn Header="Кол-во нетто" 
+                                                Binding="{Binding Количество_нетто, StringFormat={}{0:F3}}" 
+                                                Width="100"/>
+                            <DataGridTemplateColumn Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="✏" 
+                                                    Width="30" 
+                                                    Margin="2"
+                                                    Background="#FFFF9800" 
+                                                    Foreground="White"
+                                                    Click="EditRecipeButton_Click"/>
+                                            <Button Content="✕" 
+                                                    Width="30" 
+                                                    Margin="2"
+                                                    Background="#FFF44336" 
+                                                    Foreground="White"
+                                                    Click="DeleteRecipeButton_Click"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Orientation="Horizontal" 
+                                Margin="0,-10,0,0"
+                                HorizontalAlignment="Right">
+                        <Button Content="Вверх" 
+                                Click="MoveUpButton_Click"/>
+                        <Button Content="Вниз" 
+                                Click="MoveDownButton_Click"
+                                Margin="5,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Кнопки сохранения -->
+        <Border Grid.Row="2" Background="#FFEEEEEE" Padding="10">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Сохранить и закрыть" 
+                        Background="#FF4CAF50" 
+                        Foreground="White"
+                        Width="150"
+                        Click="SaveButton_Click"/>
+                <Button Content="Отмена" 
+                        Background="#FF9E9E9E" 
+                        Foreground="White"
+                        Width="100"
+                        Click="CancelButton_Click"
+                        Margin="10,0,0,0"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
