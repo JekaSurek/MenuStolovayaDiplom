@@ -113,7 +113,7 @@ namespace MenuStolovaya.Services
                             return false;
                         }
 
-                        // Рассчитываем калорийность из БЖУ, если не указана
+                        // Рассчитываем калорийность из БЖУ, если не указана (в КИЛОКАЛОРИЯХ)
                         if (!product.Калорийность.HasValue && product.Белки.HasValue &&
                             product.Жиры.HasValue && product.Углеводы.HasValue)
                         {

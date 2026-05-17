@@ -244,9 +244,7 @@ namespace MenuStolovaya.Views
                         var dish = db.Блюда.Find(techCard.Блюдо_id);
                         if (dish != null && dish.Калорийность_расчетная.HasValue)
                         {
-                            // Калорийность в БД в калориях, делим на 1000 для перевода в килокалории на 100г
-                            decimal caloriesPer100g = dish.Калорийность_расчетная.Value / 1000;
-                            CaloriesText.Text = $"{caloriesPer100g:F2} ккал / 100г";
+                            CaloriesText.Text = $"{dish.Калорийность_расчетная.Value:F1} ккал / 100г";
                         }
                         else
                         {
@@ -270,7 +268,7 @@ namespace MenuStolovaya.Views
                 return;
             }
 
-            decimal totalNettoGrams = _currentRecipes.Sum(r => r.Количество_нетто * 1000); // Переводим кг в г
+            decimal totalNettoGrams = _currentRecipes.Sum(r => r.Количество_нетто * 1000);
             TotalWeightText.Text = $"Общий вес нетто: {totalNettoGrams:N1} г";
 
             if (_cardId.HasValue)
@@ -285,18 +283,9 @@ namespace MenuStolovaya.Views
         {
             if (!_cardId.HasValue)
             {
-                var result = MessageBox.Show("Сначала нужно сохранить технологическую карту. Сохранить сейчас?",
-                    "Сохранение карты", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    SaveCardOnly();
-                    if (!_cardId.HasValue) return;
-                }
-                else
-                {
-                    return;
-                }
+                MessageBox.Show("Сначала сохраните технологическую карту, затем добавляйте ингредиенты.",
+                    "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
 
             if (ProductComboBox.SelectedItem == null)
@@ -341,7 +330,6 @@ namespace MenuStolovaya.Views
                     int nextOrder = (_currentRecipes?.Max(r => (int?)r.Порядок_закладки) ?? 0) + 1;
                     OrderTextBox.Text = nextOrder.ToString();
 
-                    // Пересчитываем выход и калорийность
                     UpdateDishCalculations();
                     UpdateCaloriesDisplay();
                 }
@@ -487,7 +475,6 @@ namespace MenuStolovaya.Views
                 {
                     if (_techCardService.AddTechnologyCard(card))
                     {
-                        // Получаем ID новой карты
                         using (var db = new MenuStolovayaDBEntities())
                         {
                             var newCard = db.Технологические_карты
@@ -567,7 +554,6 @@ namespace MenuStolovaya.Views
 
                 if (success)
                 {
-                    // Обновляем время приготовления в блюде
                     if (!string.IsNullOrEmpty(CookingTimeTextBox.Text) && int.TryParse(CookingTimeTextBox.Text, out int cookingTime))
                     {
                         using (var db = new MenuStolovayaDBEntities())
@@ -603,10 +589,38 @@ namespace MenuStolovaya.Views
             Close();
         }
 
+        // ИСПРАВЛЕННЫЙ МЕТОД - теперь работает с запятой
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
-            Regex regex = new Regex(@"^[0-9]*(?:\.[0-9]*)?$");
-            e.Handled = !regex.IsMatch(e.Text);
+            // Разрешаем только цифры, точку и запятую
+            foreach (char ch in e.Text)
+            {
+                if (!char.IsDigit(ch) && ch != '.' && ch != ',')
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            // Проверяем, что не вводится вторая точка или запятая
+            TextBox textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                string currentText = textBox.Text;
+                string newText = currentText.Insert(textBox.SelectionStart, e.Text);
+
+                // Подсчитываем количество десятичных разделителей
+                int dotCount = newText.Count(c => c == '.');
+                int commaCount = newText.Count(c => c == ',');
+
+                // Если больше одного разделителя - запрещаем
+                if (dotCount > 1 || commaCount > 1 || (dotCount > 0 && commaCount > 0))
+                {
+                    e.Handled = true;
+                    MessageBox.Show("Можно ввести только одну десятичную точку или запятую",
+                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
         }
     }
 }

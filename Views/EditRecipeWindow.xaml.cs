@@ -109,19 +109,12 @@ namespace MenuStolovaya.Views
                         var dish = db.Блюда.Find(techCard.Блюдо_id);
                         if (dish != null)
                         {
-                            // ПРАВИЛЬНО: конвертируем калории в ккал
-                            decimal caloriesPer100gInCalories = dish.Калорийность_расчетная ?? 0;
-                            decimal caloriesPer100gInKcal = caloriesPer100gInCalories / 1000;
+                            // ИСПРАВЛЕНО: Калорийность_расчетная уже в ккал/100г
+                            decimal caloriesPer100g = dish.Калорийность_расчетная ?? 0;
 
                             TechCardInfoText.Text = $"Технологическая карта: {techCard.Номер} | " +
                                                   $"Выход: {techCard.Выход} г | " +
-                                                  $"Калорийность: {caloriesPer100gInKcal:F3} ккал/100г";
-
-                            // Для отладки
-                            Debug.WriteLine($"=== ИНФОРМАЦИЯ О БЛЮДЕ ===");
-                            Debug.WriteLine($"Калорийность в калориях: {caloriesPer100gInCalories} кал/100г");
-                            Debug.WriteLine($"Калорийность в ккал: {caloriesPer100gInKcal:F3} ккал/100г");
-                            Debug.WriteLine($"Общая калорийность: {CalorieCalculator.CalculateTotalDishCaloriesInKcal(dish.id):F2} ккал");
+                                                  $"Калорийность: {caloriesPer100g:F1} ккал/100г";
                         }
                     }
                 }
@@ -319,7 +312,6 @@ namespace MenuStolovaya.Views
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            // ОБНОВЛЯЕМ РАСЧЕТЫ ПЕРЕД СОХРАНЕНИЕМ
             try
             {
                 using (var db = new MenuStolovayaDBEntities())
@@ -330,26 +322,21 @@ namespace MenuStolovaya.Views
                         var dish = db.Блюда.Find(techCard.Блюдо_id);
                         if (dish != null)
                         {
-                            // Обновляем калорийность еще раз для надежности
                             CalorieCalculator.UpdateDishCalculations(_technologyCardId);
-
-                            // Получаем актуальные данные
                             db.Entry(dish).Reload();
 
-                            decimal caloriesPer100gInCalories = dish.Калорийность_расчетная ?? 0;
-                            decimal caloriesPer100gInKcal = caloriesPer100gInCalories / 1000;
+                            // ИСПРАВЛЕНО: Калорийность_расчетная уже в ккал/100г
+                            decimal caloriesPer100g = dish.Калорийность_расчетная ?? 0;
                             decimal totalCaloriesInKcal = CalorieCalculator.CalculateTotalDishCaloriesInKcal(dish.id);
 
                             string verification = $"=== РАСЧЕТЫ БЛЮДА '{dish.Наименование}' ===\n" +
                                                 $"Выход: {dish.Выход_стандартный:F0} г\n" +
-                                                $"Калорийность на 100г: {caloriesPer100gInKcal:F3} ккал/100г\n" +
-                                                $"Общая калорийность: {totalCaloriesInKcal:F2} ккал\n" +
+                                                $"Калорийность на 100г: {caloriesPer100g:F1} ккал/100г\n" +
+                                                $"Общая калорийность порции: {totalCaloriesInKcal:F2} ккал\n" +
                                                 $"\nРецептура сохранена. Все расчеты выполнены автоматически.";
 
-                            MessageBox.Show(verification,
-                                          "Сохранение завершено",
-                                          MessageBoxButton.OK,
-                                          MessageBoxImage.Information);
+                            MessageBox.Show(verification, "Сохранение завершено",
+                                MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                     }
                 }

@@ -320,13 +320,13 @@
                                 Binding="{Binding Время_приготовления}" 
                                 Width="80"/>
                             <!-- Общая калорийность блюда -->
-                            <DataGridTextColumn Header="Ккал(Всего)" 
-                                Binding="{Binding Калорийность_общая, StringFormat={}{0:F2} ккал}" 
-                                Width="120"/>
+                            <DataGridTextColumn Header="Ккал (всего)" 
+                    Binding="{Binding Калорийность_общая, StringFormat={}{0:F2} ккал}" 
+                    Width="120"/>
                             <!-- Калорийность на 100г -->
                             <DataGridTextColumn Header="Ккал/100г" 
-                                Binding="{Binding Калорийность_на_100г}" 
-                                Width="100"/>
+                    Binding="{Binding Калорийность_на_100г}" 
+                    Width="100"/>
                             <DataGridTextColumn Header="Автор" 
                                 Binding="{Binding Автор}" 
                                 Width="150"/>

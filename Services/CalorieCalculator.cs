@@ -8,7 +8,7 @@ namespace MenuStolovaya.Services
     public static class CalorieCalculator
     {
         /// <summary>
-        /// Рассчитывает калорийность готового блюда на 100г (возвращает в КАЛОРИЯХ)
+        /// Рассчитывает калорийность готового блюда на 100г (возвращает в КИЛОКАЛОРИЯХ)
         /// </summary>
         public static decimal CalculateDishCaloriesPer100g(int dishId)
         {
@@ -36,7 +36,7 @@ namespace MenuStolovaya.Services
                             {
                                 ProductName = p.Наименование,
                                 Netto = r.Количество_нетто ?? r.Количество_брутто, // в кг
-                                CaloriesPer100g = p.Калорийность ?? 0, // калории на 100г продукта
+                                CaloriesPer100g = p.Калорийность ?? 0, // КИЛОКАЛОРИИ на 100г продукта
                                 ColdLoss = p.Потери_холодной_обработки ?? 0,
                                 HotLoss = p.Потери_горячей_обработки ?? 0
                             })
@@ -51,8 +51,8 @@ namespace MenuStolovaya.Services
                     Debug.WriteLine($"=== РАСЧЕТ КАЛОРИЙНОСТИ ДЛЯ БЛЮДА ID {dishId} ===");
                     Debug.WriteLine($"Техкарта: {techCard.Номер}, Выход: {techCard.Выход} г");
 
-                    // 1. Рассчитываем общую калорийность всех ингредиентов в КАЛОРИЯХ
-                    decimal totalCaloriesInCalories = 0;
+                    // 1. Рассчитываем общую калорийность всех ингредиентов в КИЛОКАЛОРИЯХ
+                    decimal totalCaloriesInKcal = 0;
 
                     foreach (var line in recipeLines)
                     {
@@ -64,22 +64,22 @@ namespace MenuStolovaya.Services
                         // Переводим в граммы
                         decimal weightAfterLossGrams = weightAfterLossKg * 1000;
 
-                        // Калорийность продукта в калориях на грамм
-                        decimal caloriesPerGram = line.CaloriesPer100g / 100;
+                        // Калорийность продукта в ккал на грамм
+                        decimal caloriesPerGramInKcal = line.CaloriesPer100g / 100;
 
-                        // Калорийность ингредиента в калориях
-                        decimal ingredientCalories = weightAfterLossGrams * caloriesPerGram;
+                        // Калорийность ингредиента в ккал
+                        decimal ingredientCaloriesInKcal = weightAfterLossGrams * caloriesPerGramInKcal;
 
-                        totalCaloriesInCalories += ingredientCalories;
+                        totalCaloriesInKcal += ingredientCaloriesInKcal;
 
                         Debug.WriteLine($"{line.ProductName}:");
                         Debug.WriteLine($"  Количество: {line.Netto} кг");
                         Debug.WriteLine($"  Вес после потерь: {weightAfterLossGrams:F1} г");
-                        Debug.WriteLine($"  Калорийность: {line.CaloriesPer100g} кал/100г");
-                        Debug.WriteLine($"  Калорийность ингредиента: {ingredientCalories:F1} кал");
+                        Debug.WriteLine($"  Калорийность: {line.CaloriesPer100g} ккал/100г");
+                        Debug.WriteLine($"  Калорийность ингредиента: {ingredientCaloriesInKcal:F1} ккал");
                     }
 
-                    Debug.WriteLine($"ОБЩАЯ калорийность ингредиентов: {totalCaloriesInCalories:F1} кал");
+                    Debug.WriteLine($"ОБЩАЯ калорийность ингредиентов: {totalCaloriesInKcal:F1} ккал");
 
                     // 2. Рассчитываем калорийность на 100г готового блюда
                     decimal outputGrams = techCard.Выход;
@@ -90,14 +90,13 @@ namespace MenuStolovaya.Services
                         return 0;
                     }
 
-                    // Формула: (общие_калории / выход_в_граммах) × 100
-                    decimal caloriesPer100g = (totalCaloriesInCalories / outputGrams) * 100;
+                    // Формула: (общие_ккал / выход_в_граммах) × 100
+                    decimal caloriesPer100gInKcal = (totalCaloriesInKcal / outputGrams) * 100;
 
-                    Debug.WriteLine($"Калорийность на 100г готового блюда: {caloriesPer100g:F1} кал/100г");
-                    Debug.WriteLine($"В ккал: {caloriesPer100g / 1000:F3} ккал/100г");
+                    Debug.WriteLine($"Калорийность на 100г готового блюда: {caloriesPer100gInKcal:F1} ккал/100г");
                     Debug.WriteLine("=== КОНЕЦ РАСЧЕТА ===");
 
-                    return Math.Round(caloriesPer100g, 1);
+                    return Math.Round(caloriesPer100gInKcal, 1);
                 }
             }
             catch (Exception ex)
@@ -121,11 +120,8 @@ namespace MenuStolovaya.Services
 
                     if (techCard == null) return 0;
 
-                    // Получаем калорийность на 100г в калориях
-                    decimal caloriesPer100gInCalories = CalculateDishCaloriesPer100g(dishId);
-
-                    // Переводим в ккал на 100г
-                    decimal caloriesPer100gInKcal = caloriesPer100gInCalories / 1000;
+                    // Получаем калорийность на 100г в ккал
+                    decimal caloriesPer100gInKcal = CalculateDishCaloriesPer100g(dishId);
 
                     // Общая калорийность = (калорийность_на_100г / 100) × выход
                     decimal totalCaloriesInKcal = (caloriesPer100gInKcal / 100) * techCard.Выход;
@@ -220,19 +216,17 @@ namespace MenuStolovaya.Services
                         Debug.WriteLine($"Обновлен выход: {newOutput} г");
                     }
 
-                    // 2. Рассчитываем и обновляем калорийность на 100г (в калориях)
+                    // 2. Рассчитываем и обновляем калорийность на 100г (в ккал)
                     decimal newCaloriesPer100g = CalculateDishCaloriesPer100g(techCard.Блюдо_id);
 
                     var dish = db.Блюда.Find(techCard.Блюдо_id);
                     if (dish != null)
                     {
                         dish.Калорийность_расчетная = newCaloriesPer100g;
-                        dish.Выход_стандартный = newOutput;
 
                         Debug.WriteLine($"Обновлена калорийность блюда '{dish.Наименование}':");
-                        Debug.WriteLine($"  В калориях на 100г: {newCaloriesPer100g} кал/100г");
-                        Debug.WriteLine($"  В ккал на 100г: {newCaloriesPer100g / 1000:F3} ккал/100г");
-                        Debug.WriteLine($"  Общая калорийность: {CalculateTotalDishCaloriesInKcal(dish.id):F2} ккал");
+                        Debug.WriteLine($"  {newCaloriesPer100g:F1} ккал/100г");
+                        Debug.WriteLine($"  Общая калорийность порции: {CalculateTotalDishCaloriesInKcal(dish.id):F2} ккал");
                     }
 
                     db.SaveChanges();
@@ -273,8 +267,8 @@ namespace MenuStolovaya.Services
                             decimal oldCalories = dish.Калорийность_расчетная ?? 0;
                             decimal newCalories = CalculateDishCaloriesPer100g(dish.id);
 
-                            Debug.WriteLine($"Старая калорийность: {oldCalories}");
-                            Debug.WriteLine($"Новая калорийность: {newCalories}");
+                            Debug.WriteLine($"Старая калорийность: {oldCalories} ккал/100г");
+                            Debug.WriteLine($"Новая калорийность: {newCalories} ккал/100г");
 
                             if (Math.Abs(oldCalories - newCalories) > 0.1m || dish.Калорийность_расчетная == null)
                             {
@@ -356,7 +350,7 @@ namespace MenuStolovaya.Services
                     result += $"Техкарта: {techCard.Номер}\n";
                     result += $"Текущий выход: {techCard.Выход} г\n\n";
 
-                    decimal totalCaloriesCal = 0;
+                    decimal totalCaloriesKcal = 0;
                     decimal totalWeightGrams = 0;
 
                     result += "Ингредиенты:\n";
@@ -370,30 +364,29 @@ namespace MenuStolovaya.Services
                         decimal weightAfterLossGrams = weightAfterLossKg * 1000;
                         totalWeightGrams += weightAfterLossGrams;
 
-                        decimal caloriesPerGram = line.CaloriesPer100g / 100;
-                        decimal ingredientCalories = weightAfterLossGrams * caloriesPerGram;
-                        totalCaloriesCal += ingredientCalories;
+                        decimal caloriesPerGramInKcal = line.CaloriesPer100g / 100;
+                        decimal ingredientCaloriesInKcal = weightAfterLossGrams * caloriesPerGramInKcal;
+                        totalCaloriesKcal += ingredientCaloriesInKcal;
 
                         result += $"{line.ProductName}:\n";
                         result += $"  Кол-во нетто: {line.Netto} кг\n";
                         result += $"  Вес с учетом потерь: {weightAfterLossGrams:F1} г\n";
-                        result += $"  Калорийность продукта: {line.CaloriesPer100g} кал/100г\n";
-                        result += $"  Калории в ингредиенте: {ingredientCalories:F1} кал\n\n";
+                        result += $"  Калорийность продукта: {line.CaloriesPer100g} ккал/100г\n";
+                        result += $"  Ккал в ингредиенте: {ingredientCaloriesInKcal:F1} ккал\n\n";
                     }
 
                     decimal expectedOutputGrams = totalWeightGrams;
                     decimal expectedCaloriesPer100g = totalWeightGrams > 0 ?
-                        (totalCaloriesCal / totalWeightGrams) * 100 : 0;
+                        (totalCaloriesKcal / totalWeightGrams) * 100 : 0;
 
                     result += $"ИТОГО:\n";
                     result += $"  Общий вес с учетом потерь: {totalWeightGrams:F1} г\n";
-                    result += $"  Общие калории: {totalCaloriesCal:F1} кал\n";
+                    result += $"  Общие ккал: {totalCaloriesKcal:F1} ккал\n";
                     result += $"  Ожидаемый выход: {expectedOutputGrams:F1} г\n";
-                    result += $"  Ожидаемая калорийность: {expectedCaloriesPer100g:F1} кал/100г\n";
-                    result += $"  В ккал: {expectedCaloriesPer100g / 1000:F3} ккал/100г\n";
+                    result += $"  Ожидаемая калорийность: {expectedCaloriesPer100g:F1} ккал/100г\n";
 
                     decimal actualCalories = CalculateDishCaloriesPer100g(dishId);
-                    result += $"  Фактическая калорийность: {actualCalories:F1} кал/100г\n";
+                    result += $"  Фактическая калорийность: {actualCalories:F1} ккал/100г\n";
                     result += $"  Фактический выход: {techCard.Выход} г\n";
 
                     if (Math.Abs(expectedOutputGrams - techCard.Выход) > 10)
@@ -409,7 +402,7 @@ namespace MenuStolovaya.Services
         }
 
         /// <summary>
-        /// Рассчитывает калорийность продукта из БЖУ (в калориях)
+        /// Рассчитывает калорийность продукта из БЖУ (в КИЛОКАЛОРИЯХ)
         /// </summary>
         public static decimal CalculateProductCalories(decimal? proteins, decimal? fats, decimal? carbohydrates)
         {
@@ -417,8 +410,7 @@ namespace MenuStolovaya.Services
                 return 0;
 
             // Стандартная формула: 4 ккал/г белков, 9 ккал/г жиров, 4 ккал/г углеводов
-            decimal caloriesInKcal = proteins.Value * 4 + fats.Value * 9 + carbohydrates.Value * 4;
-            return caloriesInKcal * 1000; // Возвращаем в калориях
+            return proteins.Value * 4 + fats.Value * 9 + carbohydrates.Value * 4;
         }
     }
 }

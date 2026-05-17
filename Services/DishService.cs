@@ -19,7 +19,7 @@ namespace MenuStolovaya.Services
                     var query = db.Блюда
                         .Include("Виды_блюд")
                         .Include("Пользователи")
-                        .Where(d => d.Активно == true); // Только активные блюда
+                        .Where(d => d.Активно == true);
 
                     if (!string.IsNullOrWhiteSpace(filter))
                     {
@@ -78,7 +78,6 @@ namespace MenuStolovaya.Services
             {
                 using (var db = new MenuStolovayaDBEntities())
                 {
-                    // Проверка на дубликаты
                     if (db.Блюда.Any(d => d.Наименование == dish.Наименование && d.Активно == true))
                     {
                         MessageBox.Show("Блюдо с таким наименованием уже существует", "Ошибка",
@@ -121,7 +120,6 @@ namespace MenuStolovaya.Services
                     var existingDish = db.Блюда.Find(dish.Id);
                     if (existingDish != null && existingDish.Активно == true)
                     {
-                        // Проверка на дубликаты (исключая текущее блюдо)
                         if (db.Блюда.Any(d => d.Наименование == dish.Наименование && d.id != dish.Id && d.Активно == true))
                         {
                             MessageBox.Show("Блюдо с таким наименованием уже существует", "Ошибка",
@@ -135,7 +133,6 @@ namespace MenuStolovaya.Services
                         existingDish.Выход_стандартный = dish.Выход_стандартный;
                         existingDish.Время_приготовления = dish.Время_приготовления;
 
-                        // Обновляем калорийность только если она предоставлена
                         if (dish.Калорийность_расчетная.HasValue)
                         {
                             existingDish.Калорийность_расчетная = dish.Калорийность_расчетная;
@@ -164,14 +161,11 @@ namespace MenuStolovaya.Services
                     var dish = db.Блюда.Find(dishId);
                     if (dish != null && dish.Активно == true)
                     {
-                        // Проверяем, где используется блюдо
                         var menuItems = db.Строки_меню.Where(sm => sm.Блюдо_id == dishId).ToList();
                         var techCards = db.Технологические_карты.Where(tc => tc.Блюдо_id == dishId).ToList();
 
-                        // Проверяем, есть ли утвержденные технологические карты или калькуляционные карточки
                         bool hasApprovedTechCards = techCards.Any(tc => tc.Статус == "Утверждена");
 
-                        // Запрашиваем подтверждение с информацией о последствиях
                         string message = $"Вы уверены, что хотите удалить блюдо \"{dish.Наименование}\"?\n\n";
 
                         if (menuItems.Any())
@@ -199,7 +193,6 @@ namespace MenuStolovaya.Services
                             return false;
                         }
 
-                        // Удаляем из меню
                         if (menuItems.Any())
                         {
                             foreach (var menuItem in menuItems)
@@ -208,12 +201,10 @@ namespace MenuStolovaya.Services
                             }
                         }
 
-                        // Удаляем технологические карты и все связанные данные
                         if (techCards.Any())
                         {
                             foreach (var techCard in techCards)
                             {
-                                // Удаляем рецептуры
                                 var recipes = db.Рецептуры.Where(r => r.Технологическая_карта_id == techCard.id).ToList();
                                 if (recipes.Any())
                                 {
@@ -223,11 +214,9 @@ namespace MenuStolovaya.Services
                                     }
                                 }
 
-                                // Удаляем калькуляционные карточки
                                 var calcCards = db.Калькуляционные_карточки.Where(cc => cc.Технологическая_карта_id == techCard.id).ToList();
                                 foreach (var calcCard in calcCards)
                                 {
-                                    // Удаляем строки калькуляции
                                     var calcLines = db.Строки_калькуляции.Where(sc => sc.Калькуляционная_карточка_id == calcCard.id).ToList();
                                     if (calcLines.Any())
                                     {
@@ -244,7 +233,6 @@ namespace MenuStolovaya.Services
                             }
                         }
 
-                        // Мягкое удаление блюда
                         dish.Активно = false;
                         db.SaveChanges();
 
@@ -294,43 +282,32 @@ namespace MenuStolovaya.Services
         public decimal Выход_стандартный { get; set; }
         public int Время_приготовления { get; set; }
 
-        // Калорийность блюда на 100г (в калориях)
+        // Калорийность блюда на 100г (в КИЛОКАЛОРИЯХ)
         public decimal? Калорийность_расчетная { get; set; }
 
-        // Общая калорийность блюда в ккал
-        public decimal Калорийность_общая
+        // Общая калорийность ПОРЦИИ блюда в ккал (для стандартного выхода)
+        public decimal Калорийность_порции
         {
             get
             {
                 if (Калорийность_расчетная.HasValue && Выход_стандартный > 0)
                 {
-                    // Калорийность_расчетная - калории на 100г готового блюда
-                    // 1. Переводим в ккал на 100г
-                    decimal caloriesPer100gInKcal = Калорийность_расчетная.Value / 1000;
-
-                    // 2. Калорийность на 1 грамм в ккал
-                    decimal caloriesPerGramInKcal = caloriesPer100gInKcal / 100;
-
-                    // 3. Умножаем на выход блюда в граммах
-                    decimal totalCaloriesInKcal = caloriesPerGramInKcal * Выход_стандартный;
-
-                    return Math.Round(totalCaloriesInKcal, 2);
+                    // Формула: (ккал/100г * вес_порции_в_г) / 100
+                    decimal totalKcal = (Калорийность_расчетная.Value * Выход_стандартный) / 100;
+                    return Math.Round(totalKcal, 2);
                 }
                 return 0;
             }
         }
 
-        // Калорийность на 100г в ккал (столбец Ккал/100г)
+        // Калорийность на 100г в ккал (строка для отображения)
         public string Калорийность_на_100г
         {
             get
             {
                 if (Калорийность_расчетная.HasValue)
                 {
-                    // Калорийность_расчетная - калории на 100г
-                    // Переводим в ккал
-                    decimal caloriesPer100gInKcal = Калорийность_расчетная.Value / 1000;
-                    return $"{caloriesPer100gInKcal:F3} ккал/100г";
+                    return $"{Калорийность_расчетная.Value:F1} ккал/100г";
                 }
                 return "0 ккал/100г";
             }

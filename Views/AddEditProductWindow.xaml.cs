@@ -195,6 +195,13 @@ namespace MenuStolovaya.Views
                 // Обновляем числовые значения из текстовых полей
                 UpdateProductFromTextFields();
 
+                if (string.IsNullOrWhiteSpace(Product.Артикул))
+                {
+                    MessageBox.Show("Введите артикул продукта", "Ошибка",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 if (string.IsNullOrWhiteSpace(Product.Наименование))
                 {
                     MessageBox.Show("Введите наименование продукта", "Ошибка",

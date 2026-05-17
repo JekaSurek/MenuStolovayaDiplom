@@ -73,7 +73,6 @@ namespace MenuStolovaya.Views
             {
                 using (var db = new MenuStolovayaDBEntities())
                 {
-                    // Загружаем данные без форматирования в LINQ to Entities
                     var dishesRaw = db.Блюда
                         .Where(d => d.Активно == true)
                         .Select(d => new
@@ -81,17 +80,18 @@ namespace MenuStolovaya.Views
                             d.id,
                             d.Наименование,
                             StandardOutput = d.Выход_стандартный ?? 100,
+                            // ИСПРАВЛЕНО: Калорийность_расчетная уже в ккал/100г
                             CaloriesPer100g = d.Калорийность_расчетная ?? 0,
                             DishType = d.Виды_блюд != null ? d.Виды_блюд.Наименование : "Не указано"
                         })
                         .ToList();
 
-                    // Форматируем DisplayText в памяти
+                    // ИСПРАВЛЕНО: Убрано деление на 1000
                     var dishes = dishesRaw.Select(d => new
                     {
                         d.id,
                         d.Наименование,
-                        DisplayText = $"{d.Наименование} ({d.StandardOutput}г, {d.CaloriesPer100g / 1000:F1} ккал/100г)",
+                        DisplayText = $"{d.Наименование} ({d.StandardOutput}г, {d.CaloriesPer100g:F1} ккал/100г)",
                         d.StandardOutput,
                         d.CaloriesPer100g,
                         d.DishType
@@ -226,7 +226,7 @@ namespace MenuStolovaya.Views
             {
                 TotalDishesText.Text = "0";
                 TotalPortionsText.Text = "0";
-                TotalCaloriesText.Text = "0 калорий";
+                TotalCaloriesText.Text = "0 ккал";  // ИСПРАВЛЕНО
                 return;
             }
 
@@ -234,13 +234,13 @@ namespace MenuStolovaya.Views
             TotalPortionsText.Text = _menuItems.Sum(i => i.Количество_порций).ToString();
 
             _totalCalories = _menuItems.Sum(i => i.Калорийность_всего);
-            TotalCaloriesText.Text = $"{_totalCalories:F0} калорий";
+            TotalCaloriesText.Text = $"{_totalCalories:F0} ккал";  // ИСПРАВЛЕНО
         }
 
         private void RecalculateCalories()
         {
             _totalCalories = _menuItems.Sum(i => i.Калорийность_всего);
-            TotalCaloriesText.Text = $"{_totalCalories:F0} калорий";
+            TotalCaloriesText.Text = $"{_totalCalories:F0} ккал";  // ИСПРАВЛЕНО
         }
 
         private void DishComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -463,7 +463,7 @@ namespace MenuStolovaya.Views
         private void RecalculateCaloriesButton_Click(object sender, RoutedEventArgs e)
         {
             RecalculateCalories();
-            MessageBox.Show($"Калорийность меню пересчитана.\nОбщая калорийность: {_totalCalories:F0} калорий",
+            MessageBox.Show($"Калорийность меню пересчитана.\nОбщая калорийность: {_totalCalories:F0} ккал",  // ИСПРАВЛЕНО
                 "Пересчет завершен", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -471,18 +471,9 @@ namespace MenuStolovaya.Views
         {
             if (!_menuId.HasValue && _isNewMenu)
             {
-                var result = MessageBox.Show("Сначала сохраните меню, чтобы распечатать его. Сохранить сейчас?",
-                    "Сохранение", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    SaveMenu();
-                    if (!_menuId.HasValue) return;
-                }
-                else
-                {
-                    return;
-                }
+                MessageBox.Show("Сначала сохраните меню, затем распечатывайте его.",
+                    "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
 
             if (_menuId.HasValue)
@@ -503,18 +494,9 @@ namespace MenuStolovaya.Views
         {
             if (!_menuId.HasValue && _isNewMenu)
             {
-                var result = MessageBox.Show("Сначала сохраните меню, чтобы создать требование. Сохранить сейчас?",
-                    "Сохранение", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    SaveMenu();
-                    if (!_menuId.HasValue) return;
-                }
-                else
-                {
-                    return;
-                }
+                MessageBox.Show("Сначала сохраните меню, затем создавайте требование накладную.",
+                    "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
 
             if (_menuId.HasValue)

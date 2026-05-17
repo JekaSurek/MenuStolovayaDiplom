@@ -428,7 +428,7 @@ namespace MenuStolovaya.Views
                 if (result == MessageBoxResult.Yes)
                 {
                     CalorieCalculator.UpdateAllDishesCalories();
-                    MessageBox.Show("Калорийность всех блюд обновлена", "Успех",
+                    MessageBox.Show("Калорийность всех блюд обновлена (в ккал/100г)", "Успех",  // ИСПРАВЛЕНО
                         MessageBoxButton.OK, MessageBoxImage.Information);
                     LoadDishes();
                 }
@@ -738,6 +738,8 @@ namespace MenuStolovaya.Views
             try
             {
                 var menus = _menuService.GetDailyMenus();
+
+                // Просто отображаем как есть, без дополнительных преобразований
                 MenusDataGrid.ItemsSource = menus;
                 MenusDataGrid_SelectionChanged(null, null);
             }

@@ -323,12 +323,12 @@
                                             <DataGridTextColumn Header="Выход, г" 
                                                                 Binding="{Binding Выход_на_порцию, StringFormat={}{0:F0}}" 
                                                                 Width="100"/>
-                                            <DataGridTextColumn Header="Калорий/порц" 
-                                                                Binding="{Binding Калорийность_на_порцию, StringFormat={}{0:F0}}" 
-                                                                Width="100"/>
-                                            <DataGridTextColumn Header="Калорий всего" 
-                                                                Binding="{Binding Калорийность_всего, StringFormat={}{0:F0}}" 
-                                                                Width="110"/>
+                                            <DataGridTextColumn Header="Ккал/порц" 
+                    Binding="{Binding Калорийность_на_порцию, StringFormat={}{0:F0}}" 
+                    Width="100"/>
+                                            <DataGridTextColumn Header="Ккал всего" 
+                    Binding="{Binding Калорийность_всего, StringFormat={}{0:F0}}" 
+                    Width="110"/>
                                             <DataGridTextColumn Header="Время подачи" 
                                                                 Binding="{Binding Время_подачи}" 
                                                                 Width="100"/>

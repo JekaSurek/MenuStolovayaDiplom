@@ -53,15 +53,15 @@ namespace MenuStolovaya.Services
                         углеводы_г += (recipe.Углеводы / 100) * весПослеПотерьГ;
                     }
 
-                    // Рассчитываем калории (в калориях, не ккал!)
-                    decimal калории = (белки_г * 4 + жиры_г * 9 + углеводы_г * 4);
+                    // Рассчитываем калории (в КИЛОКАЛОРИЯХ)
+                    decimal калорииВКкал = белки_г * 4 + жиры_г * 9 + углеводы_г * 4;
 
                     // Рассчитываем на 100г готового блюда
                     if (techCard.Выход > 0)
                     {
                         decimal коэффициент = 100 / techCard.Выход;
                         return (белки_г * коэффициент, жиры_г * коэффициент,
-                                углеводы_г * коэффициент, калории * коэффициент);
+                                углеводы_г * коэффициент, калорииВКкал * коэффициент);
                     }
 
                     return (0, 0, 0, 0);
@@ -76,11 +76,7 @@ namespace MenuStolovaya.Services
         public static string GetNutrientDescription(int dishId)
         {
             var nutrients = CalculateDishNutrients(dishId);
-
-            // Переводим калории в ккал
-            decimal калорииВКкал = nutrients.Калории / 1000;
-
-            return $"Б: {nutrients.Белки:F1} г | Ж: {nutrients.Жиры:F1} г | У: {nutrients.Углеводы:F1} г | {калорииВКкал:F1} калорий/100г";
+            return $"Б: {nutrients.Белки:F1} г | Ж: {nutrients.Жиры:F1} г | У: {nutrients.Углеводы:F1} г | {nutrients.Калории:F1} ккал/100г";
         }
     }
 }
