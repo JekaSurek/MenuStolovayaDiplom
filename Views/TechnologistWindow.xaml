@@ -296,40 +296,43 @@
                     </Border>
 
                     <DataGrid x:Name="DishesDataGrid" 
-              Grid.Row="2" 
-              Style="{StaticResource ModernDataGridStyle}"
-              AutoGenerateColumns="False"
-              SelectionChanged="DishesDataGrid_SelectionChanged">
+          Grid.Row="2" 
+          Style="{StaticResource ModernDataGridStyle}"
+          AutoGenerateColumns="False"
+          SelectionChanged="DishesDataGrid_SelectionChanged">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" 
-                                Binding="{Binding Id}" 
-                                Width="50"/>
+                            Binding="{Binding Id}" 
+                            Width="50"/>
                             <DataGridTextColumn Header="Наименование" 
-                                Binding="{Binding Наименование}" 
-                                Width="200"/>
+                            Binding="{Binding Наименование}" 
+                            Width="200"/>
                             <DataGridTextColumn Header="Полное наименование" 
-                                Binding="{Binding Полное_наименование}" 
-                                Width="300"/>
+                            Binding="{Binding Полное_наименование}" 
+                            Width="300"/>
                             <DataGridTextColumn Header="Вид" 
-                                Binding="{Binding Вид_блюда}" 
-                                Width="120"/>
+                            Binding="{Binding Вид_блюда}" 
+                            Width="120"/>
                             <DataGridTextColumn Header="Выход, г" 
-                                Binding="{Binding Выход_стандартный, StringFormat={}{0:F0}}" 
-                                Width="80"/>
+                            Binding="{Binding Выход_стандартный, StringFormat={}{0:F0}}" 
+                            Width="80"/>
                             <DataGridTextColumn Header="Время, мин" 
-                                Binding="{Binding Время_приготовления}" 
-                                Width="80"/>
-                            <!-- Общая калорийность блюда -->
-                            <DataGridTextColumn Header="Ккал (всего)" 
-                    Binding="{Binding Калорийность_общая, StringFormat={}{0:F2} ккал}" 
-                    Width="120"/>
+                            Binding="{Binding Время_приготовления}" 
+                            Width="80"/>
+                            <!-- ИСПРАВЛЕНА КОЛОНКА: теперь отображает общую калорийность порции -->
+                            <DataGridTextColumn Header="Ккал (порция)" 
+                            Binding="{Binding Калорийность_общая, StringFormat={}{0:F2}}" 
+                            Width="100"/>
                             <!-- Калорийность на 100г -->
                             <DataGridTextColumn Header="Ккал/100г" 
-                    Binding="{Binding Калорийность_на_100г}" 
-                    Width="100"/>
+                            Binding="{Binding Калорийность_расчетная, StringFormat={}{0:F2}}" 
+                            Width="100"/>
                             <DataGridTextColumn Header="Автор" 
-                                Binding="{Binding Автор}" 
-                                Width="150"/>
+                            Binding="{Binding Автор}" 
+                            Width="150"/>
+                            <DataGridTextColumn Header="Дата создания" 
+                            Binding="{Binding Дата_создания, StringFormat={}{0:dd.MM.yyyy}}" 
+                            Width="100"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

@@ -111,6 +111,7 @@
     <Compile Include="Services\MenuService.cs" />
     <Compile Include="Services\RecipeService.cs" />
     <Compile Include="Services\TechnologyCardService.cs" />
+    <Compile Include="UnitConverter.cs" />
     <Compile Include="Views\AccountantWindow.xaml.cs">
       <DependentUpon>AccountantWindow.xaml</DependentUpon>
     </Compile>

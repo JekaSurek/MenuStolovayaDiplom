@@ -38,6 +38,12 @@ namespace MenuStolovaya.Services
 
                     foreach (var r in recipesData)
                     {
+                        // Конвертируем количество в кг для отображения
+                        decimal quantityInKg = UnitConverter.ConvertToKg(
+                            r.Количество_брутто,
+                            r.Единица_измерения,
+                            r.Продукт);
+
                         result.Add(new RecipeDisplay
                         {
                             Id = r.Id,
@@ -45,8 +51,8 @@ namespace MenuStolovaya.Services
                             Продукт = r.Продукт,
                             Артикул = r.Артикул,
                             Единица_измерения = r.Единица_измерения,
-                            Количество_брутто = r.Количество_брутто,
-                            Количество_нетто = r.Количество_нетто ?? r.Количество_брутто,
+                            Количество_брутто = quantityInKg, // В КГ!
+                            Количество_нетто = r.Количество_нетто ?? quantityInKg,
                             Порядок_закладки = r.Порядок_закладки ?? 0,
                             Потери_холодной = r.Потери_холодной ?? 0,
                             Потери_горячей = r.Потери_горячей ?? 0
@@ -82,18 +88,33 @@ namespace MenuStolovaya.Services
                         return false;
                     }
 
+                    // Получаем единицу измерения продукта
+                    var product = db.Продукты.Find(recipe.Продукт_id);
+                    if (product == null)
+                    {
+                        MessageBox.Show("Продукт не найден", "Ошибка",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        return false;
+                    }
+
+                    // Конвертируем введённое количество в КГ
+                    decimal quantityInKg = UnitConverter.ConvertToKg(
+                        recipe.Количество_брутто,
+                        product.Единица_измерения,
+                        product.Наименование);
+
                     var newRecipe = new Рецептуры
                     {
                         Технологическая_карта_id = recipe.Технологическая_карта_id,
                         Продукт_id = recipe.Продукт_id,
-                        Количество_брутто = recipe.Количество_брутто,
+                        Количество_брутто = quantityInKg, // Сохраняем ВСЕГДА в кг!
                         Порядок_закладки = recipe.Порядок_закладки
                     };
 
                     db.Рецептуры.Add(newRecipe);
                     db.SaveChanges();
 
-                    // ОБНОВЛЯЕМ ВЫХОД И КАЛОРИЙНОСТЬ БЛЮДА
+                    // Обновляем выход и калорийность
                     CalorieCalculator.UpdateDishCalculations(recipe.Технологическая_карта_id);
 
                     return true;
@@ -116,11 +137,26 @@ namespace MenuStolovaya.Services
                     var existingRecipe = db.Рецептуры.Find(recipe.Id);
                     if (existingRecipe != null)
                     {
-                        existingRecipe.Количество_брутто = recipe.Количество_брутто;
+                        // Получаем единицу измерения продукта
+                        var product = db.Продукты.Find(existingRecipe.Продукт_id);
+                        if (product != null)
+                        {
+                            // Конвертируем введённое количество в КГ
+                            decimal quantityInKg = UnitConverter.ConvertToKg(
+                                recipe.Количество_брутто,
+                                product.Единица_измерения,
+                                product.Наименование);
+
+                            existingRecipe.Количество_брутто = quantityInKg;
+                        }
+                        else
+                        {
+                            existingRecipe.Количество_брутто = recipe.Количество_брутто;
+                        }
+
                         existingRecipe.Порядок_закладки = recipe.Порядок_закладки;
                         db.SaveChanges();
 
-                        // ОБНОВЛЯЕМ ВЫХОД И КАЛОРИЙНОСТЬ БЛЮДА
                         CalorieCalculator.UpdateDishCalculations(existingRecipe.Технологическая_карта_id);
 
                         return true;
@@ -146,13 +182,9 @@ namespace MenuStolovaya.Services
                     if (recipe != null)
                     {
                         int techCardId = recipe.Технологическая_карта_id;
-
                         db.Рецептуры.Remove(recipe);
                         db.SaveChanges();
-
-                        // ОБНОВЛЯЕМ ВЫХОД И КАЛОРИЙНОСТЬ БЛЮДА
                         CalorieCalculator.UpdateDishCalculations(techCardId);
-
                         return true;
                     }
                     return false;
@@ -197,31 +229,7 @@ namespace MenuStolovaya.Services
 
         public bool UpdateRecipeAndCalories(RecipeModel recipe)
         {
-            try
-            {
-                using (var db = new MenuStolovayaDBEntities())
-                {
-                    var existingRecipe = db.Рецептуры.Find(recipe.Id);
-                    if (existingRecipe != null)
-                    {
-                        existingRecipe.Количество_брутто = recipe.Количество_брутто;
-                        existingRecipe.Порядок_закладки = recipe.Порядок_закладки;
-                        db.SaveChanges();
-
-                        // ОБНОВЛЯЕМ ВЫХОД И КАЛОРИЙНОСТЬ БЛЮДА
-                        CalorieCalculator.UpdateDishCalculations(existingRecipe.Технологическая_карта_id);
-
-                        return true;
-                    }
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при обновлении рецептуры: {ex.Message}", "Ошибка",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
+            return UpdateRecipe(recipe);
         }
     }
 
@@ -232,8 +240,8 @@ namespace MenuStolovaya.Services
         public string Продукт { get; set; }
         public string Артикул { get; set; }
         public string Единица_измерения { get; set; }
-        public decimal Количество_брутто { get; set; }
-        public decimal Количество_нетто { get; set; }
+        public decimal Количество_брутто { get; set; }  // В КГ!
+        public decimal Количество_нетто { get; set; }   // В КГ!
         public int Порядок_закладки { get; set; }
         public decimal Потери_холодной { get; set; }
         public decimal Потери_горячей { get; set; }

@@ -114,6 +114,7 @@
                              Style="{StaticResource ModernTextBoxStyle}"
                              PreviewTextInput="NumberValidationTextBox"
                              Margin="0,5,5,5"/>
+                    
                     <Button x:Name="CalculateOutputButton"
                             Grid.Column="1"
                             Content="⟳ Рассчитать"
@@ -215,16 +216,28 @@
                                   Margin="0,0,10,0"/>
 
                         <TextBlock Grid.Row="0" Grid.Column="1" 
-                                   Text="Кол-во (кг):" 
+                                   Text="Кол-во:" 
                                    VerticalAlignment="Center"
                                    FontWeight="SemiBold"
                                    HorizontalAlignment="Center"/>
-                        <TextBox x:Name="QuantityTextBox" 
-                                 Grid.Row="1" Grid.Column="1"
-                                 Height="35"
-                                 Text="0"
-                                 PreviewTextInput="NumberValidationTextBox"
-                                 Margin="0,0,10,0"/>
+                        <Grid Grid.Row="1" Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="QuantityTextBox" 
+                                     Grid.Column="0"
+                                     Height="35"
+                                     Text="0"
+                                     PreviewTextInput="NumberValidationTextBox"
+                                     Margin="0,0,5,0"/>
+                            <TextBlock Grid.Column="1" 
+                                       Text="кг"
+                                       VerticalAlignment="Center"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource PrimaryBrush}"/>
+                        </Grid>
 
                         <TextBlock Grid.Row="0" Grid.Column="2" 
                                    Text="Порядок:" 

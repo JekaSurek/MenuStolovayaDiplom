@@ -282,19 +282,18 @@ namespace MenuStolovaya.Services
         public decimal Выход_стандартный { get; set; }
         public int Время_приготовления { get; set; }
 
-        // Калорийность блюда на 100г (в КИЛОКАЛОРИЯХ)
+        // Калорийность блюда на 100г (в КИЛОКАЛОРИЯХ) - хранится в БД
         public decimal? Калорийность_расчетная { get; set; }
 
         // Общая калорийность ПОРЦИИ блюда в ккал (для стандартного выхода)
-        public decimal Калорийность_порции
+        public decimal Калорийность_общая
         {
             get
             {
                 if (Калорийность_расчетная.HasValue && Выход_стандартный > 0)
                 {
                     // Формула: (ккал/100г * вес_порции_в_г) / 100
-                    decimal totalKcal = (Калорийность_расчетная.Value * Выход_стандартный) / 100;
-                    return Math.Round(totalKcal, 2);
+                    return Math.Round((Калорийность_расчетная.Value * Выход_стандартный) / 100, 2);
                 }
                 return 0;
             }
@@ -307,7 +306,7 @@ namespace MenuStolovaya.Services
             {
                 if (Калорийность_расчетная.HasValue)
                 {
-                    return $"{Калорийность_расчетная.Value:F1} ккал/100г";
+                    return $"{Калорийность_расчетная.Value:F3} ккал/100г";
                 }
                 return "0 ккал/100г";
             }
@@ -316,4 +315,5 @@ namespace MenuStolovaya.Services
         public string Автор { get; set; }
         public DateTime Дата_создания { get; set; }
     }
+
 }
