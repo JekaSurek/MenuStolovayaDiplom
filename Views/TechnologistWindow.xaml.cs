@@ -601,8 +601,6 @@ namespace MenuStolovaya.Views
             {
                 var cards = _techCardService.GetTechnologyCards();
                 TechnologyCardsDataGrid.ItemsSource = cards;
-
-                // Активируем/деактивируем кнопки
                 TechnologyCardsDataGrid_SelectionChanged(null, null);
             }
             catch (Exception ex)
@@ -616,21 +614,15 @@ namespace MenuStolovaya.Views
         {
             try
             {
-                var addWindow = new AddEditTechnologyCardWindow();
-                if (addWindow.ShowDialog() == true)
+                var editor = new TechnologyCardEditorWindow();
+                if (editor.ShowDialog() == true)
                 {
-                    var card = addWindow.Card;
-                    if (_techCardService.AddTechnologyCard(card))
-                    {
-                        MessageBox.Show("Технологическая карта успешно добавлена", "Успех",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadTechnologyCards();
-                    }
+                    LoadTechnologyCards();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при добавлении технологической карты: {ex.Message}",
+                MessageBox.Show($"Ошибка при создании технологической карты: {ex.Message}",
                     "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -642,23 +634,10 @@ namespace MenuStolovaya.Views
             {
                 try
                 {
-                    using (var db = new MenuStolovayaDBEntities())
+                    var editor = new TechnologyCardEditorWindow(selectedCard.Id);
+                    if (editor.ShowDialog() == true)
                     {
-                        var card = db.Технологические_карты.Find(selectedCard.Id);
-                        if (card != null)
-                        {
-                            var editWindow = new AddEditTechnologyCardWindow(card);
-                            if (editWindow.ShowDialog() == true)
-                            {
-                                var updatedCard = editWindow.Card;
-                                if (_techCardService.UpdateTechnologyCard(updatedCard))
-                                {
-                                    MessageBox.Show("Технологическая карта успешно обновлена", "Успех",
-                                        MessageBoxButton.OK, MessageBoxImage.Information);
-                                    LoadTechnologyCards();
-                                }
-                            }
-                        }
+                        LoadTechnologyCards();
                     }
                 }
                 catch (Exception ex)
@@ -699,7 +678,7 @@ namespace MenuStolovaya.Views
             }
         }
 
-        private void EditRecipeButton_Click(object sender, RoutedEventArgs e)
+        /*private void EditRecipeButton_Click(object sender, RoutedEventArgs e)
         {
             var selectedCard = TechnologyCardsDataGrid.SelectedItem as TechnologyCardDisplay;
             if (selectedCard != null)
@@ -721,7 +700,8 @@ namespace MenuStolovaya.Views
                 MessageBox.Show("Выберите технологическую карту для редактирования рецептуры",
                     "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-        }
+        } 
+        */
 
         private void RefreshTechnologyCardsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -748,7 +728,7 @@ namespace MenuStolovaya.Views
             var hasSelection = TechnologyCardsDataGrid.SelectedItem != null;
             EditTechnologyCardButton.IsEnabled = hasSelection;
             DeleteTechnologyCardButton.IsEnabled = hasSelection;
-            EditRecipeButton.IsEnabled = hasSelection;
+            //EditRecipeButton.IsEnabled = hasSelection;
         }
         #endregion
 
@@ -759,8 +739,6 @@ namespace MenuStolovaya.Views
             {
                 var menus = _menuService.GetDailyMenus();
                 MenusDataGrid.ItemsSource = menus;
-
-                // Активируем/деактивируем кнопки
                 MenusDataGrid_SelectionChanged(null, null);
             }
             catch (Exception ex)
@@ -774,16 +752,10 @@ namespace MenuStolovaya.Views
         {
             try
             {
-                var addWindow = new AddEditMenuWindow();
-                if (addWindow.ShowDialog() == true)
+                var editor = new MenuEditorWindow();
+                if (editor.ShowDialog() == true)
                 {
-                    var menu = addWindow.Menu;
-                    if (_menuService.AddDailyMenu(menu))
-                    {
-                        MessageBox.Show("Меню успешно создано", "Успех",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadMenus();
-                    }
+                    LoadMenus();
                 }
             }
             catch (Exception ex)
@@ -800,23 +772,10 @@ namespace MenuStolovaya.Views
             {
                 try
                 {
-                    using (var db = new MenuStolovayaDBEntities())
+                    var editor = new MenuEditorWindow(selectedMenu.Id);
+                    if (editor.ShowDialog() == true)
                     {
-                        var menu = db.Меню_на_день.Find(selectedMenu.Id);
-                        if (menu != null)
-                        {
-                            var editWindow = new AddEditMenuWindow(menu);
-                            if (editWindow.ShowDialog() == true)
-                            {
-                                var updatedMenu = editWindow.Menu;
-                                if (_menuService.UpdateDailyMenu(updatedMenu))
-                                {
-                                    MessageBox.Show("Меню успешно обновлено", "Успех",
-                                        MessageBoxButton.OK, MessageBoxImage.Information);
-                                    LoadMenus();
-                                }
-                            }
-                        }
+                        LoadMenus();
                     }
                 }
                 catch (Exception ex)
@@ -857,7 +816,7 @@ namespace MenuStolovaya.Views
             }
         }
 
-        private void EditMenuItemsButton_Click(object sender, RoutedEventArgs e)
+       /* private void EditMenuItemsButton_Click(object sender, RoutedEventArgs e)
         {
             var selectedMenu = MenusDataGrid.SelectedItem as DailyMenuDisplay;
             if (selectedMenu != null)
@@ -883,7 +842,7 @@ namespace MenuStolovaya.Views
                 MessageBox.Show("Выберите меню для редактирования состава",
                     "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-        }
+        } */
 
         private void RefreshMenusButton_Click(object sender, RoutedEventArgs e)
         {
@@ -910,7 +869,7 @@ namespace MenuStolovaya.Views
             var hasSelection = MenusDataGrid.SelectedItem != null;
             EditMenuButton.IsEnabled = hasSelection;
             DeleteMenuButton.IsEnabled = hasSelection;
-            EditMenuItemsButton.IsEnabled = hasSelection;
+            //EditMenuItemsButton.IsEnabled = hasSelection;
             PrintMenuButton.IsEnabled = hasSelection;
             CreateRequestButton.IsEnabled = hasSelection; // Добавьте эту строку
         }

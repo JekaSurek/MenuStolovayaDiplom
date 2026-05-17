@@ -427,12 +427,12 @@
                                     Background="{StaticResource AccentDarkBrush}"
                                     Click="DeleteTechnologyCardButton_Click"
                                     Margin="5"/>
-                            <Button x:Name="EditRecipeButton" Content="Рецептура" 
+                            <!-- <Button x:Name="EditRecipeButton" Content="Рецептура" 
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Background="#FF9C27B0"
                                     Foreground="White"
                                     Click="EditRecipeButton_Click"
-                                    Margin="5"/>
+                                    Margin="5"/> -->
                             <Button Content="Обновить" 
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Click="RefreshTechnologyCardsButton_Click"
@@ -507,12 +507,12 @@
                         Background="{StaticResource AccentDarkBrush}"
                         Click="DeleteMenuButton_Click"
                         Margin="5"/>
-                            <Button x:Name="EditMenuItemsButton" Content="Блюда" 
+                        <!--<Button x:Name="EditMenuItemsButton" Content="Блюда" 
                         Style="{StaticResource PrimaryButtonStyle}"
                         Background="#FF9C27B0"
                         Foreground="White"
                         Click="EditMenuItemsButton_Click"
-                        Margin="5"/>
+                        Margin="5"/> -->
                             <Button x:Name="PrintMenuButton" 
                         Content="Печать меню" 
                         Style="{StaticResource PrimaryButtonStyle}"
