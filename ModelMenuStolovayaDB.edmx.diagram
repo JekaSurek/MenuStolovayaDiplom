@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="7f16178e12664be98c6e9aa4e0ea45a6" Name="Diagram1">
+      <Diagram DiagramId="7f16178e12664be98c6e9aa4e0ea45a6" Name="Diagram1" ZoomLevel="47">
         <EntityTypeShape EntityType="MenuStolovayaDBModel.Блюда" Width="1.5" PointX="5.25" PointY="9.625" IsExpanded="true" />
         <EntityTypeShape EntityType="MenuStolovayaDBModel.Виды_блюд" Width="1.5" PointX="3" PointY="6.625" IsExpanded="true" />
         <EntityTypeShape EntityType="MenuStolovayaDBModel.Калькуляционные_карточки" Width="1.5" PointX="12.75" PointY="9.625" IsExpanded="true" />
@@ -38,6 +38,27 @@
         <AssociationConnector Association="MenuStolovayaDBModel.FK__Рецептуры__Проду__5AEE82B9" ManuallyRouted="false" />
         <AssociationConnector Association="MenuStolovayaDBModel.FK__Строки_ка__Проду__66603565" ManuallyRouted="false" />
         <AssociationConnector Association="MenuStolovayaDBModel.FK__Рецептуры__Техно__59FA5E80" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Документы" Width="1.5" PointX="7.5" PointY="19.25" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Остатки_продуктов" Width="1.5" PointX="10.5" PointY="14.875" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Склады" Width="1.5" PointX="5.25" PointY="18.625" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Строки_документов" Width="1.5" PointX="10.5" PointY="6.5" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.Требования_накладные" Width="1.5" PointX="13.5" PointY="14.75" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.vw_Текущие_остатки" Width="1.5" PointX="11.375" PointY="0.75" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.vw_Требования_детали" Width="1.5" PointX="13.375" PointY="0.75" />
+        <EntityTypeShape EntityType="MenuStolovayaDBModel.vw_Требования_накладные" Width="1.5" PointX="13.375" PointY="4.75" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Документы__Кто_п__56E8E7AB" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Документы__Кто_с__55F4C372" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Документы__Склад__540C7B00" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Документы__Склад__55009F39" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Строки_до__Докум__5BAD9CC8" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Требовани__Докум__625A9A57" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Требовани__Меню___634EBE90" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Остатки_п__Проду__4D5F7D71" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Остатки_п__Склад__4C6B5938" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Склады__Ответств__44CA3770" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Требовани__Кладо__65370702" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Требовани__Техно__6442E2C9" />
+        <AssociationConnector Association="MenuStolovayaDBModel.FK__Строки_до__Проду__5CA1C101" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

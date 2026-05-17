@@ -15,26 +15,30 @@ namespace MenuStolovaya
 using System;
     using System.Collections.Generic;
     
-public partial class Роли
+public partial class vw_Текущие_остатки
 {
 
-    public Роли()
-    {
+    public int Склад_id { get; set; }
 
-        this.Пользователи = new HashSet<Пользователи>();
+    public string Склад { get; set; }
 
-    }
+    public string Артикул { get; set; }
 
+    public string Продукт { get; set; }
 
-    public int id { get; set; }
+    public string Категория { get; set; }
 
-    public string Наименование { get; set; }
+    public string Единица_измерения { get; set; }
 
-    public string Описание { get; set; }
+    public decimal Количество { get; set; }
 
+    public decimal Цена_за_единицу { get; set; }
 
+    public decimal Сумма { get; set; }
 
-    public virtual ICollection<Пользователи> Пользователи { get; set; }
+    public Nullable<decimal> Цена_последняя_закупка { get; set; }
+
+    public Nullable<System.DateTime> Дата_обновления { get; set; }
 
 }
 

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Хранилище MenuStolovayaDBModel" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Хранилище MenuStolovayaDBModel" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Блюда">
           <Key>
             <PropertyRef Name="id" />
@@ -27,6 +27,24 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Наименование" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Описание" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Документы">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Номер" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Тип_документа" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Дата_создания" Type="datetime" />
+          <Property Name="Дата_документа" Type="date" Nullable="false" />
+          <Property Name="Склад_отправитель_id" Type="int" />
+          <Property Name="Склад_получатель_id" Type="int" />
+          <Property Name="Основание" Type="nvarchar" MaxLength="255" />
+          <Property Name="Статус" Type="nvarchar" MaxLength="20" />
+          <Property Name="Кто_создал_id" Type="int" Nullable="false" />
+          <Property Name="Кто_провел_id" Type="int" />
+          <Property Name="Дата_проведения" Type="datetime" />
+          <Property Name="Комментарий" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="Калькуляционные_карточки">
           <Key>
@@ -62,6 +80,18 @@
           <Property Name="Дата_составления" Type="datetime" />
           <Property Name="Калорийность_общая" Type="decimal" Precision="10" Scale="3" />
           <Property Name="Статус" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Остатки_продуктов">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Склад_id" Type="int" Nullable="false" />
+          <Property Name="Продукт_id" Type="int" Nullable="false" />
+          <Property Name="Количество" Type="decimal" Precision="12" Scale="3" Nullable="false" />
+          <Property Name="Цена_за_единицу" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Сумма" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="Дата_обновления" Type="datetime" />
         </EntityType>
         <EntityType Name="Пользователи">
           <Key>
@@ -117,6 +147,27 @@
           <Property Name="Наименование" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Описание" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="Склады">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Наименование" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Адрес" Type="nvarchar" MaxLength="255" />
+          <Property Name="Ответственный_id" Type="int" />
+          <Property Name="Активен" Type="bit" />
+        </EntityType>
+        <EntityType Name="Строки_документов">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Документ_id" Type="int" Nullable="false" />
+          <Property Name="Продукт_id" Type="int" Nullable="false" />
+          <Property Name="Количество" Type="decimal" Precision="12" Scale="3" Nullable="false" />
+          <Property Name="Цена" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Сумма" Type="decimal" Precision="12" Scale="2" />
+        </EntityType>
         <EntityType Name="Строки_калькуляции">
           <Key>
             <PropertyRef Name="id" />
@@ -153,6 +204,21 @@
           <Property Name="Статус" Type="nvarchar" MaxLength="20" />
           <Property Name="Кто_утвердил_id" Type="int" />
           <Property Name="Дата_утверждения" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Требования_накладные">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Номер" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Документ_id" Type="int" Nullable="false" />
+          <Property Name="Меню_id" Type="int" Nullable="false" />
+          <Property Name="Дата_требования" Type="date" Nullable="false" />
+          <Property Name="Технолог_id" Type="int" Nullable="false" />
+          <Property Name="Статус_требования" Type="nvarchar" MaxLength="20" />
+          <Property Name="Кладовщик_id" Type="int" />
+          <Property Name="Комментарий_кладовщика" Type="nvarchar" MaxLength="500" />
+          <Property Name="Дата_обработки" Type="datetime" />
         </EntityType>
         <!--Ошибки, обнаруженные при создании:
 предупреждение 6002: В таблице или представлении "MenuStolovayaDB.dbo.vw_Анализ_себестоимости" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
@@ -235,6 +301,31 @@
           <Property Name="Оценка_рентабельности" Type="varchar" MaxLength="7" Nullable="false" />
         </EntityType>
         <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "MenuStolovayaDB.dbo.vw_Текущие_остатки" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="vw_Текущие_остатки">
+          <Key>
+            <PropertyRef Name="Склад_id" />
+            <PropertyRef Name="Склад" />
+            <PropertyRef Name="Продукт" />
+            <PropertyRef Name="Категория" />
+            <PropertyRef Name="Единица_измерения" />
+            <PropertyRef Name="Количество" />
+            <PropertyRef Name="Цена_за_единицу" />
+            <PropertyRef Name="Сумма" />
+          </Key>
+          <Property Name="Склад_id" Type="int" Nullable="false" />
+          <Property Name="Склад" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Артикул" Type="nvarchar" MaxLength="50" />
+          <Property Name="Продукт" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Категория" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Единица_измерения" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Количество" Type="decimal" Precision="12" Scale="3" Nullable="false" />
+          <Property Name="Цена_за_единицу" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Сумма" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="Цена_последняя_закупка" Type="money" />
+          <Property Name="Дата_обновления" Type="datetime" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
 предупреждение 6002: В таблице или представлении "MenuStolovayaDB.dbo.vw_Технологические_карты_полные" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
         <EntityType Name="vw_Технологические_карты_полные">
           <Key>
@@ -252,6 +343,52 @@
           <Property Name="Кто_утвердил" Type="nvarchar" MaxLength="53" Nullable="false" />
           <Property Name="Дата_утверждения" Type="datetime" />
           <Property Name="Количество_ингредиентов" Type="int" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "MenuStolovayaDB.dbo.vw_Требования_детали" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="vw_Требования_детали">
+          <Key>
+            <PropertyRef Name="Номер_требования" />
+            <PropertyRef Name="Продукт" />
+            <PropertyRef Name="Единица_измерения" />
+            <PropertyRef Name="Количество" />
+            <PropertyRef Name="Цена" />
+            <PropertyRef Name="Остаток_на_складе" />
+          </Key>
+          <Property Name="Номер_требования" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Артикул" Type="nvarchar" MaxLength="50" />
+          <Property Name="Продукт" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Единица_измерения" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Количество" Type="decimal" Precision="12" Scale="3" Nullable="false" />
+          <Property Name="Цена" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Сумма" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="Остаток_на_складе" Type="decimal" Precision="12" Scale="3" Nullable="false" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "MenuStolovayaDB.dbo.vw_Требования_накладные" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="vw_Требования_накладные">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Номер" />
+            <PropertyRef Name="Дата_документа" />
+            <PropertyRef Name="Дата_меню" />
+            <PropertyRef Name="Технолог" />
+            <PropertyRef Name="Кладовщик" />
+            <PropertyRef Name="Общее_количество" />
+            <PropertyRef Name="Общая_сумма" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="Номер" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Дата_документа" Type="date" Nullable="false" />
+          <Property Name="Дата_меню" Type="date" Nullable="false" />
+          <Property Name="Технолог" Type="nvarchar" MaxLength="101" Nullable="false" />
+          <Property Name="Статус_требования" Type="nvarchar" MaxLength="20" />
+          <Property Name="Статус_документа" Type="nvarchar" MaxLength="20" />
+          <Property Name="Комментарий" Type="nvarchar" MaxLength="500" />
+          <Property Name="Кладовщик" Type="nvarchar" MaxLength="101" Nullable="false" />
+          <Property Name="Дата_обработки" Type="datetime" />
+          <Property Name="Общее_количество" Type="decimal" Precision="38" Scale="3" Nullable="false" />
+          <Property Name="Общая_сумма" Type="decimal" Precision="38" Scale="2" Nullable="false" />
         </EntityType>
         <Association Name="FK__Блюда__Вид_блюда__4F7CD00D">
           <End Role="Виды_блюд" Type="Self.Виды_блюд" Multiplicity="0..1" />
@@ -274,6 +411,54 @@
             </Principal>
             <Dependent Role="Блюда">
               <PropertyRef Name="Кто_создал_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Документы__Кто_п__56E8E7AB">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
+          <End Role="Документы" Type="Self.Документы" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Документы">
+              <PropertyRef Name="Кто_провел_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Документы__Кто_с__55F4C372">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="1" />
+          <End Role="Документы" Type="Self.Документы" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Документы">
+              <PropertyRef Name="Кто_создал_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Документы__Склад__540C7B00">
+          <End Role="Склады" Type="Self.Склады" Multiplicity="0..1" />
+          <End Role="Документы" Type="Self.Документы" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Склады">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Документы">
+              <PropertyRef Name="Склад_отправитель_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Документы__Склад__55009F39">
+          <End Role="Склады" Type="Self.Склады" Multiplicity="0..1" />
+          <End Role="Документы" Type="Self.Документы" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Склады">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Документы">
+              <PropertyRef Name="Склад_получатель_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -310,6 +495,30 @@
             </Principal>
             <Dependent Role="Меню_на_день">
               <PropertyRef Name="Ответственный_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Остатки_п__Проду__4D5F7D71">
+          <End Role="Продукты" Type="Self.Продукты" Multiplicity="1" />
+          <End Role="Остатки_продуктов" Type="Self.Остатки_продуктов" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Продукты">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Остатки_продуктов">
+              <PropertyRef Name="Продукт_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Остатки_п__Склад__4C6B5938">
+          <End Role="Склады" Type="Self.Склады" Multiplicity="1" />
+          <End Role="Остатки_продуктов" Type="Self.Остатки_продуктов" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Склады">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Остатки_продуктов">
+              <PropertyRef Name="Склад_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -372,6 +581,44 @@
             </Principal>
             <Dependent Role="Рецептуры">
               <PropertyRef Name="Технологическая_карта_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Склады__Ответств__44CA3770">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
+          <End Role="Склады" Type="Self.Склады" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Склады">
+              <PropertyRef Name="Ответственный_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Строки_до__Докум__5BAD9CC8">
+          <End Role="Документы" Type="Self.Документы" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Строки_документов" Type="Self.Строки_документов" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Документы">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Строки_документов">
+              <PropertyRef Name="Документ_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Строки_до__Проду__5CA1C101">
+          <End Role="Продукты" Type="Self.Продукты" Multiplicity="1" />
+          <End Role="Строки_документов" Type="Self.Строки_документов" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Продукты">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Строки_документов">
+              <PropertyRef Name="Продукт_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -453,19 +700,72 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Требовани__Докум__625A9A57">
+          <End Role="Документы" Type="Self.Документы" Multiplicity="1" />
+          <End Role="Требования_накладные" Type="Self.Требования_накладные" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Документы">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Требования_накладные">
+              <PropertyRef Name="Документ_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Требовани__Кладо__65370702">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
+          <End Role="Требования_накладные" Type="Self.Требования_накладные" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Требования_накладные">
+              <PropertyRef Name="Кладовщик_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Требовани__Меню___634EBE90">
+          <End Role="Меню_на_день" Type="Self.Меню_на_день" Multiplicity="1" />
+          <End Role="Требования_накладные" Type="Self.Требования_накладные" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Меню_на_день">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Требования_накладные">
+              <PropertyRef Name="Меню_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Требовани__Техно__6442E2C9">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="1" />
+          <End Role="Требования_накладные" Type="Self.Требования_накладные" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Требования_накладные">
+              <PropertyRef Name="Технолог_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="Хранилище MenuStolovayaDBModelContainer">
           <EntitySet Name="Блюда" EntityType="Self.Блюда" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Виды_блюд" EntityType="Self.Виды_блюд" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Документы" EntityType="Self.Документы" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Калькуляционные_карточки" EntityType="Self.Калькуляционные_карточки" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Категории_продуктов" EntityType="Self.Категории_продуктов" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Меню_на_день" EntityType="Self.Меню_на_день" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Остатки_продуктов" EntityType="Self.Остатки_продуктов" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Пользователи" EntityType="Self.Пользователи" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Продукты" EntityType="Self.Продукты" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Рецептуры" EntityType="Self.Рецептуры" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Роли" EntityType="Self.Роли" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Склады" EntityType="Self.Склады" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Строки_документов" EntityType="Self.Строки_документов" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Строки_калькуляции" EntityType="Self.Строки_калькуляции" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Строки_меню" EntityType="Self.Строки_меню" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Технологические_карты" EntityType="Self.Технологические_карты" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Требования_накладные" EntityType="Self.Требования_накладные" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="vw_Анализ_себестоимости" EntityType="Self.vw_Анализ_себестоимости" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [vw_Анализ_себестоимости].[Блюдо] AS [Блюдо], 
@@ -523,6 +823,21 @@ FROM [dbo].[vw_Меню_с_ценами] AS [vw_Меню_с_ценами]</Defin
 [vw_Рентабельность_блюд].[Оценка_рентабельности] AS [Оценка_рентабельности]
 FROM [dbo].[vw_Рентабельность_блюд] AS [vw_Рентабельность_блюд]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="vw_Текущие_остатки" EntityType="Self.vw_Текущие_остатки" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[vw_Текущие_остатки].[Склад_id] AS [Склад_id], 
+[vw_Текущие_остатки].[Склад] AS [Склад], 
+[vw_Текущие_остатки].[Артикул] AS [Артикул], 
+[vw_Текущие_остатки].[Продукт] AS [Продукт], 
+[vw_Текущие_остатки].[Категория] AS [Категория], 
+[vw_Текущие_остатки].[Единица_измерения] AS [Единица_измерения], 
+[vw_Текущие_остатки].[Количество] AS [Количество], 
+[vw_Текущие_остатки].[Цена_за_единицу] AS [Цена_за_единицу], 
+[vw_Текущие_остатки].[Сумма] AS [Сумма], 
+[vw_Текущие_остатки].[Цена_последняя_закупка] AS [Цена_последняя_закупка], 
+[vw_Текущие_остатки].[Дата_обновления] AS [Дата_обновления]
+FROM [dbo].[vw_Текущие_остатки] AS [vw_Текущие_остатки]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="vw_Технологические_карты_полные" EntityType="Self.vw_Технологические_карты_полные" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [vw_Технологические_карты_полные].[Номер] AS [Номер], 
@@ -536,6 +851,34 @@ FROM [dbo].[vw_Рентабельность_блюд] AS [vw_Рентабель�
 [vw_Технологические_карты_полные].[Количество_ингредиентов] AS [Количество_ингредиентов]
 FROM [dbo].[vw_Технологические_карты_полные] AS [vw_Технологические_карты_полные]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="vw_Требования_детали" EntityType="Self.vw_Требования_детали" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[vw_Требования_детали].[Номер_требования] AS [Номер_требования], 
+[vw_Требования_детали].[Артикул] AS [Артикул], 
+[vw_Требования_детали].[Продукт] AS [Продукт], 
+[vw_Требования_детали].[Единица_измерения] AS [Единица_измерения], 
+[vw_Требования_детали].[Количество] AS [Количество], 
+[vw_Требования_детали].[Цена] AS [Цена], 
+[vw_Требования_детали].[Сумма] AS [Сумма], 
+[vw_Требования_детали].[Остаток_на_складе] AS [Остаток_на_складе]
+FROM [dbo].[vw_Требования_детали] AS [vw_Требования_детали]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vw_Требования_накладные" EntityType="Self.vw_Требования_накладные" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[vw_Требования_накладные].[id] AS [id], 
+[vw_Требования_накладные].[Номер] AS [Номер], 
+[vw_Требования_накладные].[Дата_документа] AS [Дата_документа], 
+[vw_Требования_накладные].[Дата_меню] AS [Дата_меню], 
+[vw_Требования_накладные].[Технолог] AS [Технолог], 
+[vw_Требования_накладные].[Статус_требования] AS [Статус_требования], 
+[vw_Требования_накладные].[Статус_документа] AS [Статус_документа], 
+[vw_Требования_накладные].[Комментарий] AS [Комментарий], 
+[vw_Требования_накладные].[Кладовщик] AS [Кладовщик], 
+[vw_Требования_накладные].[Дата_обработки] AS [Дата_обработки], 
+[vw_Требования_накладные].[Общее_количество] AS [Общее_количество], 
+[vw_Требования_накладные].[Общая_сумма] AS [Общая_сумма]
+FROM [dbo].[vw_Требования_накладные] AS [vw_Требования_накладные]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK__Блюда__Вид_блюда__4F7CD00D" Association="Self.FK__Блюда__Вид_блюда__4F7CD00D">
             <End Role="Виды_блюд" EntitySet="Виды_блюд" />
             <End Role="Блюда" EntitySet="Блюда" />
@@ -543,6 +886,22 @@ FROM [dbo].[vw_Технологические_карты_полные] AS [vw_Т
           <AssociationSet Name="FK__Блюда__Кто_созда__5070F446" Association="Self.FK__Блюда__Кто_созда__5070F446">
             <End Role="Пользователи" EntitySet="Пользователи" />
             <End Role="Блюда" EntitySet="Блюда" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Документы__Кто_п__56E8E7AB" Association="Self.FK__Документы__Кто_п__56E8E7AB">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Документы" EntitySet="Документы" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Документы__Кто_с__55F4C372" Association="Self.FK__Документы__Кто_с__55F4C372">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Документы" EntitySet="Документы" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Документы__Склад__540C7B00" Association="Self.FK__Документы__Склад__540C7B00">
+            <End Role="Склады" EntitySet="Склады" />
+            <End Role="Документы" EntitySet="Документы" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Документы__Склад__55009F39" Association="Self.FK__Документы__Склад__55009F39">
+            <End Role="Склады" EntitySet="Склады" />
+            <End Role="Документы" EntitySet="Документы" />
           </AssociationSet>
           <AssociationSet Name="FK__Калькуляц__Кто_у__628FA481" Association="Self.FK__Калькуляц__Кто_у__628FA481">
             <End Role="Пользователи" EntitySet="Пользователи" />
@@ -555,6 +914,14 @@ FROM [dbo].[vw_Технологические_карты_полные] AS [vw_Т
           <AssociationSet Name="FK__Меню_на_д__Ответ__6B24EA82" Association="Self.FK__Меню_на_д__Ответ__6B24EA82">
             <End Role="Пользователи" EntitySet="Пользователи" />
             <End Role="Меню_на_день" EntitySet="Меню_на_день" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Остатки_п__Проду__4D5F7D71" Association="Self.FK__Остатки_п__Проду__4D5F7D71">
+            <End Role="Продукты" EntitySet="Продукты" />
+            <End Role="Остатки_продуктов" EntitySet="Остатки_продуктов" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Остатки_п__Склад__4C6B5938" Association="Self.FK__Остатки_п__Склад__4C6B5938">
+            <End Role="Склады" EntitySet="Склады" />
+            <End Role="Остатки_продуктов" EntitySet="Остатки_продуктов" />
           </AssociationSet>
           <AssociationSet Name="FK__Пользоват__Роль___3D5E1FD2" Association="Self.FK__Пользоват__Роль___3D5E1FD2">
             <End Role="Роли" EntitySet="Роли" />
@@ -575,6 +942,18 @@ FROM [dbo].[vw_Технологические_карты_полные] AS [vw_Т
           <AssociationSet Name="FK__Рецептуры__Техно__59FA5E80" Association="Self.FK__Рецептуры__Техно__59FA5E80">
             <End Role="Технологические_карты" EntitySet="Технологические_карты" />
             <End Role="Рецептуры" EntitySet="Рецептуры" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Склады__Ответств__44CA3770" Association="Self.FK__Склады__Ответств__44CA3770">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Склады" EntitySet="Склады" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Строки_до__Докум__5BAD9CC8" Association="Self.FK__Строки_до__Докум__5BAD9CC8">
+            <End Role="Документы" EntitySet="Документы" />
+            <End Role="Строки_документов" EntitySet="Строки_документов" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Строки_до__Проду__5CA1C101" Association="Self.FK__Строки_до__Проду__5CA1C101">
+            <End Role="Продукты" EntitySet="Продукты" />
+            <End Role="Строки_документов" EntitySet="Строки_документов" />
           </AssociationSet>
           <AssociationSet Name="FK__Строки_ка__Кальк__656C112C" Association="Self.FK__Строки_ка__Кальк__656C112C">
             <End Role="Калькуляционные_карточки" EntitySet="Калькуляционные_карточки" />
@@ -600,9 +979,24 @@ FROM [dbo].[vw_Технологические_карты_полные] AS [vw_Т
             <End Role="Пользователи" EntitySet="Пользователи" />
             <End Role="Технологические_карты" EntitySet="Технологические_карты" />
           </AssociationSet>
+          <AssociationSet Name="FK__Требовани__Докум__625A9A57" Association="Self.FK__Требовани__Докум__625A9A57">
+            <End Role="Документы" EntitySet="Документы" />
+            <End Role="Требования_накладные" EntitySet="Требования_накладные" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Требовани__Кладо__65370702" Association="Self.FK__Требовани__Кладо__65370702">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Требования_накладные" EntitySet="Требования_накладные" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Требовани__Меню___634EBE90" Association="Self.FK__Требовани__Меню___634EBE90">
+            <End Role="Меню_на_день" EntitySet="Меню_на_день" />
+            <End Role="Требования_накладные" EntitySet="Требования_накладные" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Требовани__Техно__6442E2C9" Association="Self.FK__Требовани__Техно__6442E2C9">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Требования_накладные" EntitySet="Требования_накладные" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MenuStolovayaDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -674,6 +1068,7 @@ FROM [dbo].[vw_Технологические_карты_полные] AS [vw_Т
           <Property Name="Статус" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Пользователи" Relationship="Self.FK__Меню_на_д__Ответ__6B24EA82" FromRole="Меню_на_день" ToRole="Пользователи" />
           <NavigationProperty Name="Строки_меню" Relationship="Self.FK__Строки_ме__Меню___6EF57B66" FromRole="Меню_на_день" ToRole="Строки_меню" />
+          <NavigationProperty Name="Требования_накладные" Relationship="MenuStolovayaDBModel.FK__Требовани__Меню___634EBE90" FromRole="Меню_на_день" ToRole="Требования_накладные" />
         </EntityType>
         <EntityType Name="Пользователи">
           <Key>
@@ -694,6 +1089,11 @@ FROM [dbo].[vw_Технологические_карты_полные] AS [vw_Т
           <NavigationProperty Name="Роли" Relationship="Self.FK__Пользоват__Роль___3D5E1FD2" FromRole="Пользователи" ToRole="Роли" />
           <NavigationProperty Name="Продукты" Relationship="Self.FK__Продукты__Кто_ут__48CFD27E" FromRole="Пользователи" ToRole="Продукты" />
           <NavigationProperty Name="Технологические_карты" Relationship="Self.FK__Технологи__Кто_у__571DF1D5" FromRole="Пользователи" ToRole="Технологические_карты" />
+          <NavigationProperty Name="Документы" Relationship="MenuStolovayaDBModel.FK__Документы__Кто_п__56E8E7AB" FromRole="Пользователи" ToRole="Документы" />
+          <NavigationProperty Name="Документы1" Relationship="MenuStolovayaDBModel.FK__Документы__Кто_с__55F4C372" FromRole="Пользователи" ToRole="Документы" />
+          <NavigationProperty Name="Склады" Relationship="MenuStolovayaDBModel.FK__Склады__Ответств__44CA3770" FromRole="Пользователи" ToRole="Склады" />
+          <NavigationProperty Name="Требования_накладные" Relationship="MenuStolovayaDBModel.FK__Требовани__Кладо__65370702" FromRole="Пользователи" ToRole="Требования_накладные" />
+          <NavigationProperty Name="Требования_накладные1" Relationship="MenuStolovayaDBModel.FK__Требовани__Техно__6442E2C9" FromRole="Пользователи" ToRole="Требования_накладные" />
         </EntityType>
         <EntityType Name="Продукты">
           <Key>
@@ -719,6 +1119,8 @@ FROM [dbo].[vw_Технологические_карты_полные] AS [vw_Т
           <NavigationProperty Name="Пользователи" Relationship="Self.FK__Продукты__Кто_ут__48CFD27E" FromRole="Продукты" ToRole="Пользователи" />
           <NavigationProperty Name="Рецептуры" Relationship="Self.FK__Рецептуры__Проду__5AEE82B9" FromRole="Продукты" ToRole="Рецептуры" />
           <NavigationProperty Name="Строки_калькуляции" Relationship="Self.FK__Строки_ка__Проду__66603565" FromRole="Продукты" ToRole="Строки_калькуляции" />
+          <NavigationProperty Name="Остатки_продуктов" Relationship="MenuStolovayaDBModel.FK__Остатки_п__Проду__4D5F7D71" FromRole="Продукты" ToRole="Остатки_продуктов" />
+          <NavigationProperty Name="Строки_документов" Relationship="MenuStolovayaDBModel.FK__Строки_до__Проду__5CA1C101" FromRole="Продукты" ToRole="Строки_документов" />
         </EntityType>
         <EntityType Name="Рецептуры">
           <Key>
@@ -1158,7 +1560,374 @@ FROM [dbo].[vw_Технологические_карты_полные] AS [vw_Т
             <End Role="Технологические_карты" EntitySet="Технологические_карты" />
             <End Role="Рецептуры" EntitySet="Рецептуры" />
           </AssociationSet>
+          <EntitySet Name="Документы" EntityType="MenuStolovayaDBModel.Документы" />
+          <EntitySet Name="Остатки_продуктов" EntityType="MenuStolovayaDBModel.Остатки_продуктов" />
+          <EntitySet Name="Склады" EntityType="MenuStolovayaDBModel.Склады" />
+          <EntitySet Name="Строки_документов" EntityType="MenuStolovayaDBModel.Строки_документов" />
+          <EntitySet Name="Требования_накладные" EntityType="MenuStolovayaDBModel.Требования_накладные" />
+          <EntitySet Name="vw_Текущие_остатки" EntityType="MenuStolovayaDBModel.vw_Текущие_остатки" />
+          <EntitySet Name="vw_Требования_детали" EntityType="MenuStolovayaDBModel.vw_Требования_детали" />
+          <EntitySet Name="vw_Требования_накладные" EntityType="MenuStolovayaDBModel.vw_Требования_накладные" />
+          <AssociationSet Name="FK__Документы__Кто_п__56E8E7AB" Association="MenuStolovayaDBModel.FK__Документы__Кто_п__56E8E7AB">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Документы" EntitySet="Документы" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Документы__Кто_с__55F4C372" Association="MenuStolovayaDBModel.FK__Документы__Кто_с__55F4C372">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Документы" EntitySet="Документы" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Документы__Склад__540C7B00" Association="MenuStolovayaDBModel.FK__Документы__Склад__540C7B00">
+            <End Role="Склады" EntitySet="Склады" />
+            <End Role="Документы" EntitySet="Документы" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Документы__Склад__55009F39" Association="MenuStolovayaDBModel.FK__Документы__Склад__55009F39">
+            <End Role="Склады" EntitySet="Склады" />
+            <End Role="Документы" EntitySet="Документы" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Строки_до__Докум__5BAD9CC8" Association="MenuStolovayaDBModel.FK__Строки_до__Докум__5BAD9CC8">
+            <End Role="Документы" EntitySet="Документы" />
+            <End Role="Строки_документов" EntitySet="Строки_документов" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Требовани__Докум__625A9A57" Association="MenuStolovayaDBModel.FK__Требовани__Докум__625A9A57">
+            <End Role="Документы" EntitySet="Документы" />
+            <End Role="Требования_накладные" EntitySet="Требования_накладные" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Требовани__Меню___634EBE90" Association="MenuStolovayaDBModel.FK__Требовани__Меню___634EBE90">
+            <End Role="Меню_на_день" EntitySet="Меню_на_день" />
+            <End Role="Требования_накладные" EntitySet="Требования_накладные" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Остатки_п__Проду__4D5F7D71" Association="MenuStolovayaDBModel.FK__Остатки_п__Проду__4D5F7D71">
+            <End Role="Продукты" EntitySet="Продукты" />
+            <End Role="Остатки_продуктов" EntitySet="Остатки_продуктов" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Остатки_п__Склад__4C6B5938" Association="MenuStolovayaDBModel.FK__Остатки_п__Склад__4C6B5938">
+            <End Role="Склады" EntitySet="Склады" />
+            <End Role="Остатки_продуктов" EntitySet="Остатки_продуктов" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Склады__Ответств__44CA3770" Association="MenuStolovayaDBModel.FK__Склады__Ответств__44CA3770">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Склады" EntitySet="Склады" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Требовани__Кладо__65370702" Association="MenuStolovayaDBModel.FK__Требовани__Кладо__65370702">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Требования_накладные" EntitySet="Требования_накладные" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Требовани__Техно__6442E2C9" Association="MenuStolovayaDBModel.FK__Требовани__Техно__6442E2C9">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Требования_накладные" EntitySet="Требования_накладные" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Строки_до__Проду__5CA1C101" Association="MenuStolovayaDBModel.FK__Строки_до__Проду__5CA1C101">
+            <End Role="Продукты" EntitySet="Продукты" />
+            <End Role="Строки_документов" EntitySet="Строки_документов" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Документы">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Номер" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Тип_документа" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Дата_создания" Type="DateTime" Precision="3" />
+          <Property Name="Дата_документа" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Склад_отправитель_id" Type="Int32" />
+          <Property Name="Склад_получатель_id" Type="Int32" />
+          <Property Name="Основание" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Статус" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Кто_создал_id" Type="Int32" Nullable="false" />
+          <Property Name="Кто_провел_id" Type="Int32" />
+          <Property Name="Дата_проведения" Type="DateTime" Precision="3" />
+          <Property Name="Комментарий" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Пользователи" Relationship="MenuStolovayaDBModel.FK__Документы__Кто_п__56E8E7AB" FromRole="Документы" ToRole="Пользователи" />
+          <NavigationProperty Name="Пользователи1" Relationship="MenuStolovayaDBModel.FK__Документы__Кто_с__55F4C372" FromRole="Документы" ToRole="Пользователи" />
+          <NavigationProperty Name="Склады" Relationship="MenuStolovayaDBModel.FK__Документы__Склад__540C7B00" FromRole="Документы" ToRole="Склады" />
+          <NavigationProperty Name="Склады1" Relationship="MenuStolovayaDBModel.FK__Документы__Склад__55009F39" FromRole="Документы" ToRole="Склады" />
+          <NavigationProperty Name="Строки_документов" Relationship="MenuStolovayaDBModel.FK__Строки_до__Докум__5BAD9CC8" FromRole="Документы" ToRole="Строки_документов" />
+          <NavigationProperty Name="Требования_накладные" Relationship="MenuStolovayaDBModel.FK__Требовани__Докум__625A9A57" FromRole="Документы" ToRole="Требования_накладные" />
+        </EntityType>
+        <EntityType Name="Остатки_продуктов">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Склад_id" Type="Int32" Nullable="false" />
+          <Property Name="Продукт_id" Type="Int32" Nullable="false" />
+          <Property Name="Количество" Type="Decimal" Nullable="false" Precision="12" Scale="3" />
+          <Property Name="Цена_за_единицу" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Сумма" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="Дата_обновления" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Продукты" Relationship="MenuStolovayaDBModel.FK__Остатки_п__Проду__4D5F7D71" FromRole="Остатки_продуктов" ToRole="Продукты" />
+          <NavigationProperty Name="Склады" Relationship="MenuStolovayaDBModel.FK__Остатки_п__Склад__4C6B5938" FromRole="Остатки_продуктов" ToRole="Склады" />
+        </EntityType>
+        <EntityType Name="Склады">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Наименование" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Адрес" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Ответственный_id" Type="Int32" />
+          <Property Name="Активен" Type="Boolean" />
+          <NavigationProperty Name="Документы" Relationship="MenuStolovayaDBModel.FK__Документы__Склад__540C7B00" FromRole="Склады" ToRole="Документы" />
+          <NavigationProperty Name="Документы1" Relationship="MenuStolovayaDBModel.FK__Документы__Склад__55009F39" FromRole="Склады" ToRole="Документы" />
+          <NavigationProperty Name="Остатки_продуктов" Relationship="MenuStolovayaDBModel.FK__Остатки_п__Склад__4C6B5938" FromRole="Склады" ToRole="Остатки_продуктов" />
+          <NavigationProperty Name="Пользователи" Relationship="MenuStolovayaDBModel.FK__Склады__Ответств__44CA3770" FromRole="Склады" ToRole="Пользователи" />
+        </EntityType>
+        <EntityType Name="Строки_документов">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Документ_id" Type="Int32" Nullable="false" />
+          <Property Name="Продукт_id" Type="Int32" Nullable="false" />
+          <Property Name="Количество" Type="Decimal" Nullable="false" Precision="12" Scale="3" />
+          <Property Name="Цена" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Сумма" Type="Decimal" Precision="12" Scale="2" />
+          <NavigationProperty Name="Документы" Relationship="MenuStolovayaDBModel.FK__Строки_до__Докум__5BAD9CC8" FromRole="Строки_документов" ToRole="Документы" />
+          <NavigationProperty Name="Продукты" Relationship="MenuStolovayaDBModel.FK__Строки_до__Проду__5CA1C101" FromRole="Строки_документов" ToRole="Продукты" />
+        </EntityType>
+        <EntityType Name="Требования_накладные">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Номер" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Документ_id" Type="Int32" Nullable="false" />
+          <Property Name="Меню_id" Type="Int32" Nullable="false" />
+          <Property Name="Дата_требования" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Технолог_id" Type="Int32" Nullable="false" />
+          <Property Name="Статус_требования" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Кладовщик_id" Type="Int32" />
+          <Property Name="Комментарий_кладовщика" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Дата_обработки" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Документы" Relationship="MenuStolovayaDBModel.FK__Требовани__Докум__625A9A57" FromRole="Требования_накладные" ToRole="Документы" />
+          <NavigationProperty Name="Меню_на_день" Relationship="MenuStolovayaDBModel.FK__Требовани__Меню___634EBE90" FromRole="Требования_накладные" ToRole="Меню_на_день" />
+          <NavigationProperty Name="Пользователи" Relationship="MenuStolovayaDBModel.FK__Требовани__Кладо__65370702" FromRole="Требования_накладные" ToRole="Пользователи" />
+          <NavigationProperty Name="Пользователи1" Relationship="MenuStolovayaDBModel.FK__Требовани__Техно__6442E2C9" FromRole="Требования_накладные" ToRole="Пользователи" />
+        </EntityType>
+        <EntityType Name="vw_Текущие_остатки">
+          <Key>
+            <PropertyRef Name="Склад_id" />
+            <PropertyRef Name="Склад" />
+            <PropertyRef Name="Продукт" />
+            <PropertyRef Name="Категория" />
+            <PropertyRef Name="Единица_измерения" />
+            <PropertyRef Name="Количество" />
+            <PropertyRef Name="Цена_за_единицу" />
+            <PropertyRef Name="Сумма" />
+          </Key>
+          <Property Name="Склад_id" Type="Int32" Nullable="false" />
+          <Property Name="Склад" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Артикул" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Продукт" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Категория" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Единица_измерения" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Количество" Type="Decimal" Nullable="false" Precision="12" Scale="3" />
+          <Property Name="Цена_за_единицу" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Сумма" Type="Decimal" Nullable="false" Precision="12" Scale="2" />
+          <Property Name="Цена_последняя_закупка" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Дата_обновления" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="vw_Требования_детали">
+          <Key>
+            <PropertyRef Name="Номер_требования" />
+            <PropertyRef Name="Продукт" />
+            <PropertyRef Name="Единица_измерения" />
+            <PropertyRef Name="Количество" />
+            <PropertyRef Name="Цена" />
+            <PropertyRef Name="Остаток_на_складе" />
+          </Key>
+          <Property Name="Номер_требования" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Артикул" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Продукт" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Единица_измерения" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Количество" Type="Decimal" Nullable="false" Precision="12" Scale="3" />
+          <Property Name="Цена" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Сумма" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="Остаток_на_складе" Type="Decimal" Nullable="false" Precision="12" Scale="3" />
+        </EntityType>
+        <EntityType Name="vw_Требования_накладные">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="Номер" />
+            <PropertyRef Name="Дата_документа" />
+            <PropertyRef Name="Дата_меню" />
+            <PropertyRef Name="Технолог" />
+            <PropertyRef Name="Кладовщик" />
+            <PropertyRef Name="Общее_количество" />
+            <PropertyRef Name="Общая_сумма" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="Номер" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Дата_документа" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Дата_меню" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Технолог" Type="String" Nullable="false" MaxLength="101" FixedLength="false" Unicode="true" />
+          <Property Name="Статус_требования" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Статус_документа" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Комментарий" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Кладовщик" Type="String" Nullable="false" MaxLength="101" FixedLength="false" Unicode="true" />
+          <Property Name="Дата_обработки" Type="DateTime" Precision="3" />
+          <Property Name="Общее_количество" Type="Decimal" Nullable="false" Precision="38" Scale="3" />
+          <Property Name="Общая_сумма" Type="Decimal" Nullable="false" Precision="38" Scale="2" />
+        </EntityType>
+        <Association Name="FK__Документы__Кто_п__56E8E7AB">
+          <End Type="MenuStolovayaDBModel.Пользователи" Role="Пользователи" Multiplicity="0..1" />
+          <End Type="MenuStolovayaDBModel.Документы" Role="Документы" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Документы">
+              <PropertyRef Name="Кто_провел_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Документы__Кто_с__55F4C372">
+          <End Type="MenuStolovayaDBModel.Пользователи" Role="Пользователи" Multiplicity="1" />
+          <End Type="MenuStolovayaDBModel.Документы" Role="Документы" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Документы">
+              <PropertyRef Name="Кто_создал_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Документы__Склад__540C7B00">
+          <End Type="MenuStolovayaDBModel.Склады" Role="Склады" Multiplicity="0..1" />
+          <End Type="MenuStolovayaDBModel.Документы" Role="Документы" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Склады">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Документы">
+              <PropertyRef Name="Склад_отправитель_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Документы__Склад__55009F39">
+          <End Type="MenuStolovayaDBModel.Склады" Role="Склады" Multiplicity="0..1" />
+          <End Type="MenuStolovayaDBModel.Документы" Role="Документы" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Склады">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Документы">
+              <PropertyRef Name="Склад_получатель_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Строки_до__Докум__5BAD9CC8">
+          <End Type="MenuStolovayaDBModel.Документы" Role="Документы" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="MenuStolovayaDBModel.Строки_документов" Role="Строки_документов" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Документы">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Строки_документов">
+              <PropertyRef Name="Документ_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Требовани__Докум__625A9A57">
+          <End Type="MenuStolovayaDBModel.Документы" Role="Документы" Multiplicity="1" />
+          <End Type="MenuStolovayaDBModel.Требования_накладные" Role="Требования_накладные" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Документы">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Требования_накладные">
+              <PropertyRef Name="Документ_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Требовани__Меню___634EBE90">
+          <End Type="MenuStolovayaDBModel.Меню_на_день" Role="Меню_на_день" Multiplicity="1" />
+          <End Type="MenuStolovayaDBModel.Требования_накладные" Role="Требования_накладные" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Меню_на_день">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Требования_накладные">
+              <PropertyRef Name="Меню_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Остатки_п__Проду__4D5F7D71">
+          <End Type="MenuStolovayaDBModel.Продукты" Role="Продукты" Multiplicity="1" />
+          <End Type="MenuStolovayaDBModel.Остатки_продуктов" Role="Остатки_продуктов" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Продукты">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Остатки_продуктов">
+              <PropertyRef Name="Продукт_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Остатки_п__Склад__4C6B5938">
+          <End Type="MenuStolovayaDBModel.Склады" Role="Склады" Multiplicity="1" />
+          <End Type="MenuStolovayaDBModel.Остатки_продуктов" Role="Остатки_продуктов" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Склады">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Остатки_продуктов">
+              <PropertyRef Name="Склад_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Склады__Ответств__44CA3770">
+          <End Type="MenuStolovayaDBModel.Пользователи" Role="Пользователи" Multiplicity="0..1" />
+          <End Type="MenuStolovayaDBModel.Склады" Role="Склады" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Склады">
+              <PropertyRef Name="Ответственный_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Требовани__Кладо__65370702">
+          <End Type="MenuStolovayaDBModel.Пользователи" Role="Пользователи" Multiplicity="0..1" />
+          <End Type="MenuStolovayaDBModel.Требования_накладные" Role="Требования_накладные" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Требования_накладные">
+              <PropertyRef Name="Кладовщик_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Требовани__Техно__6442E2C9">
+          <End Type="MenuStolovayaDBModel.Пользователи" Role="Пользователи" Multiplicity="1" />
+          <End Type="MenuStolovayaDBModel.Требования_накладные" Role="Требования_накладные" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Требования_накладные">
+              <PropertyRef Name="Технолог_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Строки_до__Проду__5CA1C101">
+          <End Type="MenuStolovayaDBModel.Продукты" Role="Продукты" Multiplicity="1" />
+          <End Type="MenuStolovayaDBModel.Строки_документов" Role="Строки_документов" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Продукты">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Строки_документов">
+              <PropertyRef Name="Продукт_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1403,6 +2172,126 @@ FROM [dbo].[vw_Технологические_карты_полные] AS [vw_Т
                 <ScalarProperty Name="Кто_утвердил" ColumnName="Кто_утвердил" />
                 <ScalarProperty Name="Дата_утверждения" ColumnName="Дата_утверждения" />
                 <ScalarProperty Name="Количество_ингредиентов" ColumnName="Количество_ингредиентов" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Документы">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Документы">
+              <MappingFragment StoreEntitySet="Документы">
+                <ScalarProperty Name="Комментарий" ColumnName="Комментарий" />
+                <ScalarProperty Name="Дата_проведения" ColumnName="Дата_проведения" />
+                <ScalarProperty Name="Кто_провел_id" ColumnName="Кто_провел_id" />
+                <ScalarProperty Name="Кто_создал_id" ColumnName="Кто_создал_id" />
+                <ScalarProperty Name="Статус" ColumnName="Статус" />
+                <ScalarProperty Name="Основание" ColumnName="Основание" />
+                <ScalarProperty Name="Склад_получатель_id" ColumnName="Склад_получатель_id" />
+                <ScalarProperty Name="Склад_отправитель_id" ColumnName="Склад_отправитель_id" />
+                <ScalarProperty Name="Дата_документа" ColumnName="Дата_документа" />
+                <ScalarProperty Name="Дата_создания" ColumnName="Дата_создания" />
+                <ScalarProperty Name="Тип_документа" ColumnName="Тип_документа" />
+                <ScalarProperty Name="Номер" ColumnName="Номер" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Остатки_продуктов">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Остатки_продуктов">
+              <MappingFragment StoreEntitySet="Остатки_продуктов">
+                <ScalarProperty Name="Дата_обновления" ColumnName="Дата_обновления" />
+                <ScalarProperty Name="Сумма" ColumnName="Сумма" />
+                <ScalarProperty Name="Цена_за_единицу" ColumnName="Цена_за_единицу" />
+                <ScalarProperty Name="Количество" ColumnName="Количество" />
+                <ScalarProperty Name="Продукт_id" ColumnName="Продукт_id" />
+                <ScalarProperty Name="Склад_id" ColumnName="Склад_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Склады">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Склады">
+              <MappingFragment StoreEntitySet="Склады">
+                <ScalarProperty Name="Активен" ColumnName="Активен" />
+                <ScalarProperty Name="Ответственный_id" ColumnName="Ответственный_id" />
+                <ScalarProperty Name="Адрес" ColumnName="Адрес" />
+                <ScalarProperty Name="Наименование" ColumnName="Наименование" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Строки_документов">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Строки_документов">
+              <MappingFragment StoreEntitySet="Строки_документов">
+                <ScalarProperty Name="Сумма" ColumnName="Сумма" />
+                <ScalarProperty Name="Цена" ColumnName="Цена" />
+                <ScalarProperty Name="Количество" ColumnName="Количество" />
+                <ScalarProperty Name="Продукт_id" ColumnName="Продукт_id" />
+                <ScalarProperty Name="Документ_id" ColumnName="Документ_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Требования_накладные">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.Требования_накладные">
+              <MappingFragment StoreEntitySet="Требования_накладные">
+                <ScalarProperty Name="Дата_обработки" ColumnName="Дата_обработки" />
+                <ScalarProperty Name="Комментарий_кладовщика" ColumnName="Комментарий_кладовщика" />
+                <ScalarProperty Name="Кладовщик_id" ColumnName="Кладовщик_id" />
+                <ScalarProperty Name="Статус_требования" ColumnName="Статус_требования" />
+                <ScalarProperty Name="Технолог_id" ColumnName="Технолог_id" />
+                <ScalarProperty Name="Дата_требования" ColumnName="Дата_требования" />
+                <ScalarProperty Name="Меню_id" ColumnName="Меню_id" />
+                <ScalarProperty Name="Документ_id" ColumnName="Документ_id" />
+                <ScalarProperty Name="Номер" ColumnName="Номер" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_Текущие_остатки">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.vw_Текущие_остатки">
+              <MappingFragment StoreEntitySet="vw_Текущие_остатки">
+                <ScalarProperty Name="Дата_обновления" ColumnName="Дата_обновления" />
+                <ScalarProperty Name="Цена_последняя_закупка" ColumnName="Цена_последняя_закупка" />
+                <ScalarProperty Name="Сумма" ColumnName="Сумма" />
+                <ScalarProperty Name="Цена_за_единицу" ColumnName="Цена_за_единицу" />
+                <ScalarProperty Name="Количество" ColumnName="Количество" />
+                <ScalarProperty Name="Единица_измерения" ColumnName="Единица_измерения" />
+                <ScalarProperty Name="Категория" ColumnName="Категория" />
+                <ScalarProperty Name="Продукт" ColumnName="Продукт" />
+                <ScalarProperty Name="Артикул" ColumnName="Артикул" />
+                <ScalarProperty Name="Склад" ColumnName="Склад" />
+                <ScalarProperty Name="Склад_id" ColumnName="Склад_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_Требования_детали">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.vw_Требования_детали">
+              <MappingFragment StoreEntitySet="vw_Требования_детали">
+                <ScalarProperty Name="Остаток_на_складе" ColumnName="Остаток_на_складе" />
+                <ScalarProperty Name="Сумма" ColumnName="Сумма" />
+                <ScalarProperty Name="Цена" ColumnName="Цена" />
+                <ScalarProperty Name="Количество" ColumnName="Количество" />
+                <ScalarProperty Name="Единица_измерения" ColumnName="Единица_измерения" />
+                <ScalarProperty Name="Продукт" ColumnName="Продукт" />
+                <ScalarProperty Name="Артикул" ColumnName="Артикул" />
+                <ScalarProperty Name="Номер_требования" ColumnName="Номер_требования" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_Требования_накладные">
+            <EntityTypeMapping TypeName="MenuStolovayaDBModel.vw_Требования_накладные">
+              <MappingFragment StoreEntitySet="vw_Требования_накладные">
+                <ScalarProperty Name="Общая_сумма" ColumnName="Общая_сумма" />
+                <ScalarProperty Name="Общее_количество" ColumnName="Общее_количество" />
+                <ScalarProperty Name="Дата_обработки" ColumnName="Дата_обработки" />
+                <ScalarProperty Name="Кладовщик" ColumnName="Кладовщик" />
+                <ScalarProperty Name="Комментарий" ColumnName="Комментарий" />
+                <ScalarProperty Name="Статус_документа" ColumnName="Статус_документа" />
+                <ScalarProperty Name="Статус_требования" ColumnName="Статус_требования" />
+                <ScalarProperty Name="Технолог" ColumnName="Технолог" />
+                <ScalarProperty Name="Дата_меню" ColumnName="Дата_меню" />
+                <ScalarProperty Name="Дата_документа" ColumnName="Дата_документа" />
+                <ScalarProperty Name="Номер" ColumnName="Номер" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

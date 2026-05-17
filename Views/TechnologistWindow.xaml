@@ -525,6 +525,13 @@
                         Style="{StaticResource PrimaryButtonStyle}"
                         Click="RefreshMenusButton_Click"
                         Margin="5,5,10,5"/>
+                            <Button x:Name="CreateRequestButton" 
+        Content="📋 Требование накладная" 
+        Style="{StaticResource PrimaryButtonStyle}"
+        Background="#FF2196F3"
+        Click="CreateRequestButton_Click"
+        Margin="5"
+        IsEnabled="False"/>
                         </StackPanel>
                     </Border>
 

@@ -53,6 +53,14 @@ namespace MenuStolovaya.Models
                             accountantWindow.Show();
                             window.Close();
                         }
+
+                        else if (roleName == "Кладовщик")
+                        {
+                            var storekeeperWindow = new Views.StorekeeperWindow();
+                            storekeeperWindow.Show();
+                            window.Close();
+                        }
+
                         else
                         {
                             MessageBox.Show("Неизвестная роль пользователя", "Ошибка",

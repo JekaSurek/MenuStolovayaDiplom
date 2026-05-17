@@ -159,14 +159,26 @@
     <Compile Include="Views\EditRecipeWindow.xaml.cs">
       <DependentUpon>EditRecipeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\InputDialog.xaml.cs">
+      <DependentUpon>InputDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RequestDetailsDialog.xaml.cs">
+      <DependentUpon>RequestDetailsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StorekeeperWindow.xaml.cs">
+      <DependentUpon>StorekeeperWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TechCardDetailsDialog.xaml.cs">
       <DependentUpon>TechCardDetailsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TechnologistWindow.xaml.cs">
       <DependentUpon>TechnologistWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WarehouseDocumentDialog.xaml.cs">
+      <DependentUpon>WarehouseDocumentDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="vw_Анализ_себестоимости.cs">
       <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
@@ -180,13 +192,25 @@
     <Compile Include="vw_Рентабельность_блюд.cs">
       <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="vw_Текущие_остатки.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="vw_Технологические_карты_полные.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_Требования_детали.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vw_Требования_накладные.cs">
       <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Блюда.cs">
       <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Виды_блюд.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Документы.cs">
       <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Калькуляционные_карточки.cs">
@@ -196,6 +220,9 @@
       <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Меню_на_день.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Остатки_продуктов.cs">
       <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Пользователи.cs">
@@ -210,6 +237,12 @@
     <Compile Include="Роли.cs">
       <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Склады.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Строки_документов.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Строки_калькуляции.cs">
       <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
     </Compile>
@@ -217,6 +250,9 @@
       <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Технологические_карты.cs">
+      <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Требования_накладные.cs">
       <DependentUpon>ModelMenuStolovayaDB.tt</DependentUpon>
     </Compile>
     <Page Include="Views\AccountantWindow.xaml">
@@ -283,6 +319,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\InputDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -299,11 +339,23 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\RequestDetailsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StorekeeperWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\TechCardDetailsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TechnologistWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WarehouseDocumentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -330,7 +382,6 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ModelMenuStolovayaDB.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Installer\MenuStolovayaInstaller.msi" />
     <None Include="ModelMenuStolovayaDB.edmx.diagram">
       <DependentUpon>ModelMenuStolovayaDB.edmx</DependentUpon>
     </None>
@@ -347,7 +398,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Installer\setup.exe" />
     <Content Include="ModelMenuStolovayaDB.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ModelMenuStolovayaDB.edmx</DependentUpon>

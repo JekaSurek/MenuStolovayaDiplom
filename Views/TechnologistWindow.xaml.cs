@@ -911,7 +911,8 @@ namespace MenuStolovaya.Views
             EditMenuButton.IsEnabled = hasSelection;
             DeleteMenuButton.IsEnabled = hasSelection;
             EditMenuItemsButton.IsEnabled = hasSelection;
-            PrintMenuButton.IsEnabled = hasSelection; // Добавьте эту строку
+            PrintMenuButton.IsEnabled = hasSelection;
+            CreateRequestButton.IsEnabled = hasSelection; // Добавьте эту строку
         }
         #endregion
 
@@ -1011,6 +1012,118 @@ namespace MenuStolovaya.Views
         private void HelpTabButton_Click(object sender, RoutedEventArgs e)
         {
             ShowTab(HelpContent);
+        }
+
+        private void CreateRequestButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedMenu = MenusDataGrid.SelectedItem as DailyMenuDisplay;
+            if (selectedMenu != null)
+            {
+                try
+                {
+                    using (var db = new MenuStolovayaDBEntities())
+                    {
+                        // Проверяем, нет ли уже требования для этого меню
+                        var existingRequest = db.Требования_накладные
+                            .FirstOrDefault(tr => tr.Меню_id == selectedMenu.Id &&
+                                                 tr.Статус_требования == "Ожидает");
+
+                        if (existingRequest != null)
+                        {
+                            MessageBox.Show("Для этого меню уже создано требование накладная, ожидающее обработки",
+                                "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+
+                        // Генерация номера требования
+                        string requestNumber = $"ТР-{DateTime.Now:yyyyMMdd}-{new Random().Next(1000, 9999)}";
+
+                        // Создаем документ требование
+                        var document = new Документы
+                        {
+                            Номер = requestNumber,
+                            Тип_документа = "Требование",
+                            Дата_документа = DateTime.Now,
+                            Склад_отправитель_id = 1, // Основной склад
+                            Статус = "Черновик",
+                            Кто_создал_id = ThisUser.CurrentUser.Id,
+                            Комментарий = $"Требование на меню от {selectedMenu.Дата:dd.MM.yyyy}"
+                        };
+                        db.Документы.Add(document);
+                        db.SaveChanges();
+
+                        // Добавляем строки требования на основе меню
+                        var menuItems = db.Строки_меню
+                            .Where(sm => sm.Меню_id == selectedMenu.Id)
+                            .ToList();
+
+                        foreach (var item in menuItems)
+                        {
+                            var techCard = db.Технологические_карты
+                                .FirstOrDefault(tc => tc.Блюдо_id == item.Блюдо_id);
+
+                            if (techCard != null)
+                            {
+                                var recipes = db.Рецептуры
+                                    .Where(r => r.Технологическая_карта_id == techCard.id)
+                                    .ToList();
+
+                                foreach (var recipe in recipes)
+                                {
+                                    var product = db.Продукты.Find(recipe.Продукт_id);
+                                    if (product != null)
+                                    {
+                                        // Рассчитываем количество нетто с учетом потерь
+                                        decimal netto = (recipe.Количество_нетто ?? recipe.Количество_брутто) * (item.Количество_порций ?? 1);
+
+                                        var existingLine = db.Строки_документов
+                                            .FirstOrDefault(sd => sd.Документ_id == document.id &&
+                                                                 sd.Продукт_id == recipe.Продукт_id);
+
+                                        if (existingLine != null)
+                                        {
+                                            existingLine.Количество += netto;
+                                        }
+                                        else
+                                        {
+                                            db.Строки_документов.Add(new Строки_документов
+                                            {
+                                                Документ_id = document.id,
+                                                Продукт_id = recipe.Продукт_id,
+                                                Количество = netto,
+                                                Цена = product.Цена ?? 0 // Исправлено: используем ?? 0 для decimal?
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        db.SaveChanges();
+
+                        // Создаем запись требования
+                        var request = new Требования_накладные
+                        {
+                            Номер = requestNumber,
+                            Документ_id = document.id,
+                            Меню_id = selectedMenu.Id,
+                            Дата_требования = DateTime.Now,
+                            Технолог_id = ThisUser.CurrentUser.Id,
+                            Статус_требования = "Ожидает"
+                        };
+                        db.Требования_накладные.Add(request);
+                        db.SaveChanges();
+
+                        MessageBox.Show($"Требование накладная №{requestNumber} создана и отправлена кладовщику",
+                            "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при создании требования: {ex.Message}", "Ошибка",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 }

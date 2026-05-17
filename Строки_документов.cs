@@ -15,26 +15,26 @@ namespace MenuStolovaya
 using System;
     using System.Collections.Generic;
     
-public partial class Роли
+public partial class Строки_документов
 {
-
-    public Роли()
-    {
-
-        this.Пользователи = new HashSet<Пользователи>();
-
-    }
-
 
     public int id { get; set; }
 
-    public string Наименование { get; set; }
+    public int Документ_id { get; set; }
 
-    public string Описание { get; set; }
+    public int Продукт_id { get; set; }
+
+    public decimal Количество { get; set; }
+
+    public decimal Цена { get; set; }
+
+    public Nullable<decimal> Сумма { get; set; }
 
 
 
-    public virtual ICollection<Пользователи> Пользователи { get; set; }
+    public virtual Документы Документы { get; set; }
+
+    public virtual Продукты Продукты { get; set; }
 
 }
 

@@ -15,28 +15,38 @@ namespace MenuStolovaya
 using System;
     using System.Collections.Generic;
     
-public partial class Строки_меню
+public partial class Требования_накладные
 {
 
     public int id { get; set; }
 
+    public string Номер { get; set; }
+
+    public int Документ_id { get; set; }
+
     public int Меню_id { get; set; }
 
-    public int Блюдо_id { get; set; }
+    public System.DateTime Дата_требования { get; set; }
 
-    public Nullable<int> Количество_порций { get; set; }
+    public int Технолог_id { get; set; }
 
-    public Nullable<decimal> Выход_на_порцию { get; set; }
+    public string Статус_требования { get; set; }
 
-    public string Время_подачи { get; set; }
+    public Nullable<int> Кладовщик_id { get; set; }
 
-    public Nullable<int> Порядок_подачи { get; set; }
+    public string Комментарий_кладовщика { get; set; }
+
+    public Nullable<System.DateTime> Дата_обработки { get; set; }
 
 
 
-    public virtual Блюда Блюда { get; set; }
+    public virtual Документы Документы { get; set; }
 
     public virtual Меню_на_день Меню_на_день { get; set; }
+
+    public virtual Пользователи Пользователи { get; set; }
+
+    public virtual Пользователи Пользователи1 { get; set; }
 
 }
 

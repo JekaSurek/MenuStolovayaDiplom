@@ -15,26 +15,32 @@ namespace MenuStolovaya
 using System;
     using System.Collections.Generic;
     
-public partial class vw_Технологические_карты_полные
+public partial class vw_Требования_накладные
 {
+
+    public int id { get; set; }
 
     public string Номер { get; set; }
 
-    public string Блюдо { get; set; }
+    public System.DateTime Дата_документа { get; set; }
 
-    public decimal Выход_порции_г { get; set; }
+    public System.DateTime Дата_меню { get; set; }
 
-    public string Технология_приготовления { get; set; }
+    public string Технолог { get; set; }
 
-    public Nullable<System.DateTime> Дата_создания { get; set; }
+    public string Статус_требования { get; set; }
 
-    public string Статус { get; set; }
+    public string Статус_документа { get; set; }
 
-    public string Кто_утвердил { get; set; }
+    public string Комментарий { get; set; }
 
-    public Nullable<System.DateTime> Дата_утверждения { get; set; }
+    public string Кладовщик { get; set; }
 
-    public Nullable<int> Количество_ингредиентов { get; set; }
+    public Nullable<System.DateTime> Дата_обработки { get; set; }
+
+    public decimal Общее_количество { get; set; }
+
+    public decimal Общая_сумма { get; set; }
 
 }
 
