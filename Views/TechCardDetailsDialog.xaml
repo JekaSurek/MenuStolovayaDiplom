@@ -7,8 +7,8 @@
         Title="Детали технологической карты" 
         Height="600" 
         Width="900"
-        WindowStartupLocation="CenterOwner"
-        Background="{StaticResource BackgroundBrush}">
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BackgroundBrush}" WindowState="Maximized">
 
     <Grid Margin="15">
         <Grid.RowDefinitions>

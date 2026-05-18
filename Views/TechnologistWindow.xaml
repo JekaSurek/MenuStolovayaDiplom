@@ -6,627 +6,701 @@
         mc:Ignorable="d"
         Title="Меню столовой - Технолог" 
         Height="700" 
-        Width="1200"
+        Width="1300"
+        MinHeight="600"
+        MinWidth="900"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource BackgroundBrush}">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip">
 
-    <DockPanel>
-        <!-- Заголовок с информацией о пользователе -->
-        <Border DockPanel.Dock="Top" 
-                Background="{StaticResource PrimaryBrush}" 
-                Height="60">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+    <Window.Resources>
+        <!-- Градиент для верхней панели -->
+        <LinearGradientBrush x:Key="HeaderGradient" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#FF2E7D32" Offset="0"/>
+            <GradientStop Color="#FF4CAF50" Offset="0.5"/>
+            <GradientStop Color="#FF2E7D32" Offset="1"/>
+        </LinearGradientBrush>
 
-                <StackPanel Grid.Column="0" 
-                            Orientation="Horizontal" 
-                            VerticalAlignment="Center" 
-                            Margin="20,0">
-                    <TextBlock Text="🍽️" 
-                               FontSize="24"
-                               Margin="0,0,10,0"
-                               VerticalAlignment="Center"/>
-                    <TextBlock Text="Меню столовой" 
-                               FontSize="20" 
-                               FontWeight="Bold" 
-                               Foreground="White" 
-                               VerticalAlignment="Center"/>
-                    <TextBlock Text=" - Технолог" 
-                               FontSize="18" 
-                               Foreground="White" 
-                               VerticalAlignment="Center" 
-                               Margin="10,0,0,0"/>
-                </StackPanel>
+        <!-- Стиль для кнопки закрытия -->
+        <Style x:Key="WindowControlButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="35"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="17">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#30FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-                <StackPanel Grid.Column="1" 
-                            Orientation="Horizontal" 
-                            VerticalAlignment="Center" 
-                            Margin="0,0,20,0">
-                    <TextBlock Text="Пользователь: " 
-                               Foreground="White" 
-                               VerticalAlignment="Center"/>
-                    <TextBlock x:Name="CurrentUserText" 
-                               FontWeight="Bold" 
-                               Foreground="White" 
-                               VerticalAlignment="Center" 
-                               Margin="5,0,20,0"/>
-                    <Button Content="Выйти" 
-                            Style="{StaticResource PrimaryButtonStyle}"
-                            Width="80" 
-                            Click="LogoutButton_Click"/>
-                </StackPanel>
-            </Grid>
-        </Border>
+        <!-- Стиль для активной вкладки -->
+        <Style x:Key="ActiveTabButtonStyle" TargetType="Button">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#FF4CAF50" Offset="0"/>
+                        <GradientStop Color="#FF45A049" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="0,10,10,0">
+                            <ContentPresenter HorizontalAlignment="Left" 
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF45A049"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
 
-        <!-- Основной контент с вкладками слева -->
+    <Border CornerRadius="15" Margin="10">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.2"/>
+        </Border.Effect>
+
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-            <!-- Левая панель с вкладками -->
-            <Border Grid.Column="0" 
-                    Background="{StaticResource CardBrush}" 
-                    BorderBrush="#FFEEEEEE" 
-                    BorderThickness="0,0,1,0">
-                <StackPanel>
-                    <Button x:Name="ProductsTabButton" 
-                            Content="Продукты" 
-                            Style="{StaticResource TabButtonStyle}"
-                            Click="ProductsTabButton_Click"/>
-                    <Button x:Name="CategoriesTabButton" 
-                            Content="Категории" 
-                            Style="{StaticResource TabButtonStyle}"
-                            Click="CategoriesTabButton_Click"/>
-                    <Button x:Name="DishesTabButton" 
-                            Content="Блюда" 
-                            Style="{StaticResource TabButtonStyle}"
-                            Click="DishesTabButton_Click"/>
-                    <Button x:Name="DishTypesTabButton" 
-                            Content="Виды блюд" 
-                            Style="{StaticResource TabButtonStyle}"
-                            Click="DishTypesTabButton_Click"/>
-                    <Button x:Name="TechnologyCardsTabButton" 
-                            Content="Тех. карты" 
-                            Style="{StaticResource TabButtonStyle}"
-                            Click="TechnologyCardsTabButton_Click"/>
-                    <Button x:Name="MenusTabButton" 
-                            Content="Меню" 
-                            Style="{StaticResource TabButtonStyle}"
-                            Click="MenusTabButton_Click"/>
-                    <Separator Margin="10,20,10,0"/>
-                    <Button x:Name="HelpTabButton" 
-        Content="Справка" 
-        Style="{StaticResource TabButtonStyle}"
-        Foreground="{StaticResource TextLightBrush}"
-        Click="HelpTabButton_Click"/>
-                </StackPanel>
+            <!-- Верхняя панель -->
+            <Border Grid.Row="0" 
+                    Background="{StaticResource HeaderGradient}"
+                    CornerRadius="15,15,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" 
+                                Orientation="Horizontal" 
+                                VerticalAlignment="Center" 
+                                Margin="20,0">
+                        <Border Background="White" 
+                                Width="40" 
+                                Height="40" 
+                                CornerRadius="20"
+                                Margin="0,0,10,0">
+                            <TextBlock Text="🍽️" 
+                                       FontSize="24"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel>
+                            <TextBlock Text="Меню столовой" 
+                                       FontSize="18" 
+                                       FontWeight="Bold" 
+                                       Foreground="White"/>
+                            <TextBlock Text="ООО СФ &quot;Белка-Фаворит&quot;" 
+                                       FontSize="11" 
+                                       Foreground="#E0E0E0"/>
+                        </StackPanel>
+                        <Border Background="#30FFFFFF" 
+                                CornerRadius="15" 
+                                Padding="10,5"
+                                Margin="15,0,0,0"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="Технолог" 
+                                       FontSize="12" 
+                                       Foreground="White"
+                                       FontWeight="SemiBold"/>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" 
+            Orientation="Horizontal" 
+            VerticalAlignment="Center" 
+            Margin="0,0,20,0">
+                        <Border Background="#30FFFFFF" 
+            CornerRadius="15" 
+            Padding="10,5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="👤 " Foreground="White"/>
+                                <TextBlock x:Name="CurrentUserText" 
+                       FontWeight="SemiBold" 
+                       Foreground="White"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- КНОПКА СВЕРНУТЬ -->
+                        <Button Content="─" 
+            Style="{StaticResource WindowControlButtonStyle}"
+            Click="MinimizeButton_Click"
+            ToolTip="Свернуть"
+            Margin="10,0,0,0"/>
+
+                        <!-- КНОПКА РАЗВЕРНУТЬ/ВОССТАНОВИТЬ -->
+                        <Button x:Name="MaximizeButton" 
+            Content="□" 
+            Style="{StaticResource WindowControlButtonStyle}"
+            Click="MaximizeButton_Click"
+            ToolTip="Развернуть"
+            Margin="5,0,0,0"/>
+
+                        <Button Content="🚪" 
+            Style="{StaticResource WindowControlButtonStyle}"
+            Click="LogoutButton_Click"
+            ToolTip="Выйти"
+            Margin="5,0,0,0"/>
+
+                        <Button Content="✕" 
+            Style="{StaticResource WindowControlButtonStyle}"
+            Click="CloseButton_Click"
+            ToolTip="Закрыть"
+            Margin="5,0,0,0"/>
+                    </StackPanel>
+                </Grid>
             </Border>
 
-            <!-- Правая панель с контентом -->
-            <Grid Grid.Column="1">
-                <Grid.Resources>
-                    <Style x:Key="ContentAreaStyle">
-                        <Setter Property="Grid.Margin" Value="20"/>
-                    </Style>
-                </Grid.Resources>
+            <!-- Основное содержимое -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="240"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <!-- Продукты -->
-                <Grid x:Name="ProductsContent" 
-                      Visibility="Visible" 
-                      Style="{StaticResource ContentAreaStyle}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                <!-- Левая панель с вкладками -->
+                <Border Grid.Column="0" 
+        Background="{StaticResource CardBrush}" 
+        BorderBrush="#FFEEEEEE" 
+        BorderThickness="0,1,1,0"
+        CornerRadius="0,0,0,15">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="10,15">
+                            <TextBlock Text="ОСНОВНЫЕ" 
+                       FontSize="11" 
+                       Foreground="#FF888888"
+                       Margin="15,0,0,10"
+                       FontWeight="SemiBold"/>
 
-                    <!-- Заголовок -->
-                    <TextBlock Grid.Row="0" 
-                               Text="Управление продуктами" 
-                               Style="{StaticResource TitleStyle}"/>
+                           
+                            <Button x:Name="ProductsTabButton" 
+                    Content="📦 Продукты" 
+                    Style="{StaticResource TabButtonStyle}"
+                    Click="ProductsTabButton_Click"/>
 
-                    <!-- Панель инструментов -->
-                    <Border Grid.Row="1" 
-                            Style="{StaticResource CardStyle}" 
-                            Margin="0,0,0,10">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="ProductSearchBox" 
-                                     Width="300" 
-                                     Style="{StaticResource ModernTextBoxStyle}"
-                                     TextChanged="ProductSearchBox_TextChanged"
-                                     Margin="10"/>
-                            <Button Content="Добавить" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="AddProductButton_Click"
-                                    Margin="5"/>
-                            <Button x:Name="EditProductButton" Content="Редактировать" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="EditProductButton_Click"
-                                    Margin="5"/>
-                            <Button x:Name="DeleteProductButton" Content="Удалить" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Background="{StaticResource AccentDarkBrush}"
-                                    Click="DeleteProductButton_Click"
-                                    Margin="5"/>
-                            <Button Content="Обновить" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="RefreshProductsButton_Click"
-                                    Margin="5,5,10,5"/>
+                            <Button x:Name="CategoriesTabButton" 
+                    Content="📂 Категории" 
+                    Style="{StaticResource TabButtonStyle}"
+                    Click="CategoriesTabButton_Click"/>
+
+                            <Button x:Name="DishesTabButton" 
+                    Content="🍲 Блюда" 
+                    Style="{StaticResource TabButtonStyle}"
+                    Click="DishesTabButton_Click"/>
+
+                            <Button x:Name="DishTypesTabButton" 
+                    Content="🏷️ Виды блюд" 
+                    Style="{StaticResource TabButtonStyle}"
+                    Click="DishTypesTabButton_Click"/>
+
+                            <Separator Margin="15,20,15,10" Background="#FFEEEEEE"/>
+
+                            <TextBlock Text="ТЕХНОЛОГИЯ" 
+                       FontSize="11" 
+                       Foreground="#FF888888"
+                       Margin="15,0,0,10"
+                       FontWeight="SemiBold"/>
+
+                            <Button x:Name="TechnologyCardsTabButton" 
+                    Content="📋 Тех. карты" 
+                    Style="{StaticResource TabButtonStyle}"
+                    Click="TechnologyCardsTabButton_Click"/>
+
+                            <Button x:Name="MenusTabButton" 
+                    Content="📅 Меню" 
+                    Style="{StaticResource TabButtonStyle}"
+                    Click="MenusTabButton_Click"/>
+
+                            <Separator Margin="15,20,15,10" Background="#FFEEEEEE"/>
+
+                            <TextBlock Text="СПРАВКА" 
+                       FontSize="11" 
+                       Foreground="#FF888888"
+                       Margin="15,0,0,10"
+                       FontWeight="SemiBold"/>
+
+                            <Button x:Name="HelpTabButton" 
+                    Content="❓ Справка" 
+                    Style="{StaticResource TabButtonStyle}"
+                    Click="HelpTabButton_Click"/>
                         </StackPanel>
-                    </Border>
+                    </ScrollViewer>
+                </Border>
 
-                    <!-- Таблица продуктов -->
-                    <DataGrid x:Name="ProductsDataGrid" 
-                              Grid.Row="2" 
-                              Style="{StaticResource ModernDataGridStyle}"
-                              AutoGenerateColumns="False"
-                              SelectionChanged="ProductsDataGrid_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" 
-                                                Binding="{Binding Id}" 
-                                                Width="50"/>
-                            <DataGridTextColumn Header="Артикул" 
-                                                Binding="{Binding Артикул}" 
-                                                Width="100"/>
-                            <DataGridTextColumn Header="Наименование" 
-                                                Binding="{Binding Наименование}" 
-                                                Width="250"/>
-                            <DataGridTextColumn Header="Категория" 
-                                                Binding="{Binding Категория}" 
-                                                Width="150"/>
-                            <DataGridTextColumn Header="Ед. изм." 
-                                                Binding="{Binding Единица_измерения}" 
-                                                Width="80"/>
-                            <DataGridTextColumn Header="Цена" 
-                                                Binding="{Binding Цена, StringFormat={}{0:F2} руб.}" 
-                                                Width="100"/>
-                            <DataGridCheckBoxColumn Header="Утверждена" 
-                                                    Binding="{Binding Утверждена_цена}" 
-                                                    Width="80"/>
-                            <DataGridTextColumn Header="Калорийность" 
-                                                Binding="{Binding Калорийность, StringFormat={}{0:F1} калорий}" 
-                                                Width="100"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
+                <!-- Правая панель с контентом -->
+                <Grid Grid.Column="1" Background="{StaticResource BackgroundBrush}">
+                    <Grid.Resources>
+                        <Style x:Key="ContentAreaStyle" TargetType="Grid">
+                            <Setter Property="Margin" Value="20"/>
+                        </Style>
+                    </Grid.Resources>
 
-                <!-- Категории -->
-                <Grid x:Name="CategoriesContent" 
-                      Visibility="Collapsed" 
-                      Style="{StaticResource ContentAreaStyle}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                    <!-- Продукты -->
+                    <Grid x:Name="ProductsContent" 
+                          Visibility="Visible" 
+                          Style="{StaticResource ContentAreaStyle}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" 
-                               Text="Управление категориями продуктов" 
-                               Style="{StaticResource TitleStyle}"/>
+                        <TextBlock Grid.Row="0" 
+                                   Text="Управление продуктами" 
+                                   Style="{StaticResource TitleStyle}"/>
 
-                    <Border Grid.Row="1" 
-                            Style="{StaticResource CardStyle}" 
-                            Margin="0,0,0,10">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="CategorySearchBox" 
-                                     Width="300" 
-                                     Style="{StaticResource ModernTextBoxStyle}"
-                                     TextChanged="CategorySearchBox_TextChanged"
-                                     Margin="10"/>
-                            <Button Content="Добавить" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="AddCategoryButton_Click"
-                                    Margin="5"/>
-                            <Button x:Name="EditCategoryButton" Content="Редактировать" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="EditCategoryButton_Click"
-                                    Margin="5"/>
-                            <Button x:Name="DeleteCategoryButton" Content="Удалить" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Background="{StaticResource AccentDarkBrush}"
-                                    Click="DeleteCategoryButton_Click"
-                                    Margin="5"/>
-                        </StackPanel>
-                    </Border>
-
-                    <DataGrid x:Name="CategoriesDataGrid" 
-                              Grid.Row="2" 
-                              Style="{StaticResource ModernDataGridStyle}"
-                              AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" 
-                                                Binding="{Binding Id}" 
-                                                Width="50"/>
-                            <DataGridTextColumn Header="Наименование" 
-                                                Binding="{Binding Наименование}" 
-                                                Width="200"/>
-                            <DataGridTextColumn Header="Описание" 
-                                                Binding="{Binding Описание}" 
-                                                Width="400"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-
-                <!-- Блюда -->
-                <Grid x:Name="DishesContent" 
-      Visibility="Collapsed" 
-      Style="{StaticResource ContentAreaStyle}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" 
-               Text="Управление блюдами" 
-               Style="{StaticResource TitleStyle}"/>
-
-                    <Border Grid.Row="1" 
-            Style="{StaticResource CardStyle}" 
-            Margin="0,0,0,10">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="DishSearchBox" 
-                     Width="300" 
-                     Style="{StaticResource ModernTextBoxStyle}"
-                     TextChanged="DishSearchBox_TextChanged"
-                     Margin="10"/>
-                            <Button Content="Добавить" 
-                    Style="{StaticResource PrimaryButtonStyle}"
-                    Click="AddDishButton_Click"
-                    Margin="5"/>
-                            <Button x:Name="EditDishButton" Content="Редактировать" 
-                    Style="{StaticResource PrimaryButtonStyle}"
-                    Click="EditDishButton_Click"
-                    Margin="5"/>
-                            <Button x:Name="DeleteDishButton" Content="Удалить" 
-                    Style="{StaticResource PrimaryButtonStyle}"
-                    Background="{StaticResource AccentDarkBrush}"
-                    Click="DeleteDishButton_Click"
-                    Margin="5"/>
-                            <Button Content="Обновить калорийность" 
-                    Style="{StaticResource PrimaryButtonStyle}"
-                    Click="UpdateCaloriesButton_Click"
-                    Margin="5"/>
-                        </StackPanel>
-                    </Border>
-
-                    <DataGrid x:Name="DishesDataGrid" 
-          Grid.Row="2" 
-          Style="{StaticResource ModernDataGridStyle}"
-          AutoGenerateColumns="False"
-          SelectionChanged="DishesDataGrid_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" 
-                            Binding="{Binding Id}" 
-                            Width="50"/>
-                            <DataGridTextColumn Header="Наименование" 
-                            Binding="{Binding Наименование}" 
-                            Width="200"/>
-                            <DataGridTextColumn Header="Полное наименование" 
-                            Binding="{Binding Полное_наименование}" 
-                            Width="300"/>
-                            <DataGridTextColumn Header="Вид" 
-                            Binding="{Binding Вид_блюда}" 
-                            Width="120"/>
-                            <DataGridTextColumn Header="Выход, г" 
-                            Binding="{Binding Выход_стандартный, StringFormat={}{0:F0}}" 
-                            Width="80"/>
-                            <DataGridTextColumn Header="Время, мин" 
-                            Binding="{Binding Время_приготовления}" 
-                            Width="80"/>
-                            <!-- ИСПРАВЛЕНА КОЛОНКА: теперь отображает общую калорийность порции -->
-                            <DataGridTextColumn Header="Ккал (порция)" 
-                            Binding="{Binding Калорийность_общая, StringFormat={}{0:F2}}" 
-                            Width="100"/>
-                            <!-- Калорийность на 100г -->
-                            <DataGridTextColumn Header="Ккал/100г" 
-                            Binding="{Binding Калорийность_расчетная, StringFormat={}{0:F2}}" 
-                            Width="100"/>
-                            <DataGridTextColumn Header="Автор" 
-                            Binding="{Binding Автор}" 
-                            Width="150"/>
-                            <DataGridTextColumn Header="Дата создания" 
-                            Binding="{Binding Дата_создания, StringFormat={}{0:dd.MM.yyyy}}" 
-                            Width="100"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-
-                <!-- Виды блюд -->
-                <Grid x:Name="DishTypesContent" 
-                      Visibility="Collapsed" 
-                      Style="{StaticResource ContentAreaStyle}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" 
-                               Text="Управление видами блюд" 
-                               Style="{StaticResource TitleStyle}"/>
-
-                    <Border Grid.Row="1" 
-                            Style="{StaticResource CardStyle}" 
-                            Margin="0,0,0,10">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="DishTypeSearchBox" 
-                                     Width="300" 
-                                     Style="{StaticResource ModernTextBoxStyle}"
-                                     TextChanged="DishTypeSearchBox_TextChanged"
-                                     Margin="10"/>
-                            <Button Content="Добавить" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="AddDishTypeButton_Click"
-                                    Margin="5"/>
-                            <Button x:Name="EditDishTypeButton" Content="Редактировать" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="EditDishTypeButton_Click"
-                                    Margin="5"/>
-                            <Button x:Name="DeleteDishTypeButton" Content="Удалить" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Background="{StaticResource AccentDarkBrush}"
-                                    Click="DeleteDishTypeButton_Click"
-                                    Margin="5"/>
-                        </StackPanel>
-                    </Border>
-
-                    <DataGrid x:Name="DishTypesDataGrid" 
-                              Grid.Row="2" 
-                              Style="{StaticResource ModernDataGridStyle}"
-                              AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" 
-                                                Binding="{Binding Id}" 
-                                                Width="50"/>
-                            <DataGridTextColumn Header="Наименование" 
-                                                Binding="{Binding Наименование}" 
-                                                Width="200"/>
-                            <DataGridTextColumn Header="Описание" 
-                                                Binding="{Binding Описание}" 
-                                                Width="400"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-
-                <!-- Технологические карты -->
-                <Grid x:Name="TechnologyCardsContent" 
-                      Visibility="Collapsed" 
-                      Style="{StaticResource ContentAreaStyle}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" 
-                               Text="Управление технологическими картами" 
-                               Style="{StaticResource TitleStyle}"/>
-
-                    <Border Grid.Row="1" 
-                            Style="{StaticResource CardStyle}" 
-                            Margin="0,0,0,10">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="TechnologyCardSearchBox" 
-                                     Width="300" 
-                                     Style="{StaticResource ModernTextBoxStyle}"
-                                     TextChanged="TechnologyCardSearchBox_TextChanged"
-                                     Margin="10"/>
-                            <Button Content="Добавить" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="AddTechnologyCardButton_Click"
-                                    Margin="5"/>
-                            <Button x:Name="EditTechnologyCardButton" Content="Редактировать" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="EditTechnologyCardButton_Click"
-                                    Margin="5"/>
-                            <Button x:Name="DeleteTechnologyCardButton" Content="Удалить" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Background="{StaticResource AccentDarkBrush}"
-                                    Click="DeleteTechnologyCardButton_Click"
-                                    Margin="5"/>
-                            <!-- <Button x:Name="EditRecipeButton" Content="Рецептура" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Background="#FF9C27B0"
-                                    Foreground="White"
-                                    Click="EditRecipeButton_Click"
-                                    Margin="5"/> -->
-                            <Button Content="Обновить" 
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Click="RefreshTechnologyCardsButton_Click"
-                                    Margin="5,5,10,5"/>
-                        </StackPanel>
-                    </Border>
-
-                    <DataGrid x:Name="TechnologyCardsDataGrid" 
-          Grid.Row="2" 
-          Style="{StaticResource ModernDataGridStyle}"
-          AutoGenerateColumns="False"
-          SelectionChanged="TechnologyCardsDataGrid_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Номер" 
-                            Binding="{Binding Номер}" 
-                            Width="150"/>
-                            <DataGridTextColumn Header="Блюдо" 
-                            Binding="{Binding Блюдо}" 
-                            Width="200"/>
-                            <DataGridTextColumn Header="Выход (г)" 
-                            Binding="{Binding Выход_отформатированный}" 
-                            Width="120"/>
-                            <DataGridTextColumn Header="Статус" 
-                            Binding="{Binding Статус}" 
-                            Width="100"/>
-                            <DataGridTextColumn Header="Дата создания" 
-                            Binding="{Binding Дата_создания, StringFormat={}{0:dd.MM.yyyy}}" 
-                            Width="100"/>
-                            <DataGridTextColumn Header="Ингредиентов" 
-                            Binding="{Binding Количество_ингредиентов}" 
-                            Width="80"/>
-                            <DataGridTextColumn Header="Кто утвердил" 
-                            Binding="{Binding Кто_утвердил}" 
-                            Width="150"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-
-                <!-- Меню -->
-                <Grid x:Name="MenusContent" 
-          Visibility="Collapsed" 
-          Style="{StaticResource ContentAreaStyle}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" 
-                   Text="Управление меню на день" 
-                   Style="{StaticResource TitleStyle}"/>
-
-                    <Border Grid.Row="1" 
-                Style="{StaticResource CardStyle}" 
-                Margin="0,0,0,10">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="MenuSearchBox" 
-                         Width="300" 
-                         Style="{StaticResource ModernTextBoxStyle}"
-                         TextChanged="MenuSearchBox_TextChanged"
-                         Margin="10"/>
-                            <Button Content="Добавить" 
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Click="AddMenuButton_Click"
-                        Margin="5"/>
-                            <Button x:Name="EditMenuButton" Content="Редактировать" 
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Click="EditMenuButton_Click"
-                        Margin="5"/>
-                            <Button x:Name="DeleteMenuButton" Content="Удалить" 
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Background="{StaticResource AccentDarkBrush}"
-                        Click="DeleteMenuButton_Click"
-                        Margin="5"/>
-                        <!--<Button x:Name="EditMenuItemsButton" Content="Блюда" 
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Background="#FF9C27B0"
-                        Foreground="White"
-                        Click="EditMenuItemsButton_Click"
-                        Margin="5"/> -->
-                            <Button x:Name="PrintMenuButton" 
-                        Content="Печать меню" 
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Background="#FF4CAF50"
-                        Foreground="White"
-                        Click="PrintMenuButton_Click"
-                        Margin="5"
-                        IsEnabled="False"/>
-                            <Button Content="Обновить" 
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Click="RefreshMenusButton_Click"
-                        Margin="5,5,10,5"/>
-                            <Button x:Name="CreateRequestButton" 
-        Content="📋 Требование накладная" 
-        Style="{StaticResource PrimaryButtonStyle}"
-        Background="#FF2196F3"
-        Click="CreateRequestButton_Click"
-        Margin="5"
-        IsEnabled="False"/>
-                        </StackPanel>
-                    </Border>
-
-                    <DataGrid x:Name="MenusDataGrid" 
-                              Grid.Row="2" 
-                              Style="{StaticResource ModernDataGridStyle}"
-                              AutoGenerateColumns="False"
-                              SelectionChanged="MenusDataGrid_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Дата" 
-                                                Binding="{Binding Дата, StringFormat={}{0:dd.MM.yyyy}}" 
-                                                Width="100"/>
-                            <DataGridTextColumn Header="Ответственный" 
-                                                Binding="{Binding Ответственный}" 
-                                                Width="200"/>
-                            <DataGridTextColumn Header="Дата составления" 
-                                                Binding="{Binding Дата_составления, StringFormat={}{0:dd.MM.yyyy HH:mm}}" 
-                                                Width="120"/>
-                            <DataGridTextColumn Header="Калорийность" 
-                    Binding="{Binding Калорийность_общая, StringFormat={}{0:F0} калорий}" 
-                    Width="100"/>
-                            <DataGridTextColumn Header="Статус" 
-                                                Binding="{Binding Статус}" 
-                                                Width="100"/>
-                            <DataGridTextColumn Header="Блюд" 
-                                                Binding="{Binding Количество_блюд}" 
-                                                Width="60"/>
-                            <DataGridTextColumn Header="Порций" 
-                                                Binding="{Binding Всего_порций}" 
-                                                Width="60"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-                <Grid x:Name="HelpContent" 
-      Visibility="Collapsed" 
-      Style="{StaticResource ContentAreaStyle}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" 
-               Text="Справка" 
-               Style="{StaticResource TitleStyle}"/>
-
-                    <Border Grid.Row="1" 
-            Style="{StaticResource CardStyle}">
-                        <StackPanel>
-                            <TextBlock Text="Обратная связь" 
-                       Style="{StaticResource SubtitleStyle}"/>
-
-                            <StackPanel Margin="0,20,0,0">
-                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                                    <TextBlock Text="ФИО: " 
-                               FontWeight="SemiBold" 
-                               Width="150"/>
-                                    <TextBlock Text="Виноградов Евгений Фёдорович"/>
-                                </StackPanel>
-
-                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                                    <TextBlock Text="Телефон: " 
-                               FontWeight="SemiBold" 
-                               Width="150"/>
-                                    <TextBlock Text="+7 (912) 369-87-62"/>
-                                </StackPanel>
-
-                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                                    <TextBlock Text="Email: " 
-                               FontWeight="SemiBold" 
-                               Width="150"/>
-                                    <TextBlock Text="vinogradovfedya48@gmail.com"/>
-                                </StackPanel>
+                        <Border Grid.Row="1" 
+                                Style="{StaticResource CardStyle}" 
+                                Margin="0,0,0,15">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="ProductSearchBox" 
+                                         Width="300" 
+                                         Style="{StaticResource ModernTextBoxStyle}"
+                                         TextChanged="ProductSearchBox_TextChanged"
+                                         Margin="10"
+                                         ToolTip="Поиск по наименованию или артикулу"/>
+                                <Button Content="➕ Добавить" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="AddProductButton_Click"
+                                        Margin="5"/>
+                                <Button x:Name="EditProductButton" 
+                                        Content="✏️ Редактировать" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="EditProductButton_Click"
+                                        Margin="5"
+                                        IsEnabled="False"/>
+                                <Button x:Name="DeleteProductButton" 
+                                        Content="🗑️ Удалить" 
+                                        Style="{StaticResource DangerButtonStyle}"
+                                        Click="DeleteProductButton_Click"
+                                        Margin="5"
+                                        IsEnabled="False"/>
+                                <Button Content="🔄 Обновить" 
+                                        Style="{StaticResource InfoButtonStyle}"
+                                        Click="RefreshProductsButton_Click"
+                                        Margin="5,5,10,5"/>
                             </StackPanel>
+                        </Border>
 
-                            <Border Margin="0,30,0,0" 
-                    Padding="15" 
-                    Background="#FFF5F5F5" 
-                    CornerRadius="5">
-                                <TextBlock Text="Для получения обратной связи по работе с программным обеспечением обращайтесь по указанным контактам."
-                           TextWrapping="Wrap"
-                           Foreground="#FF666666"/>
+                        <DataGrid x:Name="ProductsDataGrid" 
+                                  Grid.Row="2" 
+                                  Style="{StaticResource ModernDataGridStyle}"
+                                  AutoGenerateColumns="False"
+                                  SelectionChanged="ProductsDataGrid_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                                <DataGridTextColumn Header="Артикул" Binding="{Binding Артикул}" Width="100"/>
+                                <DataGridTextColumn Header="Наименование" Binding="{Binding Наименование}" Width="250"/>
+                                <DataGridTextColumn Header="Категория" Binding="{Binding Категория}" Width="150"/>
+                                <DataGridTextColumn Header="Ед. изм." Binding="{Binding Единица_измерения}" Width="80"/>
+                                <DataGridTextColumn Header="Цена" Binding="{Binding Цена, StringFormat={}{0:F2} руб.}" Width="100"/>
+                                <DataGridCheckBoxColumn Header="Утверждена" Binding="{Binding Утверждена_цена}" Width="80"/>
+                                <DataGridTextColumn Header="Калорийность" Binding="{Binding Калорийность, StringFormat={}{0:F1} ккал}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
 
-                            </Border>
-                            <Button Content="📖 Справка" 
-        Click="HelpButton_Click"
-        Style="{StaticResource PrimaryButtonStyle}"
-        Width="100"
-        Margin="10"/>
-                        </StackPanel>
-                    </Border>
+                    <!-- Категории -->
+                    <Grid x:Name="CategoriesContent" 
+                          Visibility="Collapsed" 
+                          Style="{StaticResource ContentAreaStyle}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" 
+                                   Text="Управление категориями продуктов" 
+                                   Style="{StaticResource TitleStyle}"/>
+
+                        <Border Grid.Row="1" 
+                                Style="{StaticResource CardStyle}" 
+                                Margin="0,0,0,15">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="CategorySearchBox" 
+                                         Width="300" 
+                                         Style="{StaticResource ModernTextBoxStyle}"
+                                         TextChanged="CategorySearchBox_TextChanged"
+                                         Margin="10"
+                                         ToolTip="Поиск по наименованию"/>
+                                <Button Content="➕ Добавить" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="AddCategoryButton_Click"
+                                        Margin="5"/>
+                                <Button x:Name="EditCategoryButton" 
+                                        Content="✏️ Редактировать" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="EditCategoryButton_Click"
+                                        Margin="5"
+                                        IsEnabled="False"/>
+                                <Button x:Name="DeleteCategoryButton" 
+                                        Content="🗑️ Удалить" 
+                                        Style="{StaticResource DangerButtonStyle}"
+                                        Click="DeleteCategoryButton_Click"
+                                        Margin="5"
+                                        IsEnabled="False"/>
+                            </StackPanel>
+                        </Border>
+
+                        <DataGrid x:Name="CategoriesDataGrid" 
+                                  Grid.Row="2" 
+                                  Style="{StaticResource ModernDataGridStyle}"
+                                  AutoGenerateColumns="False"
+                                  SelectionChanged="CategoriesDataGrid_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                                <DataGridTextColumn Header="Наименование" Binding="{Binding Наименование}" Width="250"/>
+                                <DataGridTextColumn Header="Описание" Binding="{Binding Описание}" Width="450"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <!-- Блюда -->
+                    <Grid x:Name="DishesContent" 
+                          Visibility="Collapsed" 
+                          Style="{StaticResource ContentAreaStyle}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" 
+                                   Text="Управление блюдами" 
+                                   Style="{StaticResource TitleStyle}"/>
+
+                        <Border Grid.Row="1" 
+                                Style="{StaticResource CardStyle}" 
+                                Margin="0,0,0,15">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="DishSearchBox" 
+                                         Width="300" 
+                                         Style="{StaticResource ModernTextBoxStyle}"
+                                         TextChanged="DishSearchBox_TextChanged"
+                                         Margin="10"
+                                         ToolTip="Поиск по наименованию"/>
+                                <Button Content="➕ Добавить" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="AddDishButton_Click"
+                                        Margin="5"/>
+                                <Button x:Name="EditDishButton" 
+                                        Content="✏️ Редактировать" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="EditDishButton_Click"
+                                        Margin="5"
+                                        IsEnabled="False"/>
+                                <Button x:Name="DeleteDishButton" 
+                                        Content="🗑️ Удалить" 
+                                        Style="{StaticResource DangerButtonStyle}"
+                                        Click="DeleteDishButton_Click"
+                                        Margin="5"
+                                        IsEnabled="False"/>
+                                <Button Content="⚡ Обновить калорийность" 
+                                        Style="{StaticResource WarningButtonStyle}"
+                                        Click="UpdateCaloriesButton_Click"
+                                        Margin="5"/>
+                            </StackPanel>
+                        </Border>
+
+                        <DataGrid x:Name="DishesDataGrid" 
+                                  Grid.Row="2" 
+                                  Style="{StaticResource ModernDataGridStyle}"
+                                  AutoGenerateColumns="False"
+                                  SelectionChanged="DishesDataGrid_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                                <DataGridTextColumn Header="Наименование" Binding="{Binding Наименование}" Width="200"/>
+                                <DataGridTextColumn Header="Вид" Binding="{Binding Вид_блюда}" Width="120"/>
+                                <DataGridTextColumn Header="Выход, г" Binding="{Binding Выход_стандартный}" Width="80"/>
+                                <DataGridTextColumn Header="Ккал/порция" Binding="{Binding Калорийность_общая, StringFormat={}{0:F0}}" Width="100"/>
+                                <DataGridTextColumn Header="Ккал/100г" Binding="{Binding Калорийность_расчетная, StringFormat={}{0:F1}}" Width="100"/>
+                                <DataGridTextColumn Header="Автор" Binding="{Binding Автор}" Width="150"/>
+                                <DataGridTextColumn Header="Дата" Binding="{Binding Дата_создания, StringFormat={}{0:dd.MM.yyyy}}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <!-- Виды блюд -->
+                    <Grid x:Name="DishTypesContent" 
+                          Visibility="Collapsed" 
+                          Style="{StaticResource ContentAreaStyle}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" 
+                                   Text="Управление видами блюд" 
+                                   Style="{StaticResource TitleStyle}"/>
+
+                        <Border Grid.Row="1" 
+                                Style="{StaticResource CardStyle}" 
+                                Margin="0,0,0,15">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="DishTypeSearchBox" 
+                                         Width="300" 
+                                         Style="{StaticResource ModernTextBoxStyle}"
+                                         TextChanged="DishTypeSearchBox_TextChanged"
+                                         Margin="10"
+                                         ToolTip="Поиск по наименованию"/>
+                                <Button Content="➕ Добавить" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="AddDishTypeButton_Click"
+                                        Margin="5"/>
+                                <Button x:Name="EditDishTypeButton" 
+                                        Content="✏️ Редактировать" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="EditDishTypeButton_Click"
+                                        Margin="5"
+                                        IsEnabled="False"/>
+                                <Button x:Name="DeleteDishTypeButton" 
+                                        Content="🗑️ Удалить" 
+                                        Style="{StaticResource DangerButtonStyle}"
+                                        Click="DeleteDishTypeButton_Click"
+                                        Margin="5"
+                                        IsEnabled="False"/>
+                            </StackPanel>
+                        </Border>
+
+                        <DataGrid x:Name="DishTypesDataGrid" 
+                                  Grid.Row="2" 
+                                  Style="{StaticResource ModernDataGridStyle}"
+                                  AutoGenerateColumns="False"
+                                  SelectionChanged="DishTypesDataGrid_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                                <DataGridTextColumn Header="Наименование" Binding="{Binding Наименование}" Width="250"/>
+                                <DataGridTextColumn Header="Описание" Binding="{Binding Описание}" Width="450"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <!-- Технологические карты -->
+                    <Grid x:Name="TechnologyCardsContent" 
+                          Visibility="Collapsed" 
+                          Style="{StaticResource ContentAreaStyle}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" 
+                                   Text="Управление технологическими картами" 
+                                   Style="{StaticResource TitleStyle}"/>
+
+                        <Border Grid.Row="1" 
+                                Style="{StaticResource CardStyle}" 
+                                Margin="0,0,0,15">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="TechnologyCardSearchBox" 
+                                         Width="300" 
+                                         Style="{StaticResource ModernTextBoxStyle}"
+                                         TextChanged="TechnologyCardSearchBox_TextChanged"
+                                         Margin="10"
+                                         ToolTip="Поиск по номеру или блюду"/>
+                                <Button Content="➕ Добавить" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="AddTechnologyCardButton_Click"
+                                        Margin="5"/>
+                                <Button x:Name="EditTechnologyCardButton" 
+                                        Content="✏️ Редактировать" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="EditTechnologyCardButton_Click"
+                                        Margin="5"
+                                        IsEnabled="False"/>
+                                <Button x:Name="DeleteTechnologyCardButton" 
+                                        Content="🗑️ Удалить" 
+                                        Style="{StaticResource DangerButtonStyle}"
+                                        Click="DeleteTechnologyCardButton_Click"
+                                        Margin="5"
+                                        IsEnabled="False"/>
+                                <Button Content="🔄 Обновить" 
+                                        Style="{StaticResource InfoButtonStyle}"
+                                        Click="RefreshTechnologyCardsButton_Click"
+                                        Margin="5"/>
+                            </StackPanel>
+                        </Border>
+
+                        <DataGrid x:Name="TechnologyCardsDataGrid" 
+                                  Grid.Row="2" 
+                                  Style="{StaticResource ModernDataGridStyle}"
+                                  AutoGenerateColumns="False"
+                                  SelectionChanged="TechnologyCardsDataGrid_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Номер" Binding="{Binding Номер}" Width="150"/>
+                                <DataGridTextColumn Header="Блюдо" Binding="{Binding Блюдо}" Width="200"/>
+                                <DataGridTextColumn Header="Выход (г)" Binding="{Binding Выход}" Width="100"/>
+                                <DataGridTextColumn Header="Статус" Binding="{Binding Статус}" Width="100"/>
+                                <DataGridTextColumn Header="Ингредиентов" Binding="{Binding Количество_ингредиентов}" Width="100"/>
+                                <DataGridTextColumn Header="Кто утвердил" Binding="{Binding Кто_утвердил}" Width="150"/>
+                                <DataGridTextColumn Header="Дата" Binding="{Binding Дата_создания, StringFormat={}{0:dd.MM.yyyy}}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <!-- Меню -->
+                    <Grid x:Name="MenusContent" 
+                          Visibility="Collapsed" 
+                          Style="{StaticResource ContentAreaStyle}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" 
+                                   Text="Управление меню на день" 
+                                   Style="{StaticResource TitleStyle}"/>
+
+                        <Border Grid.Row="1" 
+                                Style="{StaticResource CardStyle}" 
+                                Margin="0,0,0,15">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="MenuSearchBox" 
+                                         Width="300" 
+                                         Style="{StaticResource ModernTextBoxStyle}"
+                                         TextChanged="MenuSearchBox_TextChanged"
+                                         Margin="10"
+                                         ToolTip="Поиск по дате или ответственному"/>
+                                <Button Content="➕ Добавить" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="AddMenuButton_Click"
+                                        Margin="5"/>
+                                <Button x:Name="EditMenuButton" 
+                                        Content="✏️ Редактировать" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="EditMenuButton_Click"
+                                        Margin="5"
+                                        IsEnabled="False"/>
+                                <Button x:Name="DeleteMenuButton" 
+                                        Content="🗑️ Удалить" 
+                                        Style="{StaticResource DangerButtonStyle}"
+                                        Click="DeleteMenuButton_Click"
+                                        Margin="5"
+                                        IsEnabled="False"/>
+                                <Button Content="🔄 Обновить" 
+                                        Style="{StaticResource InfoButtonStyle}"
+                                        Click="RefreshMenusButton_Click"
+                                        Margin="5"/>
+                            </StackPanel>
+                        </Border>
+
+                        <DataGrid x:Name="MenusDataGrid" 
+                                  Grid.Row="2" 
+                                  Style="{StaticResource ModernDataGridStyle}"
+                                  AutoGenerateColumns="False"
+                                  SelectionChanged="MenusDataGrid_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Дата" Binding="{Binding Дата, StringFormat={}{0:dd.MM.yyyy}}" Width="100"/>
+                                <DataGridTextColumn Header="Ответственный" Binding="{Binding Ответственный}" Width="200"/>
+                                <DataGridTextColumn Header="Дата составления" Binding="{Binding Дата_составления, StringFormat={}{0:dd.MM.yyyy HH:mm}}" Width="140"/>
+                                <DataGridTextColumn Header="Калорийность" Binding="{Binding Калорийность_общая, StringFormat={}{0:F0} ккал}" Width="100"/>
+                                <DataGridTextColumn Header="Статус" Binding="{Binding Статус}" Width="100"/>
+                                <DataGridTextColumn Header="Блюд" Binding="{Binding Количество_блюд}" Width="60"/>
+                                <DataGridTextColumn Header="Порций" Binding="{Binding Всего_порций}" Width="60"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <!-- Справка -->
+                    <Grid x:Name="HelpContent" 
+                          Visibility="Collapsed" 
+                          Style="{StaticResource ContentAreaStyle}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" 
+                                   Text="Справка" 
+                                   Style="{StaticResource TitleStyle}"/>
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <Border Style="{StaticResource CardStyle}" Margin="0,0,0,15">
+                                    <StackPanel>
+                                        <TextBlock Text="📖 О программе" Style="{StaticResource SubtitleStyle}"/>
+                                        <TextBlock TextWrapping="Wrap" Margin="0,10">
+                                            Система составления меню для столовой ООО СФ "Белка-Фаворит".
+                                            Версия 1.0. Разработчик: Виноградов Евгений Фёдорович.
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Style="{StaticResource CardStyle}" Margin="0,0,0,15">
+                                    <StackPanel>
+                                        <TextBlock Text="🎯 Основные возможности" Style="{StaticResource SubtitleStyle}"/>
+                                        <TextBlock TextWrapping="Wrap" Margin="0,10">
+                                            • Создание и редактирование технологических карт
+                                            • Автоматический расчёт калорийности блюд
+                                            • Формирование ежедневного меню
+                                            • Печать меню для посетителей
+                                            • Создание требований накладных
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Style="{StaticResource CardStyle}" Margin="0,0,0,15">
+                                    <StackPanel>
+                                        <TextBlock Text="📞 Контакты поддержки" Style="{StaticResource SubtitleStyle}"/>
+                                        <TextBlock Text="Виноградов Евгений Фёдорович" Margin="0,10,0,0"/>
+                                        <TextBlock Text="📱 +7 (912) 369-87-62"/>
+                                        <TextBlock Text="✉️ vinogradovfedya48@gmail.com"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Button Content="📖 Открыть полную справку" 
+                                        Click="HelpButton_Click"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Width="200"
+                                        HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>
-    </DockPanel>
+    </Border>
 </Window>

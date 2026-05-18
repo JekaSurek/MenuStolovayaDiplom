@@ -14,7 +14,8 @@ namespace MenuStolovaya.Views
         private List<CalcCardDisplay> _calcCards;
         private List<AccountantProductPriceDisplay> _products;
         private List<AccountantTechCardDisplay> _techCards;
-
+        private Dictionary<Button, Style> _buttonStyles = new Dictionary<Button, Style>();
+        private bool _isMaximized = false;
         private CalcCardService _calcCardService;
         private ProductPriceService _productPriceService;
         private AccountantTechCardService _techCardService;
@@ -22,9 +23,63 @@ namespace MenuStolovaya.Views
         public AccountantWindow()
         {
             InitializeComponent();
+
+            _calcCardService = new CalcCardService();
+            _productPriceService = new ProductPriceService();
+            _techCardService = new AccountantTechCardService();
+
+            // Сохраняем стили кнопок
+            _buttonStyles[CalcCardsTabButton] = CalcCardsTabButton.Style;
+            _buttonStyles[PricesTabButton] = PricesTabButton.Style;
+            _buttonStyles[TechCardsTabButton] = TechCardsTabButton.Style;
+            _buttonStyles[HelpTabButton] = HelpTabButton.Style;
+
             LoadCurrentUserInfo();
-            InitializeServices();
             LoadData();
+
+            this.Loaded += (s, e) => ShowTab(CalcCardsContent, CalcCardsTabButton);
+        }
+
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isMaximized)
+            {
+                this.WindowState = WindowState.Normal;
+                _isMaximized = false;
+                MaximizeButton.Content = "□";
+                MaximizeButton.ToolTip = "Развернуть";
+            }
+            else
+            {
+                this.WindowState = WindowState.Maximized;
+                _isMaximized = true;
+                MaximizeButton.Content = "❐";
+                MaximizeButton.ToolTip = "Восстановить";
+            }
+        }
+
+        // Если окно сворачивается/разворачивается другими способами, добавьте обработчик
+        protected override void OnStateChanged(EventArgs e)
+        {
+            base.OnStateChanged(e);
+
+            if (this.WindowState == WindowState.Maximized)
+            {
+                _isMaximized = true;
+                MaximizeButton.Content = "❐";
+                MaximizeButton.ToolTip = "Восстановить";
+            }
+            else if (this.WindowState == WindowState.Normal)
+            {
+                _isMaximized = false;
+                MaximizeButton.Content = "□";
+                MaximizeButton.ToolTip = "Развернуть";
+            }
         }
 
         private void LoadCurrentUserInfo()
@@ -32,20 +87,56 @@ namespace MenuStolovaya.Views
             CurrentUserText.Text = ThisUser.CurrentUser?.FullName ?? "Неизвестно";
         }
 
-        private void InitializeServices()
+        private void ShowTab(Grid tabContent, Button activeButton)
         {
-            _calcCardService = new CalcCardService();
-            _productPriceService = new ProductPriceService();
-            _techCardService = new AccountantTechCardService();
+            CalcCardsContent.Visibility = Visibility.Collapsed;
+            PricesContent.Visibility = Visibility.Collapsed;
+            TechCardsContent.Visibility = Visibility.Collapsed;
+            HelpContent.Visibility = Visibility.Collapsed;
+
+            tabContent.Visibility = Visibility.Visible;
+
+            foreach (var btn in _buttonStyles.Keys)
+            {
+                btn.Style = _buttonStyles[btn];
+            }
+
+            activeButton.Style = (Style)FindResource("ActiveTabButtonStyle");
         }
 
         private void LoadData()
         {
-            // Загружаем данные для всех вкладок
             LoadCalcCards();
             LoadProducts();
             LoadTechCards();
         }
+
+        #region Навигация
+
+        private void CalcCardsTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(CalcCardsContent, CalcCardsTabButton);
+            LoadCalcCards();
+        }
+
+        private void PricesTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(PricesContent, PricesTabButton);
+            LoadProducts();
+        }
+
+        private void TechCardsTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(TechCardsContent, TechCardsTabButton);
+            LoadTechCards();
+        }
+
+        private void HelpTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(HelpContent, HelpTabButton);
+        }
+
+        #endregion
 
         #region Калькуляционные карточки
 
@@ -59,8 +150,69 @@ namespace MenuStolovaya.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при загрузке калькуляционных карточек: {ex.Message}",
-                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка при загрузке: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ReturnToReviewButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay selectedCard)
+            {
+                var result = MessageBox.Show(
+                    $"Отправить калькуляционную карточку {selectedCard.Номер} на пересмотр?\n\n" +
+                    $"После этого её можно будет редактировать.",
+                    "Подтверждение",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        if (_calcCardService.ReturnToReview(selectedCard.Id))
+                        {
+                            LoadCalcCards();
+                            MessageBox.Show("Карточка отправлена на пересмотр", "Успех",
+                                MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
+
+        private void ReturnToDraftButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay selectedCard)
+            {
+                var result = MessageBox.Show(
+                    $"Вернуть калькуляционную карточку {selectedCard.Номер} в черновик?\n\n" +
+                    $"После этого её можно будет утвердить заново.",
+                    "Подтверждение",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        if (_calcCardService.ReturnToDraft(selectedCard.Id))
+                        {
+                            LoadCalcCards();
+                            MessageBox.Show("Карточка возвращена в черновик", "Успех",
+                                MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
             }
         }
 
@@ -70,6 +222,8 @@ namespace MenuStolovaya.Views
 
             TotalCalcCardsText.Text = _calcCards.Count.ToString();
             ApprovedCalcCardsText.Text = _calcCards.Count(c => c.Статус == "Утверждена").ToString();
+            ReviewCalcCardsText.Text = _calcCards.Count(c => c.Статус == "На пересмотре").ToString();
+            DraftCalcCardsText.Text = _calcCards.Count(c => c.Статус == "Черновик").ToString();
 
             var approvedCards = _calcCards.Where(c => c.Статус == "Утверждена" && c.Фудкост_процент.HasValue).ToList();
             if (approvedCards.Any())
@@ -87,19 +241,36 @@ namespace MenuStolovaya.Views
             bool hasSelection = CalcCardsDataGrid.SelectedItem != null;
             EditCalcCardButton.IsEnabled = hasSelection;
             ApproveCalcCardButton.IsEnabled = hasSelection;
-            ReturnToReviewButton.IsEnabled = hasSelection;
-            ReturnToDraftButton.IsEnabled = hasSelection;
             DeleteCalcCardButton.IsEnabled = hasSelection;
             ViewCalcLinesButton.IsEnabled = hasSelection;
+            ReturnToReviewButton.IsEnabled = hasSelection;
+            ReturnToDraftButton.IsEnabled = hasSelection;
 
-            if (hasSelection)
+            if (hasSelection && CalcCardsDataGrid.SelectedItem is CalcCardDisplay selectedCard)
             {
-                var selectedCard = (CalcCardDisplay)CalcCardsDataGrid.SelectedItem;
+                // Кнопка "Утвердить" - только для черновиков
                 ApproveCalcCardButton.IsEnabled = selectedCard.Статус == "Черновик";
+
+                // Кнопка "На пересмотр" - только для утверждённых
                 ReturnToReviewButton.IsEnabled = selectedCard.Статус == "Утверждена";
+
+                // Кнопка "В черновик" - только для карточек на пересмотре
                 ReturnToDraftButton.IsEnabled = selectedCard.Статус == "На пересмотре";
+
+                // Кнопка "Редактировать" - для черновиков и на пересмотре
+                EditCalcCardButton.IsEnabled = selectedCard.Статус == "Черновик" || selectedCard.Статус == "На пересмотре";
+
+                // Кнопка "Удалить" - всё кроме утверждённых
                 DeleteCalcCardButton.IsEnabled = selectedCard.Статус != "Утверждена";
-                EditCalcCardButton.IsEnabled = selectedCard.Статус != "Утверждена";
+            }
+            else
+            {
+                ApproveCalcCardButton.IsEnabled = false;
+                ReturnToReviewButton.IsEnabled = false;
+                ReturnToDraftButton.IsEnabled = false;
+                EditCalcCardButton.IsEnabled = false;
+                DeleteCalcCardButton.IsEnabled = false;
+                ViewCalcLinesButton.IsEnabled = false;
             }
         }
 
@@ -108,117 +279,63 @@ namespace MenuStolovaya.Views
             try
             {
                 var dialog = new CreateCalcCardDialog();
-                if (dialog.ShowDialog() == true)
-                {
-                    LoadCalcCards();
-                    MessageBox.Show("Калькуляционная карточка успешно создана",
-                        "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                if (dialog.ShowDialog() == true) LoadCalcCards();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при создании калькуляционной карточки: {ex.Message}",
-                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            catch (Exception ex) { ShowError(ex); }
         }
 
         private void EditCalcCardButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay selectedCard)
+            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay card)
             {
                 try
                 {
-                    var dialog = new EditCalcCardDialog(selectedCard.Id);
-                    if (dialog.ShowDialog() == true)
-                    {
-                        LoadCalcCards();
-                        MessageBox.Show("Калькуляционная карточка успешно обновлена",
-                            "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
+                    var dialog = new EditCalcCardDialog(card.Id);
+                    if (dialog.ShowDialog() == true) LoadCalcCards();
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при редактировании калькуляционной карточки: {ex.Message}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                catch (Exception ex) { ShowError(ex); }
             }
         }
 
         private void ApproveCalcCardButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay selectedCard)
+            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay card && Confirm($"утвердить карточку {card.Номер}"))
             {
-                try
-                {
-                    var result = MessageBox.Show(
-                        $"Вы уверены, что хотите утвердить калькуляционную карточку {selectedCard.Номер}?\n" +
-                        $"После утверждения изменения будут невозможны.",
-                        "Подтверждение утверждения",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Question);
+                if (_calcCardService.ApproveCalcCard(card.Id)) LoadCalcCards();
+            }
+        }
 
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        if (_calcCardService.ApproveCalcCard(selectedCard.Id))
-                        {
-                            LoadCalcCards();
-                            MessageBox.Show("Калькуляционная карточка успешно утверждена",
-                                "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при утверждении калькуляционной карточки: {ex.Message}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+        private void DeleteCalcCardButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay card && Confirm($"удалить карточку {card.Номер}", true))
+            {
+                if (_calcCardService.DeleteCalcCard(card.Id)) LoadCalcCards();
             }
         }
 
         private void ViewCalcLinesButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay selectedCard)
+            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay card)
             {
-                try
-                {
-                    var dialog = new CalcLinesDialog(selectedCard.Id);
-                    dialog.ShowDialog();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при загрузке строк калькуляции: {ex.Message}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                var dialog = new CalcLinesDialog(card.Id);
+                dialog.ShowDialog();
             }
         }
 
-        private void RefreshCalcCardsButton_Click(object sender, RoutedEventArgs e)
-        {
-            LoadCalcCards();
-        }
+        private void RefreshCalcCardsButton_Click(object sender, RoutedEventArgs e) => LoadCalcCards();
+        private void CalcCardSearchBox_TextChanged(object sender, TextChangedEventArgs e) => FilterCalcCards();
 
-        private void CalcCardSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void FilterCalcCards()
         {
-            if (_calcCards != null)
-            {
-                string searchText = CalcCardSearchBox.Text.ToLower();
-                if (string.IsNullOrWhiteSpace(searchText))
-                {
-                    CalcCardsDataGrid.ItemsSource = _calcCards;
-                }
-                else
-                {
-                    CalcCardsDataGrid.ItemsSource = _calcCards.Where(c =>
-                        c.Номер.ToLower().Contains(searchText) ||
-                        c.Блюдо.ToLower().Contains(searchText) ||
-                        c.Статус.ToLower().Contains(searchText)).ToList();
-                }
-            }
+            if (_calcCards == null) return;
+            string search = CalcCardSearchBox.Text?.ToLower() ?? "";
+            CalcCardsDataGrid.ItemsSource = string.IsNullOrWhiteSpace(search) ? _calcCards :
+                _calcCards.Where(c => c.Номер.ToLower().Contains(search) || c.Блюдо.ToLower().Contains(search)).ToList();
         }
 
         #endregion
 
-        #region Управление ценами продуктов
+        #region Управление ценами
 
         private void LoadProducts()
         {
@@ -243,17 +360,12 @@ namespace MenuStolovaya.Views
                 ProductsDataGrid.ItemsSource = _products;
                 UpdateProductPriceStats();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при загрузке продуктов: {ex.Message}",
-                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            catch (Exception ex) { ShowError(ex); }
         }
 
         private void UpdateProductPriceStats()
         {
             if (_products == null) return;
-
             TotalProductsText.Text = _products.Count.ToString();
             ApprovedPricesText.Text = _products.Count(p => p.Утверждена_цена).ToString();
             PendingPricesText.Text = _products.Count(p => !p.Утверждена_цена).ToString();
@@ -265,94 +377,37 @@ namespace MenuStolovaya.Views
             ApprovePriceButton.IsEnabled = hasSelection;
             EditPriceButton.IsEnabled = hasSelection;
 
-            if (hasSelection)
-            {
-                var selectedProduct = (AccountantProductPriceDisplay)ProductsDataGrid.SelectedItem;
-                ApprovePriceButton.IsEnabled = !selectedProduct.Утверждена_цена;
-            }
+            if (hasSelection && ProductsDataGrid.SelectedItem is AccountantProductPriceDisplay p)
+                ApprovePriceButton.IsEnabled = !p.Утверждена_цена;
         }
 
         private void ApprovePriceButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ProductsDataGrid.SelectedItem is AccountantProductPriceDisplay selectedProduct)
+            if (ProductsDataGrid.SelectedItem is AccountantProductPriceDisplay p && Confirm($"утвердить цену продукта \"{p.Наименование}\" ({p.Цена:N2} руб.)"))
             {
-                try
-                {
-                    var result = MessageBox.Show(
-                        $"Вы уверены, что хотите утвердить цену продукта \"{selectedProduct.Наименование}\"?\n" +
-                        $"Текущая цена: {selectedProduct.Цена:N2} руб. {selectedProduct.Единица_измерения}\n" +
-                        $"После утверждения цена будет использована при расчетах.",
-                        "Подтверждение утверждения цены",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Question);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        if (_productPriceService.ApproveProductPrice(selectedProduct.Id, selectedProduct.Цена))
-                        {
-                            LoadProducts();
-                            MessageBox.Show("Цена продукта успешно утверждена",
-                                "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при утверждении цены продукта: {ex.Message}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                if (_productPriceService.ApproveProductPrice(p.Id, p.Цена)) LoadProducts();
             }
         }
 
         private void EditPriceButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ProductsDataGrid.SelectedItem is AccountantProductPriceDisplay selectedProduct)
+            if (ProductsDataGrid.SelectedItem is AccountantProductPriceDisplay p)
             {
-                try
-                {
-                    var dialog = new EditProductPriceDialog(selectedProduct.Id, selectedProduct.Цена);
-                    if (dialog.ShowDialog() == true)
-                    {
-                        LoadProducts();
-                        MessageBox.Show("Цена продукта успешно обновлена",
-                            "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при изменении цены продукта: {ex.Message}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                var dialog = new EditProductPriceDialog(p.Id, p.Цена);
+                if (dialog.ShowDialog() == true) LoadProducts();
             }
         }
 
-        private void RefreshProductsButton_Click(object sender, RoutedEventArgs e)
-        {
-            LoadProducts();
-        }
+        private void RefreshProductsButton_Click(object sender, RoutedEventArgs e) => LoadProducts();
+        private void ProductPriceSearchBox_TextChanged(object sender, TextChangedEventArgs e) => LoadProducts();
+        private void PriceStatusFilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e) => FilterProducts();
 
-        private void ProductPriceSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void FilterProducts()
         {
-            LoadProducts();
-        }
-
-        private void PriceStatusFilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_products == null || ProductsDataGrid == null) return;
-
-            var selectedIndex = PriceStatusFilterCombo.SelectedIndex;
-            switch (selectedIndex)
-            {
-                case 1: // Только утвержденные
-                    ProductsDataGrid.ItemsSource = _products.Where(p => p.Утверждена_цена).ToList();
-                    break;
-                case 2: // Только неутвержденные
-                    ProductsDataGrid.ItemsSource = _products.Where(p => !p.Утверждена_цена).ToList();
-                    break;
-                default: // Все цены
-                    ProductsDataGrid.ItemsSource = _products;
-                    break;
-            }
+            if (_products == null) return;
+            int index = PriceStatusFilterCombo.SelectedIndex;
+            ProductsDataGrid.ItemsSource = index == 1 ? _products.Where(p => p.Утверждена_цена).ToList() :
+                                          index == 2 ? _products.Where(p => !p.Утверждена_цена).ToList() : _products;
         }
 
         #endregion
@@ -365,12 +420,9 @@ namespace MenuStolovaya.Views
             {
                 _techCards = _techCardService.GetTechCards(TechCardSearchBox.Text);
                 TechCardsDataGrid.ItemsSource = _techCards;
+                FilterTechCards();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при загрузке технологических карт: {ex.Message}",
-                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            catch (Exception ex) { ShowError(ex); }
         }
 
         private void TechCardsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -379,204 +431,78 @@ namespace MenuStolovaya.Views
             ApproveTechCardButton.IsEnabled = hasSelection;
             ViewTechCardDetailsButton.IsEnabled = hasSelection;
 
-            if (hasSelection)
-            {
-                var selectedCard = (AccountantTechCardDisplay)TechCardsDataGrid.SelectedItem;
-                ApproveTechCardButton.IsEnabled = selectedCard.Статус != "Утверждена";
-            }
+            if (hasSelection && TechCardsDataGrid.SelectedItem is AccountantTechCardDisplay card)
+                ApproveTechCardButton.IsEnabled = card.Статус != "Утверждена";
         }
 
         private void ApproveTechCardButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TechCardsDataGrid.SelectedItem is AccountantTechCardDisplay selectedCard)
+            if (TechCardsDataGrid.SelectedItem is AccountantTechCardDisplay card && Confirm($"утвердить тех. карту {card.Номер}"))
             {
-                try
+                if (_techCardService.ApproveTechCard(card.Id) && _calcCardService.CreateCalcCardFromTechCard(card.Id))
                 {
-                    var result = MessageBox.Show(
-                        $"Вы уверены, что хотите утвердить технологическую карту {selectedCard.Номер}?\n" +
-                        $"Блюдо: {selectedCard.Блюдо}\n" +
-                        $"Выход: {selectedCard.Выход} г\n" +
-                        $"После утверждения будет создана калькуляционная карточка.",
-                        "Подтверждение утверждения",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Question);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        if (_techCardService.ApproveTechCard(selectedCard.Id))
-                        {
-                            // Автоматически создаем калькуляционную карточку
-                            if (_calcCardService.CreateCalcCardFromTechCard(selectedCard.Id))
-                            {
-                                LoadTechCards();
-                                LoadCalcCards();
-                                MessageBox.Show("Технологическая карта утверждена и создана калькуляционная карточка",
-                                    "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при утверждении технологической карты: {ex.Message}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    LoadTechCards();
+                    LoadCalcCards();
+                    MessageBox.Show("Тех. карта утверждена и создана калькуляционная карточка", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
         }
 
         private void ViewTechCardDetailsButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TechCardsDataGrid.SelectedItem is AccountantTechCardDisplay selectedCard)
+            if (TechCardsDataGrid.SelectedItem is AccountantTechCardDisplay card)
             {
-                try
-                {
-                    var dialog = new TechCardDetailsDialog(selectedCard.Id);
-                    dialog.ShowDialog();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при загрузке деталей технологической карты: {ex.Message}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                var dialog = new TechCardDetailsDialog(card.Id);
+                dialog.ShowDialog();
             }
         }
 
-        private void RefreshTechCardsButton_Click(object sender, RoutedEventArgs e)
-        {
-            LoadTechCards();
-        }
+        private void RefreshTechCardsButton_Click(object sender, RoutedEventArgs e) => LoadTechCards();
+        private void TechCardSearchBox_TextChanged(object sender, TextChangedEventArgs e) => FilterTechCards();
+        private void TechCardStatusCombo_SelectionChanged(object sender, SelectionChangedEventArgs e) => FilterTechCards();
 
-        private void TechCardSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void FilterTechCards()
         {
-            LoadTechCards();
-        }
+            if (_techCards == null) return;
+            string search = TechCardSearchBox.Text?.ToLower() ?? "";
+            string status = (TechCardStatusCombo.SelectedItem as ComboBoxItem)?.Content?.ToString();
 
-        private void TechCardStatusCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            LoadTechCards();
+            var filtered = _techCards.AsEnumerable();
+            if (!string.IsNullOrWhiteSpace(search))
+                filtered = filtered.Where(c => c.Номер.ToLower().Contains(search) || c.Блюдо.ToLower().Contains(search));
+            if (status != null && status != "Все статусы")
+                filtered = filtered.Where(c => c.Статус == status);
+
+            TechCardsDataGrid.ItemsSource = filtered.ToList();
         }
 
         #endregion
 
+        #region Вспомогательные методы
+
+        private bool Confirm(string action, bool isDanger = false)
+        {
+            return MessageBox.Show($"Вы уверены, что хотите {action}?", "Подтверждение",
+                MessageBoxButton.YesNo, isDanger ? MessageBoxImage.Warning : MessageBoxImage.Question) == MessageBoxResult.Yes;
+        }
+
+        private void ShowError(Exception ex) => MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+        private void HelpButton_Click(object sender, RoutedEventArgs e) => OpenHelp();
+        private void OpenHelp() => System.Diagnostics.Process.Start(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Help", "help.html"));
+
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             ThisUser.ClearCurrentUser();
-            var loginWindow = new LoginWindow();
-            loginWindow.Show();
-            this.Close();
+            new LoginWindow().Show();
+            Close();
         }
 
-        private void DeleteCalcCardButton_Click(object sender, RoutedEventArgs e)
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay selectedCard)
-            {
-                try
-                {
-                    var result = MessageBox.Show(
-                        $"Вы уверены, что хотите удалить калькуляционную карточку {selectedCard.Номер}?\n" +
-                        $"Блюдо: {selectedCard.Блюдо}\n" +
-                        $"Эта операция необратима.",
-                        "Подтверждение удаления",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Warning);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        if (_calcCardService.DeleteCalcCard(selectedCard.Id))
-                        {
-                            LoadCalcCards();
-                            MessageBox.Show("Калькуляционная карточка успешно удалена",
-                                "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при удалении калькуляционной карточки: {ex.Message}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
+            if (Confirm("выйти из программы", false)) Application.Current.Shutdown();
         }
 
-        private void ReturnToReviewButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay selectedCard)
-            {
-                try
-                {
-                    var result = MessageBox.Show(
-                        $"Вы уверены, что хотите отправить калькуляционную карточку {selectedCard.Номер} на пересмотр?\n" +
-                        $"После этого она будет доступна для редактирования.",
-                        "Подтверждение отправки на пересмотр",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Question);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        if (_calcCardService.ReturnToReview(selectedCard.Id))
-                        {
-                            LoadCalcCards();
-                            MessageBox.Show("Калькуляционная карточка отправлена на пересмотр",
-                                "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при отправке на пересмотр: {ex.Message}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
-
-        private void ReturnToDraftButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay selectedCard)
-            {
-                try
-                {
-                    var result = MessageBox.Show(
-                        $"Вы уверены, что хотите вернуть калькуляционную карточку {selectedCard.Номер} в черновик?\n" +
-                        $"После этого её можно будет утвердить заново.",
-                        "Подтверждение возврата в черновик",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Question);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        if (_calcCardService.ReturnToDraft(selectedCard.Id))
-                        {
-                            LoadCalcCards();
-                            MessageBox.Show("Калькуляционная карточка возвращена в черновик",
-                                "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при возврате в черновик: {ex.Message}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
-
-        private void HelpButton_Click(object sender, RoutedEventArgs e)
-        {
-            string helpPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Help", "help.html");
-
-            if (System.IO.File.Exists(helpPath))
-            {
-                System.Diagnostics.Process.Start(helpPath);
-            }
-            else
-            {
-                MessageBox.Show("Файл справки не найден!\n\n" +
-                               "Ожидаемый путь: " + helpPath,
-                               "Ошибка",
-                               MessageBoxButton.OK,
-                               MessageBoxImage.Error);
-            }
-        }
+        #endregion
     }
 
     public class AccountantProductPriceDisplay
@@ -591,6 +517,6 @@ namespace MenuStolovaya.Views
         public DateTime? Дата_утверждения_цены { get; set; }
         public string Кто_утвердил_цену { get; set; }
         public string СтатусЦены { get; set; }
-        public System.Windows.Media.Brush ЦветСтатуса { get; set; }
+        public Brush ЦветСтатуса { get; set; }
     }
 }

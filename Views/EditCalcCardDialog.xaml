@@ -7,7 +7,7 @@
         Title="Редактирование калькуляционной карточки" 
         Height="600" 
         Width="800"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         Background="{StaticResource BackgroundBrush}">
 
     <Grid Margin="15">

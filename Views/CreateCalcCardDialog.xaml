@@ -7,7 +7,7 @@
         Title="Создание калькуляционной карточки" 
         Height="550" 
         Width="700"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Background="{StaticResource BackgroundBrush}">
 

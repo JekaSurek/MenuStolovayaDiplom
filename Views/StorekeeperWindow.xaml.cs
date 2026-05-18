@@ -17,19 +17,96 @@ namespace MenuStolovaya.Views
         private List<DocumentDisplay> _expenses;
         private ProductService _productService;
         private List<ProductDisplay> _storekeeperProducts;
+        private Dictionary<Button, Style> _buttonStyles = new Dictionary<Button, Style>();
+        private bool _isMaximized = false;
 
         public StorekeeperWindow()
         {
             InitializeComponent();
             _productService = new ProductService();
+
+            // Сохраняем стили кнопок
+            _buttonStyles[RequestsTabButton] = RequestsTabButton.Style;
+            _buttonStyles[IncomeTabButton] = IncomeTabButton.Style;
+            _buttonStyles[ExpenseTabButton] = ExpenseTabButton.Style;
+            _buttonStyles[ProductsTabButton] = ProductsTabButton.Style;
+            _buttonStyles[StocksTabButton] = StocksTabButton.Style;
+            _buttonStyles[HelpTabButton] = HelpTabButton.Style;
+
             LoadCurrentUserInfo();
-            LoadData();
             LoadWarehouses();
+            LoadData();
+
+            this.Loaded += (s, e) => ShowTab(RequestsContent, RequestsTabButton);
+        }
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isMaximized)
+            {
+                this.WindowState = WindowState.Normal;
+                _isMaximized = false;
+                MaximizeButton.Content = "□";
+                MaximizeButton.ToolTip = "Развернуть";
+            }
+            else
+            {
+                this.WindowState = WindowState.Maximized;
+                _isMaximized = true;
+                MaximizeButton.Content = "❐";
+                MaximizeButton.ToolTip = "Восстановить";
+            }
+        }
+
+        // Если окно сворачивается/разворачивается другими способами, добавьте обработчик
+        protected override void OnStateChanged(EventArgs e)
+        {
+            base.OnStateChanged(e);
+
+            if (this.WindowState == WindowState.Maximized)
+            {
+                _isMaximized = true;
+                MaximizeButton.Content = "❐";
+                MaximizeButton.ToolTip = "Восстановить";
+            }
+            else if (this.WindowState == WindowState.Normal)
+            {
+                _isMaximized = false;
+                MaximizeButton.Content = "□";
+                MaximizeButton.ToolTip = "Развернуть";
+            }
         }
 
         private void LoadCurrentUserInfo()
         {
             CurrentUserText.Text = ThisUser.CurrentUser?.FullName ?? "Неизвестно";
+        }
+
+        private void ShowTab(Grid tabContent, Button activeButton)
+        {
+            // Скрываем все вкладки
+            RequestsContent.Visibility = Visibility.Collapsed;
+            IncomeContent.Visibility = Visibility.Collapsed;
+            ExpenseContent.Visibility = Visibility.Collapsed;
+            ProductsContent.Visibility = Visibility.Collapsed;
+            StocksContent.Visibility = Visibility.Collapsed;
+            HelpContent.Visibility = Visibility.Collapsed;
+
+            // Показываем выбранную
+            tabContent.Visibility = Visibility.Visible;
+
+            // Сбрасываем стили всех кнопок
+            foreach (var btn in _buttonStyles.Keys)
+            {
+                btn.Style = _buttonStyles[btn];
+            }
+
+            // Устанавливаем активный стиль для выбранной кнопки
+            activeButton.Style = (Style)FindResource("ActiveTabButtonStyle");
         }
 
         private void LoadWarehouses()
@@ -58,10 +135,49 @@ namespace MenuStolovaya.Views
         private void LoadData()
         {
             LoadRequests();
-            LoadStocks();
             LoadDocuments();
             LoadStorekeeperProducts();
+            LoadStocks();
         }
+
+        #region Навигация по вкладкам
+
+        private void RequestsTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(RequestsContent, RequestsTabButton);
+            LoadRequests();
+        }
+
+        private void IncomeTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(IncomeContent, IncomeTabButton);
+            LoadDocuments();
+        }
+
+        private void ExpenseTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(ExpenseContent, ExpenseTabButton);
+            LoadDocuments();
+        }
+
+        private void ProductsTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(ProductsContent, ProductsTabButton);
+            LoadStorekeeperProducts();
+        }
+
+        private void StocksTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(StocksContent, StocksTabButton);
+            LoadStocks();
+        }
+
+        private void HelpTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(HelpContent, HelpTabButton);
+        }
+
+        #endregion
 
         #region Требования накладные
 
@@ -172,8 +288,7 @@ namespace MenuStolovaya.Views
             if (selected != null)
             {
                 var result = MessageBox.Show(
-                    $"Подтвердить требование №{selected.Номер}?\n\n" +
-                    $"После подтверждения продукты будут списаны со склада.",
+                    $"Подтвердить требование №{selected.Номер}?\n\nПосле подтверждения продукты будут списаны со склада.",
                     "Подтверждение",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question);
@@ -333,16 +448,13 @@ namespace MenuStolovaya.Views
 
         #endregion
 
-        #region Управление продуктами
+        #region Управление продуктами (кладовщик)
 
         private void LoadStorekeeperProducts()
         {
             try
             {
-                // Ищем TextBox по имени - он есть в XAML с именем "ProductSearchBox"
-                var searchBox = this.FindName("ProductSearchBox") as TextBox;
-                string searchText = searchBox?.Text ?? "";
-
+                string searchText = ProductSearchBox?.Text ?? "";
                 _storekeeperProducts = _productService.GetProducts(searchText);
                 StorekeeperProductsDataGrid.ItemsSource = _storekeeperProducts;
                 UpdateProductStats();
@@ -751,12 +863,27 @@ namespace MenuStolovaya.Views
 
         #endregion
 
+        #region Общие методы
+
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             ThisUser.ClearCurrentUser();
             var loginWindow = new LoginWindow();
             loginWindow.Show();
             Close();
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show("Вы уверены, что хотите выйти из программы?",
+                "Подтверждение выхода",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
+            }
         }
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)
@@ -776,9 +903,11 @@ namespace MenuStolovaya.Views
                                MessageBoxImage.Error);
             }
         }
+
+        #endregion
     }
 
-    #region Display Classes
+    #region Display классы
 
     public class RequestDisplay
     {
@@ -824,6 +953,4 @@ namespace MenuStolovaya.Views
     }
 
     #endregion
-
-
 }

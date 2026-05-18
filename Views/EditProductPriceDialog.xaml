@@ -7,7 +7,7 @@
         Title="Изменение цены продукта" 
         Height="450" 
         Width="500"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Background="{StaticResource BackgroundBrush}">
 

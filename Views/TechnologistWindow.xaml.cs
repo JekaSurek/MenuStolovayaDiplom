@@ -17,8 +17,10 @@ using MenuStolovaya.Views;
 
 namespace MenuStolovaya.Views
 {
+
     public partial class TechnologistWindow : Window
     {
+        private Dictionary<Button, Style> _buttonStyles = new Dictionary<Button, Style>();
         private ProductService _productService = new ProductService();
         private CategoryService _categoryService = new CategoryService();
         private DishService _dishService = new DishService();
@@ -26,12 +28,68 @@ namespace MenuStolovaya.Views
         private TechnologyCardService _techCardService = new TechnologyCardService();
         private MenuService _menuService = new MenuService();
         private MenuPrinterService _menuPrinterService = new MenuPrinterService();
+        private bool _isMaximized = false;
 
         public TechnologistWindow()
         {
             InitializeComponent();
+
+            // Сохраняем обычные стили кнопок
+            _buttonStyles[ProductsTabButton] = ProductsTabButton.Style;
+            _buttonStyles[CategoriesTabButton] = CategoriesTabButton.Style;
+            _buttonStyles[DishesTabButton] = DishesTabButton.Style;
+            _buttonStyles[DishTypesTabButton] = DishTypesTabButton.Style;
+            _buttonStyles[TechnologyCardsTabButton] = TechnologyCardsTabButton.Style;
+            _buttonStyles[MenusTabButton] = MenusTabButton.Style;
+            _buttonStyles[HelpTabButton] = HelpTabButton.Style;
+
             LoadCurrentUserInfo();
             LoadProducts();
+
+            // Устанавливаем активную вкладку после загрузки
+            this.Loaded += (s, e) => ShowTab(ProductsContent, ProductsTabButton);
+        }
+
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isMaximized)
+            {
+                this.WindowState = WindowState.Normal;
+                _isMaximized = false;
+                MaximizeButton.Content = "□";
+                MaximizeButton.ToolTip = "Развернуть";
+            }
+            else
+            {
+                this.WindowState = WindowState.Maximized;
+                _isMaximized = true;
+                MaximizeButton.Content = "❐";
+                MaximizeButton.ToolTip = "Восстановить";
+            }
+        }
+
+        // Если окно сворачивается/разворачивается другими способами, добавьте обработчик
+        protected override void OnStateChanged(EventArgs e)
+        {
+            base.OnStateChanged(e);
+
+            if (this.WindowState == WindowState.Maximized)
+            {
+                _isMaximized = true;
+                MaximizeButton.Content = "❐";
+                MaximizeButton.ToolTip = "Восстановить";
+            }
+            else if (this.WindowState == WindowState.Normal)
+            {
+                _isMaximized = false;
+                MaximizeButton.Content = "□";
+                MaximizeButton.ToolTip = "Развернуть";
+            }
         }
 
         private void LoadCurrentUserInfo()
@@ -178,14 +236,13 @@ namespace MenuStolovaya.Views
         #endregion
 
         #region Категории
+
         private void LoadCategories()
         {
             try
             {
-                var categories = _categoryService.GetCategories();
+                var categories = _categoryService.GetCategories(CategorySearchBox.Text);
                 CategoriesDataGrid.ItemsSource = categories;
-
-                // Активируем/деактивируем кнопки
                 UpdateCategoryButtonsState();
             }
             catch (Exception ex)
@@ -196,8 +253,10 @@ namespace MenuStolovaya.Views
         }
 
         private void UpdateCategoryButtonsState()
-        { 
-            
+        {
+            bool hasSelection = CategoriesDataGrid.SelectedItem != null;
+            EditCategoryButton.IsEnabled = hasSelection;
+            DeleteCategoryButton.IsEnabled = hasSelection;
         }
 
         private void AddCategoryButton_Click(object sender, RoutedEventArgs e)
@@ -289,23 +348,14 @@ namespace MenuStolovaya.Views
 
         private void CategorySearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            try
-            {
-                var filter = CategorySearchBox.Text;
-                var categories = _categoryService.GetCategories(filter);
-                CategoriesDataGrid.ItemsSource = categories;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при поиске: {ex.Message}", "Ошибка",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            LoadCategories();
         }
 
         private void CategoriesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UpdateCategoryButtonsState();
         }
+
         #endregion
 
         #region Блюда
@@ -464,14 +514,13 @@ namespace MenuStolovaya.Views
         #endregion
 
         #region Виды блюд
+
         private void LoadDishTypes()
         {
             try
             {
-                var dishTypes = _dishTypeService.GetDishTypes();
+                var dishTypes = _dishTypeService.GetDishTypes(DishTypeSearchBox.Text);
                 DishTypesDataGrid.ItemsSource = dishTypes;
-
-                // Активируем/деактивируем кнопки
                 UpdateDishTypeButtonsState();
             }
             catch (Exception ex)
@@ -483,7 +532,9 @@ namespace MenuStolovaya.Views
 
         private void UpdateDishTypeButtonsState()
         {
-           
+            bool hasSelection = DishTypesDataGrid.SelectedItem != null;
+            EditDishTypeButton.IsEnabled = hasSelection;
+            DeleteDishTypeButton.IsEnabled = hasSelection;
         }
 
         private void AddDishTypeButton_Click(object sender, RoutedEventArgs e)
@@ -575,23 +626,14 @@ namespace MenuStolovaya.Views
 
         private void DishTypeSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            try
-            {
-                var filter = DishTypeSearchBox.Text;
-                var dishTypes = _dishTypeService.GetDishTypes(filter);
-                DishTypesDataGrid.ItemsSource = dishTypes;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при поиске: {ex.Message}", "Ошибка",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            LoadDishTypes();
         }
 
         private void DishTypesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UpdateDishTypeButtonsState();
         }
+
         #endregion
 
         #region Технологические карты
@@ -872,49 +914,53 @@ namespace MenuStolovaya.Views
             EditMenuButton.IsEnabled = hasSelection;
             DeleteMenuButton.IsEnabled = hasSelection;
             //EditMenuItemsButton.IsEnabled = hasSelection;
-            PrintMenuButton.IsEnabled = hasSelection;
-            CreateRequestButton.IsEnabled = hasSelection; // Добавьте эту строку
+            
         }
         #endregion
 
         #region Навигация по вкладкам
         private void ProductsTabButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowTab(ProductsContent);
+            ShowTab(ProductsContent, ProductsTabButton);
             LoadProducts();
         }
 
         private void CategoriesTabButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowTab(CategoriesContent);
+            ShowTab(CategoriesContent, CategoriesTabButton);
             LoadCategories();
         }
 
         private void DishesTabButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowTab(DishesContent);
+            ShowTab(DishesContent, DishesTabButton);
             LoadDishes();
         }
 
         private void DishTypesTabButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowTab(DishTypesContent);
+            ShowTab(DishTypesContent, DishTypesTabButton);
             LoadDishTypes();
         }
 
         private void TechnologyCardsTabButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowTab(TechnologyCardsContent);
+            ShowTab(TechnologyCardsContent, TechnologyCardsTabButton);
             LoadTechnologyCards();
         }
 
         private void MenusTabButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowTab(MenusContent);
+            ShowTab(MenusContent, MenusTabButton);
             LoadMenus();
         }
 
-        private void ShowTab(Grid tabContent)
+        private void HelpTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(HelpContent, HelpTabButton);
+        }
+
+        private void ShowTab(Grid tabContent, Button activeButton = null)
         {
             ProductsContent.Visibility = Visibility.Collapsed;
             CategoriesContent.Visibility = Visibility.Collapsed;
@@ -922,9 +968,44 @@ namespace MenuStolovaya.Views
             DishTypesContent.Visibility = Visibility.Collapsed;
             TechnologyCardsContent.Visibility = Visibility.Collapsed;
             MenusContent.Visibility = Visibility.Collapsed;
-            HelpContent.Visibility = Visibility.Collapsed; 
+            HelpContent.Visibility = Visibility.Collapsed;
 
             tabContent.Visibility = Visibility.Visible;
+
+            // Сбрасываем стили всех кнопок
+            foreach (var btn in _buttonStyles.Keys)
+            {
+                btn.Style = _buttonStyles[btn];
+            }
+
+            // Устанавливаем активный стиль для выбранной кнопки
+            if (activeButton != null)
+            {
+                var activeStyle = new Style(typeof(Button));
+                activeStyle.Setters.Add(new Setter(Button.BackgroundProperty, new SolidColorBrush(Color.FromRgb(76, 175, 80))));
+                activeStyle.Setters.Add(new Setter(Button.ForegroundProperty, Brushes.White));
+                activeStyle.Setters.Add(new Setter(BorderThicknessProperty, new Thickness(0)));
+                activeStyle.Setters.Add(new Setter(HeightProperty, 50.0));
+                activeStyle.Setters.Add(new Setter(HorizontalContentAlignmentProperty, HorizontalAlignment.Left));
+                activeStyle.Setters.Add(new Setter(PaddingProperty, new Thickness(20, 0, 0, 0)));
+                activeStyle.Setters.Add(new Setter(FontSizeProperty, 14.0));
+                activeStyle.Setters.Add(new Setter(FontWeightProperty, FontWeights.SemiBold));
+                activeStyle.Setters.Add(new Setter(CursorProperty, Cursors.Hand));
+
+                var template = new ControlTemplate(typeof(Button));
+                var border = new FrameworkElementFactory(typeof(Border));
+                border.SetValue(Border.CornerRadiusProperty, new CornerRadius(0, 10, 10, 0));
+                border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Button.BackgroundProperty));
+                var content = new FrameworkElementFactory(typeof(ContentPresenter));
+                content.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+                content.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+                content.SetValue(ContentPresenter.MarginProperty, new Thickness(20, 0, 0, 0));
+                border.AppendChild(content);
+                template.VisualTree = border;
+                activeStyle.Setters.Add(new Setter(Button.TemplateProperty, template));
+
+                activeButton.Style = activeStyle;
+            }
         }
         #endregion
 
@@ -970,11 +1051,8 @@ namespace MenuStolovaya.Views
                 }
             }
         }
-        private void HelpTabButton_Click(object sender, RoutedEventArgs e)
-        {
-            ShowTab(HelpContent);
-        }
 
+       
         private void CreateRequestButton_Click(object sender, RoutedEventArgs e)
         {
             var selectedMenu = MenusDataGrid.SelectedItem as DailyMenuDisplay;
@@ -1102,6 +1180,19 @@ namespace MenuStolovaya.Views
                                "Ошибка",
                                MessageBoxButton.OK,
                                MessageBoxImage.Error);
+            }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show("Вы уверены, что хотите выйти из программы?",
+                "Подтверждение выхода",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
             }
         }
     }

@@ -5,125 +5,357 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Столовая: Авторизация" 
-        Height="400" 
-        Width="600"
+        Height="500" 
+        Width="700"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Style="{DynamicResource LoginWindowStyle}">
+        AllowsTransparency="True"
+        WindowStyle="None"
+        Background="Transparent">
 
     <Window.Resources>
+        <!-- Градиентный фон для окна -->
+        <LinearGradientBrush x:Key="WindowBackground" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FF1B5E20" Offset="0"/>
+            <GradientStop Color="#FF2E7D32" Offset="0.5"/>
+            <GradientStop Color="#FF4CAF50" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- Стиль для текстовых полей -->
         <Style TargetType="TextBox">
-            <Setter Property="Height" Value="35"/>
-            <Setter Property="Margin" Value="10,5,10,15"/>
-            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Margin" Value="0,5,0,15"/>
+            <Setter Property="Padding" Value="15,0,15,0"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+            <Setter Property="BorderBrush" Value="#FFE0E0E0"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="#FFF8F8F8"/>
+            <Setter Property="Foreground" Value="#FF333333"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
-        <Style TargetType="TextBlock">
-            <Setter Property="Margin" Value="10,10,10,5"/>
-            <Setter Property="Foreground" Value="White"/>
+        <!-- Стиль для PasswordBox -->
+        <Style TargetType="PasswordBox">
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Margin" Value="0,5,0,15"/>
+            <Setter Property="Padding" Value="15,0,15,0"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderBrush" Value="#FFE0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="#FFF8F8F8"/>
+            <Setter Property="Foreground" Value="#FF333333"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
+        <!-- Стиль для текстовых меток -->
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#FF555555"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+
+        <!-- Стиль кнопки входа -->
         <Style x:Key="LoginButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Margin" Value="10,10,10,0"/>
-            <Setter Property="Background" Value="#FF4CAF50"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#FF4CAF50" Offset="0"/>
+                        <GradientStop Color="#FF45A049" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                CornerRadius="5">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="8">
                             <ContentPresenter HorizontalAlignment="Center" 
                                               VerticalAlignment="Center"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Color="#FF45A049" Offset="0"/>
+                                            <GradientStop Color="#FF3D8B40" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF3D8B40"/>
+                                <Setter TargetName="border" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#FFCCCCCC"/>
+                                <Setter Property="Foreground" Value="#FF999999"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#FF45A049"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#FF3D8B40"/>
-                </Trigger>
-            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль кнопки справки -->
+        <Style x:Key="HelpButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FFE0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFE0E0E0"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#40FFFFFF"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для закрытия окна -->
+        <Style x:Key="CloseButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="20">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#30FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
-    <Grid Background="#FF2196F3">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <!-- Основной контейнер с тенью -->
+    <Border Background="{StaticResource WindowBackground}" 
+            CornerRadius="15"
+            Margin="10">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.3"/>
+        </Border.Effect>
 
-        <!-- Левая часть с информацией -->
-        <StackPanel Grid.Column="0" 
-            VerticalAlignment="Center" 
-            HorizontalAlignment="Center">
-            <TextBlock Text="🍽️" 
-               FontSize="80" 
-               Margin="0,0,0,30"
-               Foreground="White"/>
-            <TextBlock Text="Система составления" 
-               FontSize="20" 
-               FontWeight="Bold" 
-               HorizontalAlignment="Center"
-               Foreground="White"/>
-            <TextBlock Text="меню для столовой" 
-               FontSize="20" 
-               FontWeight="Bold" 
-               HorizontalAlignment="Center"
-               Margin="0,5,0,0"
-               Foreground="White"/>
-            <Button Content="📖 Справка" 
-        Click="HelpButton_Click"
-        Style="{StaticResource PrimaryButtonStyle}"
-        Width="100"
-        Margin="10"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        </StackPanel>
+            <!-- Верхняя панель с кнопкой закрытия -->
+            <Grid Grid.Row="0" Margin="10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="1" 
+                        Content="✕" 
+                        Style="{StaticResource CloseButtonStyle}"
+                        Click="CloseButton_Click"
+                        ToolTip="Закрыть"/>
+            </Grid>
 
-        <!-- Правая часть с формой входа -->
-        <Border Grid.Column="1" 
-                Background="White" 
-                Margin="20" 
-                CornerRadius="10">
-            <StackPanel VerticalAlignment="Center" 
-                        HorizontalAlignment="Center" 
-                        Width="280">
-                <TextBlock Text="Вход в систему" 
-                           FontSize="24" 
-                           FontWeight="Bold" 
-                           HorizontalAlignment="Center" 
-                           Margin="0,0,0,30" 
-                           Foreground="#FF2196F3"/>
+            <!-- Основное содержимое -->
+            <Grid Grid.Row="1" Margin="20,0,20,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Логин:" 
-                           Foreground="#FF333333"/>
-                <TextBox x:Name="LoginTextBox"
-                         TextChanged="LoginTextBox_TextChanged" Width="250"/>
+                <!-- Левая часть с логотипом и информацией -->
+                <Border Grid.Column="0" 
+                        Margin="0,20,20,20"
+                        CornerRadius="12"
+                        Background="#20FFFFFF">
+                    <StackPanel VerticalAlignment="Center" 
+                                HorizontalAlignment="Center">
 
-                <TextBlock Text="Пароль:" 
-                           Foreground="#FF333333"/>
-                <PasswordBox x:Name="PasswordBox"
-                             PasswordChanged="PasswordBox_PasswordChanged" Width="251"/>
+                        <!-- Логотип (замените путь к вашему логотипу) -->
+                        <Image Source="/Resources/Logo.ico" 
+                               Width="120" 
+                               Height="120"
+                               Margin="0,0,0,20">
+                            <Image.ToolTip>
+                                <ToolTip>ООО СФ "Белка-Фаворит"</ToolTip>
+                            </Image.ToolTip>
+                        </Image>
 
-                <Button Style="{StaticResource LoginButtonStyle}" 
-                        HorizontalAlignment="Stretch" 
-                        x:Name="ButtonLogin" 
-                        Content="Войти" 
-                        Click="ButtonLogin_Click"
-                        IsDefault="True"/>
-            </StackPanel>
-        </Border>
-    </Grid>
+                        <!-- Если логотипа нет, раскомментируйте эту надпись и закомментируйте Image -->
+                        <!--
+                        <TextBlock Text="🍽️" 
+                                   FontSize="80" 
+                                   Foreground="White"
+                                   TextAlignment="Center"
+                                   Margin="0,0,0,20"/>
+                        -->
+
+                        <TextBlock Text="Система составления" 
+                                   FontSize="18" 
+                                   FontWeight="Bold" 
+                                   HorizontalAlignment="Center"
+                                   Foreground="White"
+                                   Opacity="0.9"/>
+                        <TextBlock Text="меню для столовой" 
+                                   FontSize="18" 
+                                   FontWeight="Bold" 
+                                   HorizontalAlignment="Center"
+                                   Foreground="White"
+                                   Margin="0,5,0,15"
+                                   Opacity="0.9"/>
+
+                        <TextBlock Text="ООО СФ &quot;Белка-Фаворит&quot;" 
+                                   FontSize="12" 
+                                   HorizontalAlignment="Center"
+                                   Foreground="#E0E0E0"
+                                   Margin="0,20,0,0"
+                                   Opacity="0.7"/>
+
+                        <Button Content="📖 Справка" 
+                                Style="{StaticResource HelpButtonStyle}"
+                                Click="HelpButton_Click"
+                                Margin="0,30,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Правая часть с формой входа -->
+                <Border Grid.Column="1" 
+                        Background="White" 
+                        CornerRadius="12"
+                        Margin="20,2,0,2"
+                        Padding="25">
+                    <StackPanel VerticalAlignment="Center">
+
+                        <!-- Заголовок -->
+                        <TextBlock Text="Добро пожаловать!" 
+                                   FontSize="22" 
+                                   FontWeight="Bold" 
+                                   Foreground="#FF2E7D32"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,5"/>
+                        <TextBlock Text="Войдите в систему" 
+                                   FontSize="14" 
+                                   Foreground="#FF888888"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,30"/>
+
+                        <!-- Поле Логин -->
+                        <TextBlock Text="Логин" Foreground="#FF333333"/>
+                        <TextBox x:Name="LoginTextBox"
+                                 TextChanged="LoginTextBox_TextChanged"
+                                 ToolTip="Введите ваш логин"/>
+
+                        <!-- Поле Пароль -->
+                        <TextBlock Text="Пароль" Foreground="#FF333333" Margin="0,10,0,5"/>
+                        <PasswordBox x:Name="PasswordBox"
+                                     PasswordChanged="PasswordBox_PasswordChanged"
+                                     ToolTip="Введите ваш пароль"/>
+
+                        <!-- Кнопка Войти -->
+                        <Button x:Name="ButtonLogin" 
+                                Content="ВОЙТИ"
+                                Style="{StaticResource LoginButtonStyle}"
+                                Click="ButtonLogin_Click"
+                                IsDefault="True"
+                                IsEnabled="False"/>
+
+                        <!-- Строка с информацией -->
+                        <TextBlock Text="Для входа обратитесь к администратору" 
+                                   FontSize="11"
+                                   Foreground="#FF999999"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,20,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>

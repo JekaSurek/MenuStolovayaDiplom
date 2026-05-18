@@ -431,6 +431,8 @@
       <DependentUpon>ModelMenuStolovayaDB.edmx</DependentUpon>
       <LastGenOutput>ModelMenuStolovayaDB.cs</LastGenOutput>
     </Content>
+    <Resource Include="Resources\Logo.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

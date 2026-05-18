@@ -7,8 +7,8 @@
         Title="Редактор меню" 
         Height="800" 
         Width="1300"
-        WindowStartupLocation="CenterOwner"
-        Background="{StaticResource BackgroundBrush}">
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BackgroundBrush}" WindowState="Maximized">
 
     <Window.Resources>
         <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
@@ -183,47 +183,45 @@
                         BorderThickness="0,0,0,1">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="120"/>
-                            <ColumnDefinition Width="120"/>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="98"/>
+                            <ColumnDefinition Width="213"/>
+                            <ColumnDefinition Width="169.103"/>
+                            <ColumnDefinition Width="Auto" MinWidth="117.897"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" 
+                        <TextBlock Grid.Column="0" 
                                    Text="Блюдо:" 
                                    VerticalAlignment="Center"
-                                   FontWeight="SemiBold"/>
+                                   FontWeight="SemiBold" Height="16"/>
                         <ComboBox x:Name="DishComboBox" 
                                   Grid.Row="1" Grid.Column="0"
-                                  Height="35"
                                   DisplayMemberPath="DisplayText"
                                   SelectedValuePath="Id"
                                   SelectionChanged="DishComboBox_SelectionChanged"
                                   Margin="0,0,10,0"/>
 
-                        <TextBlock Grid.Row="0" Grid.Column="1" 
+                        <TextBlock Grid.Column="1" 
                                    Text="Порций:" 
                                    VerticalAlignment="Center"
                                    FontWeight="SemiBold"
-                                   HorizontalAlignment="Center"/>
+                                   HorizontalAlignment="Center" Height="16" Width="50"/>
                         <TextBox x:Name="PortionsTextBox" 
                                  Grid.Row="1" Grid.Column="1"
-                                 Height="35"
                                  Text="1"
                                  PreviewTextInput="NumberValidationTextBox"
                                  Margin="0,0,10,0"/>
 
-                        <TextBlock Grid.Row="0" Grid.Column="2" 
+                        <TextBlock Grid.Column="2" 
                                    Text="Выход (г):" 
                                    VerticalAlignment="Center"
                                    FontWeight="SemiBold"
-                                   HorizontalAlignment="Center"/>
-                        <Grid Grid.Row="1" Grid.Column="2">
+                                   HorizontalAlignment="Left" Height="16" Width="56" Margin="50,0,0,0"/>
+                        <Grid Grid.Row="1" Grid.Column="2" Margin="15,0,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -232,27 +230,25 @@
                                      Grid.Column="0"
                                      Height="35"
                                      PreviewTextInput="NumberValidationTextBox"
-                                     Margin="0,0,5,0"/>
+                                     Margin="0,0,0,0"/>
                             <Button Grid.Column="1"
                                     Content="⚡"
-                                    Width="35"
                                     Height="35"
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Background="{StaticResource AccentBrush}"
                                     Click="UseStandardOutputButton_Click"
-                                    ToolTip="Использовать стандартный выход блюда"/>
+                                    ToolTip="Использовать стандартный выход блюда" Margin="10,0,10,0"/>
                         </Grid>
 
-                        <TextBlock Grid.Row="0" Grid.Column="3" 
+                        <TextBlock Grid.Column="3" 
                                    Text="Время подачи:" 
                                    VerticalAlignment="Center"
                                    FontWeight="SemiBold"
-                                   HorizontalAlignment="Center"/>
+                                   HorizontalAlignment="Center" Height="16" Width="84"/>
                         <ComboBox x:Name="TimeComboBox" 
                                   Grid.Row="1" Grid.Column="3"
-                                  Height="35"
                                   SelectedIndex="1"
-                                  Margin="0,0,10,0">
+                                  Margin="1,0,10,0">
                             <ComboBoxItem Content="Завтрак"/>
                             <ComboBoxItem Content="Обед"/>
                             <ComboBoxItem Content="Ужин"/>
@@ -262,8 +258,7 @@
                         <Button x:Name="AddDishButton"
                                 Grid.Row="1" Grid.Column="4"
                                 Content="➕ Добавить"
-                                Width="100"
-                                Height="35"
+                                Height="NaN"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Click="AddDishButton_Click"
                                 Margin="5,0,0,0"/>

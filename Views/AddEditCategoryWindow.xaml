@@ -7,7 +7,7 @@
         Title="{Binding WindowTitle}" 
         Height="400" 
         Width="500"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
 
     <Window.Resources>

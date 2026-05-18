@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using MenuStolovaya.Models;
 using System.Data.Entity;
 
@@ -12,17 +13,85 @@ namespace MenuStolovaya.Views
     {
         private List<Пользователи> _users;
         private Пользователи _selectedUser;
+        private Dictionary<Button, Style> _buttonStyles = new Dictionary<Button, Style>();
+        private bool _isMaximized = false;
 
         public AdminWindow()
         {
             InitializeComponent();
+
+            // Сохраняем стили кнопок
+            _buttonStyles[UsersTabButton] = UsersTabButton.Style;
+            _buttonStyles[HelpTabButton] = HelpTabButton.Style;
+
             LoadCurrentUserInfo();
             LoadUsers();
+
+            this.Loaded += (s, e) => ShowTab(UsersContent, UsersTabButton);
+        }
+
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isMaximized)
+            {
+                this.WindowState = WindowState.Normal;
+                _isMaximized = false;
+                MaximizeButton.Content = "□";
+                MaximizeButton.ToolTip = "Развернуть";
+            }
+            else
+            {
+                this.WindowState = WindowState.Maximized;
+                _isMaximized = true;
+                MaximizeButton.Content = "❐";
+                MaximizeButton.ToolTip = "Восстановить";
+            }
+        }
+
+        // Если окно сворачивается/разворачивается другими способами, добавьте обработчик
+        protected override void OnStateChanged(EventArgs e)
+        {
+            base.OnStateChanged(e);
+
+            if (this.WindowState == WindowState.Maximized)
+            {
+                _isMaximized = true;
+                MaximizeButton.Content = "❐";
+                MaximizeButton.ToolTip = "Восстановить";
+            }
+            else if (this.WindowState == WindowState.Normal)
+            {
+                _isMaximized = false;
+                MaximizeButton.Content = "□";
+                MaximizeButton.ToolTip = "Развернуть";
+            }
         }
 
         private void LoadCurrentUserInfo()
         {
-            CurrentUserText.Text = Models.ThisUser.CurrentUser?.FullName ?? "Неизвестно";
+            CurrentUserText.Text = ThisUser.CurrentUser?.FullName ?? "Неизвестно";
+        }
+
+        private void ShowTab(Grid tabContent, Button activeButton)
+        {
+            UsersContent.Visibility = Visibility.Collapsed;
+            HelpContent.Visibility = Visibility.Collapsed;
+
+            tabContent.Visibility = Visibility.Visible;
+
+            // Сбрасываем стили всех кнопок
+            foreach (var btn in _buttonStyles.Keys)
+            {
+                btn.Style = _buttonStyles[btn];
+            }
+
+            // Устанавливаем активный стиль
+            activeButton.Style = (Style)FindResource("ActiveTabButtonStyle");
         }
 
         private void LoadUsers(string filter = "")
@@ -31,7 +100,6 @@ namespace MenuStolovaya.Views
             {
                 using (var db = new MenuStolovayaDBEntities())
                 {
-                    // Явно загружаем связанные данные
                     var query = db.Пользователи
                         .Include(u => u.Роли)
                         .AsQueryable();
@@ -48,7 +116,6 @@ namespace MenuStolovaya.Views
 
                     _users = query.ToList();
 
-                    // Создаем список объектов UserDisplay
                     var usersForDisplay = _users.Select(u => new UserDisplay
                     {
                         Id = u.id,
@@ -62,7 +129,6 @@ namespace MenuStolovaya.Views
                         Дата_регистрации = u.Дата_регистрации.HasValue
                             ? u.Дата_регистрации.Value.ToString("dd.MM.yyyy")
                             : "Не указана",
-                        // Добавляем пароль для отладки (в реальном приложении лучше не показывать)
                         Пароль = u.Пароль
                     }).ToList();
 
@@ -74,6 +140,17 @@ namespace MenuStolovaya.Views
                 MessageBox.Show($"Ошибка при загрузке пользователей: {ex.Message}",
                     "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void UsersTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(UsersContent, UsersTabButton);
+            LoadUsers(SearchTextBox.Text);
+        }
+
+        private void HelpTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTab(HelpContent, HelpTabButton);
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -96,13 +173,16 @@ namespace MenuStolovaya.Views
         {
             if (UsersDataGrid.SelectedItem is UserDisplay selectedDisplay)
             {
-                
                 _selectedUser = _users.FirstOrDefault(u => u.id == selectedDisplay.Id);
             }
             else
             {
                 _selectedUser = null;
             }
+
+            bool hasSelection = _selectedUser != null;
+            EditUserButton.IsEnabled = hasSelection;
+            DeleteUserButton.IsEnabled = hasSelection;
         }
 
         private void AddUserButton_Click(object sender, RoutedEventArgs e)
@@ -155,15 +235,13 @@ namespace MenuStolovaya.Views
                 return;
             }
 
-            // Проверка на удаление самого себя
-            if (_selectedUser.id == Models.ThisUser.CurrentUser.Id)
+            if (_selectedUser.id == ThisUser.CurrentUser.Id)
             {
                 MessageBox.Show("Нельзя удалить самого себя",
                     "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            // Проверка на администратора
             if (_selectedUser.Роли?.Наименование == "Администратор")
             {
                 MessageBox.Show("Нельзя удалить администратора",
@@ -201,10 +279,23 @@ namespace MenuStolovaya.Views
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            Models.ThisUser.ClearCurrentUser();
+            ThisUser.ClearCurrentUser();
             var loginWindow = new LoginWindow();
             loginWindow.Show();
             this.Close();
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show("Вы уверены, что хотите выйти из программы?",
+                "Подтверждение выхода",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
+            }
         }
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)

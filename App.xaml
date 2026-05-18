@@ -40,27 +40,31 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Padding" Value="20,10"/>
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="MinWidth" Value="90"/>
+            <Setter Property="Padding" Value="15,0,15,0"/>
+            <!-- Лево и право по 15 -->
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="border" 
-                                Background="{TemplateBinding Background}" 
-                                CornerRadius="3">
+                        Background="{TemplateBinding Background}" 
+                        CornerRadius="6">
                             <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
+                                    VerticalAlignment="Center"
+                                    Margin="{TemplateBinding Padding}"/>
+                            <!-- Добавлен Margin -->
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="Background" 
-                                        Value="{StaticResource PrimaryDarkBrush}"/>
+                                Value="{StaticResource PrimaryDarkBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="border" Property="Background" 
-                                        Value="{StaticResource PrimaryDarkBrush}"/>
+                                Value="{StaticResource PrimaryDarkBrush}"/>
                                 <Setter TargetName="border" Property="RenderTransform">
                                     <Setter.Value>
                                         <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
@@ -119,13 +123,6 @@
             <Setter Property="BorderBrush" Value="#FFEEEEEE"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="16"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="10" 
-                                      ShadowDepth="2" 
-                                      Opacity="0.1"/>
-                </Setter.Value>
-            </Setter>
         </Style>
 
         <!-- Стиль заголовка -->
@@ -230,17 +227,17 @@
 
         <!-- Стили кнопок -->
         <Style x:Key="WarningButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
-            <Setter Property="Background" Value="{StaticResource WarningBrush}"/>
-            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Background" Value="#FFFF9800"/>
+            <Setter Property="Foreground" Value="White"/>
         </Style>
 
         <Style x:Key="DangerButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
-            <Setter Property="Background" Value="{StaticResource DangerBrush}"/>
+            <Setter Property="Background" Value="#FFF44336"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
 
         <Style x:Key="InfoButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
-            <Setter Property="Background" Value="{StaticResource InfoBrush}"/>
+            <Setter Property="Background" Value="#FF2196F3"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
     </Application.Resources>

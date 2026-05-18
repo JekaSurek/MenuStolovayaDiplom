@@ -7,8 +7,8 @@
         Title="Редактор технологической карты" 
         Height="750" 
         Width="1200"
-        WindowStartupLocation="CenterOwner"
-        Background="{StaticResource BackgroundBrush}">
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BackgroundBrush}" WindowState="Maximized">
 
     <Window.Resources>
         <Style x:Key="SectionTitleStyle" TargetType="TextBlock">

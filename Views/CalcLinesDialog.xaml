@@ -7,7 +7,7 @@
         Title="Строки калькуляции" 
         Height="500" 
         Width="900"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         Background="{StaticResource BackgroundBrush}">
 
     <Grid Margin="15">

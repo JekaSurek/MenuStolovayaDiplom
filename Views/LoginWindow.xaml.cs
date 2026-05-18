@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MenuStolovaya.Models;
 
 namespace MenuStolovaya.Views
@@ -24,6 +14,13 @@ namespace MenuStolovaya.Views
             InitializeComponent();
             _userService = new UserService();
             LoginTextBox.Focus();
+
+            // Позволяет перетаскивать окно за верхнюю панель
+            this.MouseLeftButtonDown += (s, e) =>
+            {
+                if (e.ButtonState == MouseButtonState.Pressed)
+                    this.DragMove();
+            };
         }
 
         private void ButtonLogin_Click(object sender, RoutedEventArgs e)
@@ -41,7 +38,7 @@ namespace MenuStolovaya.Views
             _userService.AuthenticateUser(login, password, this);
         }
 
-        private void LoginTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void LoginTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             UpdateLoginButtonState();
         }
@@ -56,6 +53,7 @@ namespace MenuStolovaya.Views
             ButtonLogin.IsEnabled = !string.IsNullOrWhiteSpace(LoginTextBox.Text) &&
                                    !string.IsNullOrWhiteSpace(PasswordBox.Password);
         }
+
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
             string helpPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Help", "help.html");
@@ -72,6 +70,11 @@ namespace MenuStolovaya.Views
                                MessageBoxButton.OK,
                                MessageBoxImage.Error);
             }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }

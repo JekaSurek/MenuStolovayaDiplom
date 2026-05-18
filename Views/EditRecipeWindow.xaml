@@ -7,7 +7,7 @@
         Title="Редактирование рецептуры" 
         Height="750" 
         Width="900"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
 
     <Window.Resources>
