@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36705.20
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuStolovaya", "MenuStolovaya.csproj", "{99A1A0B2-8459-4904-AA93-6EDAB9C18E72}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MenuStolovayaSetup", "..\MenuStolovayaSetup\MenuStolovayaSetup.vdproj", "{C6EAE746-E3CC-A9A6-721D-B90EBD9DF8CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{99A1A0B2-8459-4904-AA93-6EDAB9C18E72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99A1A0B2-8459-4904-AA93-6EDAB9C18E72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99A1A0B2-8459-4904-AA93-6EDAB9C18E72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6EAE746-E3CC-A9A6-721D-B90EBD9DF8CD}.Debug|Any CPU.ActiveCfg = Debug
+		{C6EAE746-E3CC-A9A6-721D-B90EBD9DF8CD}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

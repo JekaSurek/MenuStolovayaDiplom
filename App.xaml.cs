@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Windows;
@@ -63,6 +64,24 @@ namespace MenuStolovaya
             catch (SqlException ex)
             {
                 Debug.WriteLine($"✗ Ошибка SQL: {ex.Message}");
+                return false;
+            }
+            catch (EntityException ex)  // Добавлен перехват ошибок Entity Framework
+            {
+                Debug.WriteLine($"✗ Ошибка Entity Framework: {ex.Message}");
+                // Если строка подключения неверна, удаляем её, чтобы при следующем запуске открылось окно настройки
+                try
+                {
+                    var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                    if (config.ConnectionStrings.ConnectionStrings["MenuStolovayaDBEntities"] != null)
+                    {
+                        config.ConnectionStrings.ConnectionStrings["MenuStolovayaDBEntities"].ConnectionString = "";
+                        config.Save(ConfigurationSaveMode.Modified);
+                        ConfigurationManager.RefreshSection("connectionStrings");
+                        Debug.WriteLine("✓ Неверная строка подключения удалена");
+                    }
+                }
+                catch { }
                 return false;
             }
             catch (Exception ex)
