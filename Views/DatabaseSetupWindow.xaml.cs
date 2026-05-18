@@ -59,6 +59,10 @@ namespace MenuStolovaya.Views
 
         private void AuthType_Changed(object sender, RoutedEventArgs e)
         {
+            // ИСПРАВЛЕНО: Добавлена проверка на null
+            if (SqlAuthRadio == null || SqlAuthPanel == null)
+                return;
+
             SqlAuthPanel.Visibility = SqlAuthRadio.IsChecked == true
                 ? Visibility.Visible
                 : Visibility.Collapsed;
@@ -105,14 +109,15 @@ namespace MenuStolovaya.Views
             string server = ServerTextBox.Text.Trim();
             string database = DatabaseTextBox.Text.Trim();
 
-            if (WindowsAuthRadio.IsChecked == true)
+            // ИСПРАВЛЕНО: Добавлена проверка на null для RadioButton
+            if (WindowsAuthRadio != null && WindowsAuthRadio.IsChecked == true)
             {
                 return $"data source={server};initial catalog={database};integrated security=True;TrustServerCertificate=True";
             }
             else
             {
-                string login = LoginTextBox.Text.Trim();
-                string password = PasswordBox.Password;
+                string login = LoginTextBox?.Text.Trim() ?? "";
+                string password = PasswordBox?.Password ?? "";
                 return $"data source={server};initial catalog={database};user id={login};password={password};TrustServerCertificate=True";
             }
         }
@@ -160,10 +165,10 @@ namespace MenuStolovaya.Views
                 return;
             }
 
-            // Проверка SQL аутентификации
-            if (SqlAuthRadio.IsChecked == true)
+            // Проверка SQL аутентификации (с проверкой на null)
+            if (SqlAuthRadio != null && SqlAuthRadio.IsChecked == true)
             {
-                if (string.IsNullOrEmpty(LoginTextBox.Text))
+                if (string.IsNullOrEmpty(LoginTextBox?.Text))
                 {
                     MessageBox.Show("Укажите логин", "Ошибка",
                         MessageBoxButton.OK, MessageBoxImage.Warning);

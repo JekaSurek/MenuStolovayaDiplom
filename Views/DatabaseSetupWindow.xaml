@@ -58,9 +58,9 @@
         <GroupBox Grid.Row="6" Header="Аутентификация" Margin="0,15,0,0">
             <StackPanel Margin="10">
                 <RadioButton x:Name="WindowsAuthRadio" 
-                             Content="Windows аутентификация (текущий пользователь)" 
-                             IsChecked="True"
-                             Checked="AuthType_Changed"/>
+             Content="Windows аутентификация (текущий пользователь)" 
+             IsChecked="True"
+             Checked="AuthType_Changed"/>
                 <RadioButton x:Name="SqlAuthRadio" 
                              Content="SQL Server аутентификация"
                              Margin="0,10,0,0"
