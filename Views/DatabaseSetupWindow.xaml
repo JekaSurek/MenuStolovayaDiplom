@@ -105,7 +105,7 @@
             <Button Content="📖 Справка" 
         Click="HelpButton_Click"
         Style="{StaticResource PrimaryButtonStyle}"
-        Width="100"
+        Width="156"
         Margin="10"/>
             <Button Content="Сохранить" 
                     Width="100"

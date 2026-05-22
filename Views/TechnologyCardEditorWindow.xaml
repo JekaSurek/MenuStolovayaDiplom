@@ -114,16 +114,14 @@
                              Style="{StaticResource ModernTextBoxStyle}"
                              PreviewTextInput="NumberValidationTextBox"
                              Margin="0,5,5,5"/>
-                    
+
                     <Button x:Name="CalculateOutputButton"
-                            Grid.Column="1"
                             Content="⟳ Рассчитать"
-                            Width="100"
                             Style="{StaticResource PrimaryButtonStyle}"
                             Background="{StaticResource AccentBrush}"
                             Click="CalculateOutputButton_Click"
-                            Margin="0,5,0,5"
-                            ToolTip="Рассчитать выход на основе рецептуры"/>
+                            Margin="260,6,0,6"
+                            ToolTip="Рассчитать выход на основе рецептуры" Grid.ColumnSpan="2"/>
                 </Grid>
 
                 <!-- Строка 3 -->
@@ -139,9 +137,9 @@
                            Margin="0,5,10,5"/>
 
                 <TextBlock Grid.Row="2" Grid.Column="2" 
-                           Text="Время пригот.:" 
+                           Text="Время приготовления:" 
                            VerticalAlignment="Center"
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold" Height="28" Margin="0,0,10,0" FontSize="10"/>
                 <TextBox x:Name="CookingTimeTextBox" 
                          Grid.Row="2" Grid.Column="3" 
                          Style="{StaticResource ModernTextBoxStyle}"
@@ -254,11 +252,10 @@
                         <Button x:Name="AddProductButton"
                                 Grid.Row="1" Grid.Column="3"
                                 Content="➕ Добавить"
-                                Width="100"
                                 Height="35"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Click="AddProductButton_Click"
-                                Margin="5,0,0,0"/>
+                                Margin="10,0,0,0"/>
                     </Grid>
                 </Border>
 

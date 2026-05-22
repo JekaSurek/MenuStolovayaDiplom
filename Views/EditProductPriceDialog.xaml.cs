@@ -1,9 +1,10 @@
-﻿using System;
+﻿using MenuStolovaya.Models;
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using MenuStolovaya.Models;
 
 namespace MenuStolovaya.Views
 {
@@ -60,10 +61,31 @@ namespace MenuStolovaya.Views
 
         private void PriceTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            // Разрешаем только цифры и точку
-            Regex regex = new Regex(@"^[0-9]*(?:\.[0-9]*)?$");
-            string newText = NewPriceTextBox.Text + e.Text;
-            e.Handled = !regex.IsMatch(newText);
+            // Разрешаем цифры, точку и запятую
+            foreach (char ch in e.Text)
+            {
+                if (!char.IsDigit(ch) && ch != '.' && ch != ',')
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            // Проверка на два разделителя
+            TextBox textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                string currentText = textBox.Text;
+                string newText = currentText.Insert(textBox.SelectionStart, e.Text);
+
+                int dotCount = newText.Count(c => c == '.');
+                int commaCount = newText.Count(c => c == ',');
+
+                if (dotCount > 1 || commaCount > 1 || (dotCount > 0 && commaCount > 0))
+                {
+                    e.Handled = true;
+                }
+            }
         }
 
         private void NewPriceTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)

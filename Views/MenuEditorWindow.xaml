@@ -144,12 +144,11 @@
 
                         <Button Grid.Column="3" 
                                 Content="⟳ Пересчитать калорийность"
-                                Width="180"
                                 Height="30"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Background="{StaticResource AccentBrush}"
                                 Click="RecalculateCaloriesButton_Click"
-                                Margin="20,0,0,0"/>
+                                Margin="20,0,-12,0"/>
                     </Grid>
                 </Border>
             </Grid>
@@ -229,8 +228,7 @@
                             <TextBox x:Name="OutputTextBox" 
                                      Grid.Column="0"
                                      Height="35"
-                                     PreviewTextInput="NumberValidationTextBox"
-                                     Margin="0,0,0,0"/>
+                                     PreviewTextInput="NumberValidationTextBox"/>
                             <Button Grid.Column="1"
                                     Content="⚡"
                                     Height="35"
@@ -385,14 +383,14 @@
                         <StackPanel Grid.Column="2" Orientation="Horizontal">
                             <Button x:Name="PrintMenuButton"
                                     Content="🖨️ Печать меню"
-                                    Width="120"
+                                    Width="165"
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Background="{StaticResource AccentBrush}"
                                     Click="PrintMenuButton_Click"
                                     Margin="0,0,10,0"/>
                             <Button x:Name="CreateRequestButton"
                                     Content="📋 Требование накладная"
-                                    Width="160"
+                                    Width="232"
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Background="{StaticResource InfoBrush}"
                                     Click="CreateRequestButton_Click"/>

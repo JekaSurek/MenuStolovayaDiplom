@@ -98,7 +98,7 @@
                                    Foreground="Gray"/>
                         <Button Content="➕ Добавить" 
                                 Style="{StaticResource PrimaryButtonStyle}"
-                                Width="100"
+                                Width="128"
                                 Click="AddProductButton_Click"
                                 Margin="15,0,0,0"/>
                     </StackPanel>

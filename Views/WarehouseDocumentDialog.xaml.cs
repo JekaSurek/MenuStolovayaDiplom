@@ -359,8 +359,29 @@ namespace MenuStolovaya.Views
 
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"^[0-9]*(?:\.[0-9]*)?$");
-            e.Handled = !regex.IsMatch(e.Text);
+            foreach (char ch in e.Text)
+            {
+                if (!char.IsDigit(ch) && ch != '.' && ch != ',')
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            TextBox textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                string currentText = textBox.Text;
+                string newText = currentText.Insert(textBox.SelectionStart, e.Text);
+
+                int dotCount = newText.Count(c => c == '.');
+                int commaCount = newText.Count(c => c == ',');
+
+                if (dotCount > 1 || commaCount > 1 || (dotCount > 0 && commaCount > 0))
+                {
+                    e.Handled = true;
+                }
+            }
         }
 
         private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e) { }

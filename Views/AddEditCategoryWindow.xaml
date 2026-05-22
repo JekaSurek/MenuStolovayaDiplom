@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}" 
-        Height="400" 
+        Height="500" 
         Width="500"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
@@ -62,9 +62,9 @@
         </Border>
 
         <!-- Кнопки -->
-        <Border Grid.Row="1" 
+        <Border 
                 Background="#FFEEEEEE" 
-                Padding="10">
+                Padding="10" Margin="0,354,0,0">
             <StackPanel Orientation="Horizontal" 
                         HorizontalAlignment="Right">
                 <Button Content="Сохранить" 
