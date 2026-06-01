@@ -1,0 +1,825 @@
+USE [master]
+GO
+/****** Object:  Database [MenuStolovayaDB]    Script Date: 01.06.2026 9:46:12 ******/
+CREATE DATABASE [MenuStolovayaDB]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'MenuStolovayaDB', FILENAME = N'D:\Microsoft SQL Server\MSSQL16.NTTK13AERO\MSSQL\DATA\MenuStolovayaDB.mdf' , SIZE = 73728KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'MenuStolovayaDB_log', FILENAME = N'D:\Microsoft SQL Server\MSSQL16.NTTK13AERO\MSSQL\DATA\MenuStolovayaDB_log.ldf' , SIZE = 73728KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+ALTER DATABASE [MenuStolovayaDB] SET COMPATIBILITY_LEVEL = 160
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [MenuStolovayaDB].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [MenuStolovayaDB] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET RECOVERY FULL 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET  MULTI_USER 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [MenuStolovayaDB] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [MenuStolovayaDB] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'MenuStolovayaDB', N'ON'
+GO
+ALTER DATABASE [MenuStolovayaDB] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [MenuStolovayaDB] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [MenuStolovayaDB]
+GO
+/****** Object:  Table [dbo].[Категории_продуктов]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Категории_продуктов](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Наименование] [nvarchar](100) NOT NULL,
+	[Описание] [nvarchar](255) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Продукты]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Продукты](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Артикул] [nvarchar](50) NULL,
+	[Наименование] [nvarchar](100) NOT NULL,
+	[Категория_id] [int] NULL,
+	[Единица_измерения] [nvarchar](20) NOT NULL,
+	[Потери_холодной_обработки] [decimal](5, 2) NULL,
+	[Потери_горячей_обработки] [decimal](5, 2) NULL,
+	[Белки] [decimal](10, 3) NULL,
+	[Жиры] [decimal](10, 3) NULL,
+	[Углеводы] [decimal](10, 3) NULL,
+	[Калорийность] [decimal](10, 3) NULL,
+	[Цена] [money] NULL,
+	[Утверждена_цена] [bit] NULL,
+	[Кто_утвердил_цену_id] [int] NULL,
+	[Дата_утверждения_цены] [datetime] NULL,
+	[Активен] [bit] NULL,
+	[Вес_единицы_кг] [decimal](10, 4) NULL,
+	[Плотность_кг_л] [decimal](10, 4) NULL,
+	[Примечание] [nvarchar](255) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[Артикул] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Склады]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Склады](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Наименование] [nvarchar](100) NOT NULL,
+	[Адрес] [nvarchar](255) NULL,
+	[Ответственный_id] [int] NULL,
+	[Активен] [bit] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Остатки_продуктов]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Остатки_продуктов](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Склад_id] [int] NOT NULL,
+	[Продукт_id] [int] NOT NULL,
+	[Количество] [decimal](12, 3) NOT NULL,
+	[Цена_за_единицу] [decimal](10, 2) NOT NULL,
+	[Сумма] [decimal](12, 2) NULL,
+	[Дата_обновления] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ_Остатки_Склад_Продукт] UNIQUE NONCLUSTERED 
+(
+	[Склад_id] ASC,
+	[Продукт_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[vw_Текущие_остатки]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =====================================================
+-- ПРЕДСТАВЛЕНИЯ ДЛЯ ОТЧЕТОВ
+-- =====================================================
+
+CREATE VIEW [dbo].[vw_Текущие_остатки] AS
+SELECT 
+    с.id as Склад_id,
+    с.Наименование as Склад,
+    п.Артикул,
+    п.Наименование as Продукт,
+    ISNULL(кп.Наименование, 'Без категории') as Категория,
+    п.Единица_измерения,
+    ISNULL(ост.Количество, 0) as Количество,
+    ISNULL(ост.Цена_за_единицу, 0) as Цена_за_единицу,
+    ISNULL(ост.Сумма, 0) as Сумма,
+    п.Цена as Цена_последняя_закупка,
+    ост.Дата_обновления
+FROM Склады с
+CROSS JOIN Продукты п
+LEFT JOIN Остатки_продуктов ост ON ост.Склад_id = с.id AND ост.Продукт_id = п.id
+LEFT JOIN Категории_продуктов кп ON п.Категория_id = кп.id
+WHERE п.Активен = 1 AND с.Активен = 1;
+GO
+/****** Object:  Table [dbo].[Пользователи]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Пользователи](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Логин] [nvarchar](50) NOT NULL,
+	[Пароль] [nvarchar](255) NOT NULL,
+	[Фамилия] [nvarchar](50) NOT NULL,
+	[Имя] [nvarchar](50) NOT NULL,
+	[Отчество] [nvarchar](50) NULL,
+	[Роль_id] [int] NOT NULL,
+	[Блокировка] [bit] NULL,
+	[Дата_регистрации] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[Логин] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Документы]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Документы](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Номер] [nvarchar](50) NOT NULL,
+	[Тип_документа] [nvarchar](20) NOT NULL,
+	[Дата_создания] [datetime] NULL,
+	[Дата_документа] [date] NOT NULL,
+	[Склад_отправитель_id] [int] NULL,
+	[Склад_получатель_id] [int] NULL,
+	[Основание] [nvarchar](255) NULL,
+	[Статус] [nvarchar](20) NULL,
+	[Кто_создал_id] [int] NOT NULL,
+	[Кто_провел_id] [int] NULL,
+	[Дата_проведения] [datetime] NULL,
+	[Комментарий] [nvarchar](500) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[Номер] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Строки_документов]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Строки_документов](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Документ_id] [int] NOT NULL,
+	[Продукт_id] [int] NOT NULL,
+	[Количество] [decimal](12, 3) NOT NULL,
+	[Цена] [decimal](10, 2) NOT NULL,
+	[Сумма] [decimal](12, 2) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Требования_накладные]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Требования_накладные](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Номер] [nvarchar](50) NOT NULL,
+	[Документ_id] [int] NOT NULL,
+	[Меню_id] [int] NOT NULL,
+	[Дата_требования] [date] NOT NULL,
+	[Технолог_id] [int] NOT NULL,
+	[Статус_требования] [nvarchar](20) NULL,
+	[Кладовщик_id] [int] NULL,
+	[Комментарий_кладовщика] [nvarchar](500) NULL,
+	[Дата_обработки] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[Номер] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Меню_на_день]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Меню_на_день](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Дата] [date] NOT NULL,
+	[Ответственный_id] [int] NOT NULL,
+	[Дата_составления] [datetime] NULL,
+	[Калорийность_общая] [decimal](10, 3) NULL,
+	[Статус] [nvarchar](20) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[vw_Требования_накладные]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE VIEW [dbo].[vw_Требования_накладные] AS
+SELECT 
+    тр.id,
+    тр.Номер,
+    д.Дата_документа,
+    м.Дата as Дата_меню,
+    п_техн.Фамилия + ' ' + п_техн.Имя as Технолог,
+    тр.Статус_требования,
+    д.Статус as Статус_документа,
+    д.Комментарий,
+    ISNULL(п_клад.Фамилия + ' ' + п_клад.Имя, 'Не назначен') as Кладовщик,
+    тр.Дата_обработки,
+    ISNULL((SELECT SUM(Количество) FROM Строки_документов WHERE Документ_id = д.id), 0) as Общее_количество,
+    ISNULL((SELECT SUM(Сумма) FROM Строки_документов WHERE Документ_id = д.id), 0) as Общая_сумма
+FROM Требования_накладные тр
+JOIN Документы д ON тр.Документ_id = д.id
+JOIN Меню_на_день м ON тр.Меню_id = м.id
+JOIN Пользователи п_техн ON тр.Технолог_id = п_техн.id
+LEFT JOIN Пользователи п_клад ON тр.Кладовщик_id = п_клад.id;
+GO
+/****** Object:  View [dbo].[vw_Требования_детали]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE VIEW [dbo].[vw_Требования_детали] AS
+SELECT 
+    тр.Номер as Номер_требования,
+    п.Артикул,
+    п.Наименование as Продукт,
+    п.Единица_измерения,
+    сд.Количество,
+    сд.Цена,
+    сд.Сумма,
+    ISNULL(ост.Количество, 0) as Остаток_на_складе
+FROM Требования_накладные тр
+JOIN Документы д ON тр.Документ_id = д.id
+JOIN Строки_документов сд ON д.id = сд.Документ_id
+JOIN Продукты п ON сд.Продукт_id = п.id
+LEFT JOIN Остатки_продуктов ост ON ост.Продукт_id = п.id AND ост.Склад_id = д.Склад_отправитель_id;
+GO
+/****** Object:  Table [dbo].[Блюда]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Блюда](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Наименование] [nvarchar](100) NOT NULL,
+	[Полное_наименование] [nvarchar](255) NULL,
+	[Вид_блюда_id] [int] NULL,
+	[Выход_стандартный] [decimal](10, 3) NULL,
+	[Время_приготовления] [int] NULL,
+	[Калорийность_расчетная] [decimal](10, 3) NULL,
+	[Активно] [bit] NULL,
+	[Дата_создания] [datetime] NULL,
+	[Кто_создал_id] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Технологические_карты]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Технологические_карты](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Номер] [nvarchar](50) NOT NULL,
+	[Блюдо_id] [int] NOT NULL,
+	[Выход] [decimal](10, 3) NOT NULL,
+	[Технология_приготовления] [nvarchar](max) NULL,
+	[Дата_создания] [datetime] NULL,
+	[Статус] [nvarchar](20) NULL,
+	[Кто_утвердил_id] [int] NULL,
+	[Дата_утверждения] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[Номер] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Калькуляционные_карточки]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Калькуляционные_карточки](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Номер] [nvarchar](50) NOT NULL,
+	[Технологическая_карта_id] [int] NOT NULL,
+	[Дата_составления] [datetime] NULL,
+	[Процент_наценки] [decimal](5, 2) NULL,
+	[Себестоимость] [money] NULL,
+	[Цена_реализации] [money] NULL,
+	[Food_Cost] [decimal](5, 2) NULL,
+	[Статус] [nvarchar](20) NULL,
+	[Кто_утвердил_id] [int] NULL,
+	[Дата_утверждения] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[Номер] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[vw_Калькуляционные_карточки_полные]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- Обновленные представления с учетом нового расположения Выход
+
+-- 1. Представление калькуляционных карточек с Food Cost
+CREATE VIEW [dbo].[vw_Калькуляционные_карточки_полные] AS
+SELECT 
+    кк.Номер,
+    б.Наименование as Блюдо,
+    тк.Выход as [Выход_порции_г],
+    кк.Дата_составления,
+    кк.Себестоимость,
+    кк.Цена_реализации,
+    кк.Food_Cost as [Фудкост_процент],
+    кк.Процент_наценки,
+    CASE 
+        WHEN кк.Food_Cost <= 25 THEN 'Высокомаржинальное'
+        WHEN кк.Food_Cost <= 35 THEN 'Среднемаржинальное'
+        ELSE 'Низкомаржинальное'
+    END as [Маржинальность],
+    кк.Статус,
+    ISNULL(u.Фамилия + ' ' + LEFT(u.Имя, 1) + '.', 'Не утверждена') as [Кто_утвердил],
+    тк.Номер as [Тех_карта]
+FROM Калькуляционные_карточки кк
+JOIN Технологические_карты тк ON кк.Технологическая_карта_id = тк.id
+JOIN Блюда б ON тк.Блюдо_id = б.id
+LEFT JOIN Пользователи u ON кк.Кто_утвердил_id = u.id;
+GO
+/****** Object:  Table [dbo].[Виды_блюд]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Виды_блюд](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Наименование] [nvarchar](50) NOT NULL,
+	[Описание] [nvarchar](255) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Строки_меню]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Строки_меню](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Меню_id] [int] NOT NULL,
+	[Блюдо_id] [int] NOT NULL,
+	[Количество_порций] [int] NULL,
+	[Выход_на_порцию] [decimal](10, 3) NULL,
+	[Время_подачи] [nvarchar](20) NULL,
+	[Порядок_подачи] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[vw_Меню_с_ценами]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- 2. Представление меню с ценами и Food Cost
+CREATE VIEW [dbo].[vw_Меню_с_ценами] AS
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY м.Дата, см.Порядок_подачи) as [№п/п],
+    м.Дата,
+    б.Наименование as Блюдо,
+    вб.Наименование as [Вид_блюда],
+    кк.Цена_реализации as Цена,
+    кк.Food_Cost as [Фудкост_процент],
+    см.Количество_порций,
+    ISNULL(см.Выход_на_порцию, тк.Выход) as [Выход_г],
+    (ISNULL(кк.Цена_реализации, 0) * см.Количество_порций) as [Общая_выручка],
+    б.Калорийность_расчетная as [Калорийность_на_порцию],
+    м.Статус as [Статус_меню]
+FROM Меню_на_день м
+JOIN Строки_меню см ON м.id = см.Меню_id
+JOIN Блюда б ON см.Блюдо_id = б.id
+JOIN Виды_блюд вб ON б.Вид_блюда_id = вб.id
+LEFT JOIN Технологические_карты тк ON б.id = тк.Блюдо_id AND тк.Статус = 'Утверждена'
+LEFT JOIN Калькуляционные_карточки кк ON тк.id = кк.Технологическая_карта_id AND кк.Статус = 'Утверждена';
+GO
+/****** Object:  View [dbo].[vw_Рентабельность_блюд]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- 3. Представление рентабельности блюд
+CREATE VIEW [dbo].[vw_Рентабельность_блюд] AS
+SELECT 
+    б.Наименование as Блюдо,
+    тк.Выход as [Выход_порции_г],
+    кк.Номер as [Кальк_карта],
+    кк.Себестоимость,
+    кк.Цена_реализации,
+    кк.Food_Cost as [Фудкост_процент],
+    кк.Процент_наценки,
+    (кк.Цена_реализации - кк.Себестоимость) as [Прибыль_на_порцию],
+    ROUND(CASE 
+        WHEN кк.Цена_реализации > 0 
+        THEN ((кк.Цена_реализации - кк.Себестоимость) / кк.Цена_реализации) * 100 
+        ELSE 0 
+    END, 2) as [Маржа_процент],
+    CASE 
+        WHEN кк.Food_Cost <= 25 THEN 'Высокая'
+        WHEN кк.Food_Cost <= 35 THEN 'Средняя'
+        ELSE 'Низкая'
+    END as [Оценка_рентабельности]
+FROM Калькуляционные_карточки кк
+JOIN Технологические_карты тк ON кк.Технологическая_карта_id = тк.id
+JOIN Блюда б ON тк.Блюдо_id = б.id
+WHERE кк.Статус = 'Утверждена';
+GO
+/****** Object:  Table [dbo].[Рецептуры]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Рецептуры](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Технологическая_карта_id] [int] NOT NULL,
+	[Продукт_id] [int] NOT NULL,
+	[Количество_брутто] [decimal](10, 3) NOT NULL,
+	[Количество_нетто] [decimal](10, 3) NULL,
+	[Порядок_закладки] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[vw_Технологические_карты_полные]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- 4. Представление технологических карт с выходом
+CREATE VIEW [dbo].[vw_Технологические_карты_полные] AS
+SELECT 
+    тк.Номер,
+    б.Наименование as Блюдо,
+    тк.Выход as [Выход_порции_г],
+    тк.Технология_приготовления,
+    тк.Дата_создания,
+    тк.Статус,
+    ISNULL(u.Фамилия + ' ' + LEFT(u.Имя, 1) + '.', 'Не утверждена') as [Кто_утвердил],
+    тк.Дата_утверждения,
+    COUNT(р.id) as [Количество_ингредиентов]
+FROM Технологические_карты тк
+JOIN Блюда б ON тк.Блюдо_id = б.id
+LEFT JOIN Пользователи u ON тк.Кто_утвердил_id = u.id
+LEFT JOIN Рецептуры р ON тк.id = р.Технологическая_карта_id
+GROUP BY тк.Номер, б.Наименование, тк.Выход, тк.Технология_приготовления, 
+         тк.Дата_создания, тк.Статус, u.Фамилия, u.Имя, тк.Дата_утверждения;
+GO
+/****** Object:  Table [dbo].[Строки_калькуляции]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Строки_калькуляции](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Калькуляционная_карточка_id] [int] NOT NULL,
+	[Продукт_id] [int] NOT NULL,
+	[Норма_расхода] [decimal](10, 3) NOT NULL,
+	[Цена_за_единицу] [money] NOT NULL,
+	[Сумма] [money] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[vw_Анализ_себестоимости]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- 5. Представление для анализа себестоимости с учетом выхода
+CREATE VIEW [dbo].[vw_Анализ_себестоимости] AS
+SELECT 
+    б.Наименование as Блюдо,
+    тк.Выход as [Выход_порции_г],
+    кк.Себестоимость as [Себестоимость_общая],
+    ROUND(кк.Себестоимость / тк.Выход * 1000, 2) as [Себестоимость_за_кг],
+    COUNT(ск.id) as [Количество_ингредиентов],
+    MAX(ск.Сумма) as [Макс_стоимость_ингредиента],
+    MIN(ск.Сумма) as [Мин_стоимость_ингредиента],
+    AVG(ск.Сумма) as [Сред_стоимость_ингредиента]
+FROM Калькуляционные_карточки кк
+JOIN Технологические_карты тк ON кк.Технологическая_карта_id = тк.id
+JOIN Блюда б ON тк.Блюдо_id = б.id
+JOIN Строки_калькуляции ск ON кк.id = ск.Калькуляционная_карточка_id
+WHERE кк.Статус = 'Утверждена'
+GROUP BY б.Наименование, тк.Выход, кк.Себестоимость, кк.id;
+GO
+/****** Object:  Table [dbo].[Роли]    Script Date: 01.06.2026 9:46:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Роли](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Наименование] [nvarchar](50) NOT NULL,
+	[Описание] [nvarchar](255) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[Наименование] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Блюда] ADD  DEFAULT ((1)) FOR [Активно]
+GO
+ALTER TABLE [dbo].[Блюда] ADD  DEFAULT (getdate()) FOR [Дата_создания]
+GO
+ALTER TABLE [dbo].[Документы] ADD  DEFAULT (getdate()) FOR [Дата_создания]
+GO
+ALTER TABLE [dbo].[Документы] ADD  DEFAULT ('Черновик') FOR [Статус]
+GO
+ALTER TABLE [dbo].[Калькуляционные_карточки] ADD  DEFAULT (getdate()) FOR [Дата_составления]
+GO
+ALTER TABLE [dbo].[Калькуляционные_карточки] ADD  DEFAULT ((0)) FOR [Процент_наценки]
+GO
+ALTER TABLE [dbo].[Калькуляционные_карточки] ADD  DEFAULT ('Черновик') FOR [Статус]
+GO
+ALTER TABLE [dbo].[Меню_на_день] ADD  DEFAULT (getdate()) FOR [Дата_составления]
+GO
+ALTER TABLE [dbo].[Меню_на_день] ADD  DEFAULT ('Черновик') FOR [Статус]
+GO
+ALTER TABLE [dbo].[Остатки_продуктов] ADD  DEFAULT ((0)) FOR [Количество]
+GO
+ALTER TABLE [dbo].[Остатки_продуктов] ADD  DEFAULT ((0)) FOR [Цена_за_единицу]
+GO
+ALTER TABLE [dbo].[Остатки_продуктов] ADD  DEFAULT ((0)) FOR [Сумма]
+GO
+ALTER TABLE [dbo].[Остатки_продуктов] ADD  DEFAULT (getdate()) FOR [Дата_обновления]
+GO
+ALTER TABLE [dbo].[Пользователи] ADD  DEFAULT ((0)) FOR [Блокировка]
+GO
+ALTER TABLE [dbo].[Пользователи] ADD  DEFAULT (getdate()) FOR [Дата_регистрации]
+GO
+ALTER TABLE [dbo].[Продукты] ADD  DEFAULT ((0)) FOR [Потери_холодной_обработки]
+GO
+ALTER TABLE [dbo].[Продукты] ADD  DEFAULT ((0)) FOR [Потери_горячей_обработки]
+GO
+ALTER TABLE [dbo].[Продукты] ADD  DEFAULT ((0)) FOR [Цена]
+GO
+ALTER TABLE [dbo].[Продукты] ADD  DEFAULT ((0)) FOR [Утверждена_цена]
+GO
+ALTER TABLE [dbo].[Продукты] ADD  DEFAULT ((1)) FOR [Активен]
+GO
+ALTER TABLE [dbo].[Продукты] ADD  DEFAULT ((1.0)) FOR [Плотность_кг_л]
+GO
+ALTER TABLE [dbo].[Склады] ADD  DEFAULT ((1)) FOR [Активен]
+GO
+ALTER TABLE [dbo].[Строки_документов] ADD  DEFAULT ((0)) FOR [Цена]
+GO
+ALTER TABLE [dbo].[Строки_документов] ADD  DEFAULT ((0)) FOR [Сумма]
+GO
+ALTER TABLE [dbo].[Строки_меню] ADD  DEFAULT ((1)) FOR [Количество_порций]
+GO
+ALTER TABLE [dbo].[Технологические_карты] ADD  DEFAULT (getdate()) FOR [Дата_создания]
+GO
+ALTER TABLE [dbo].[Технологические_карты] ADD  DEFAULT ('Черновик') FOR [Статус]
+GO
+ALTER TABLE [dbo].[Требования_накладные] ADD  DEFAULT ('Ожидает') FOR [Статус_требования]
+GO
+ALTER TABLE [dbo].[Блюда]  WITH CHECK ADD FOREIGN KEY([Вид_блюда_id])
+REFERENCES [dbo].[Виды_блюд] ([id])
+GO
+ALTER TABLE [dbo].[Блюда]  WITH CHECK ADD FOREIGN KEY([Кто_создал_id])
+REFERENCES [dbo].[Пользователи] ([id])
+GO
+ALTER TABLE [dbo].[Документы]  WITH CHECK ADD FOREIGN KEY([Кто_провел_id])
+REFERENCES [dbo].[Пользователи] ([id])
+GO
+ALTER TABLE [dbo].[Документы]  WITH CHECK ADD FOREIGN KEY([Кто_создал_id])
+REFERENCES [dbo].[Пользователи] ([id])
+GO
+ALTER TABLE [dbo].[Документы]  WITH CHECK ADD FOREIGN KEY([Склад_отправитель_id])
+REFERENCES [dbo].[Склады] ([id])
+GO
+ALTER TABLE [dbo].[Документы]  WITH CHECK ADD FOREIGN KEY([Склад_получатель_id])
+REFERENCES [dbo].[Склады] ([id])
+GO
+ALTER TABLE [dbo].[Калькуляционные_карточки]  WITH CHECK ADD FOREIGN KEY([Кто_утвердил_id])
+REFERENCES [dbo].[Пользователи] ([id])
+GO
+ALTER TABLE [dbo].[Калькуляционные_карточки]  WITH CHECK ADD FOREIGN KEY([Технологическая_карта_id])
+REFERENCES [dbo].[Технологические_карты] ([id])
+GO
+ALTER TABLE [dbo].[Меню_на_день]  WITH CHECK ADD FOREIGN KEY([Ответственный_id])
+REFERENCES [dbo].[Пользователи] ([id])
+GO
+ALTER TABLE [dbo].[Остатки_продуктов]  WITH CHECK ADD FOREIGN KEY([Продукт_id])
+REFERENCES [dbo].[Продукты] ([id])
+GO
+ALTER TABLE [dbo].[Остатки_продуктов]  WITH CHECK ADD FOREIGN KEY([Склад_id])
+REFERENCES [dbo].[Склады] ([id])
+GO
+ALTER TABLE [dbo].[Пользователи]  WITH CHECK ADD FOREIGN KEY([Роль_id])
+REFERENCES [dbo].[Роли] ([id])
+GO
+ALTER TABLE [dbo].[Продукты]  WITH CHECK ADD FOREIGN KEY([Категория_id])
+REFERENCES [dbo].[Категории_продуктов] ([id])
+GO
+ALTER TABLE [dbo].[Продукты]  WITH CHECK ADD FOREIGN KEY([Кто_утвердил_цену_id])
+REFERENCES [dbo].[Пользователи] ([id])
+GO
+ALTER TABLE [dbo].[Рецептуры]  WITH CHECK ADD FOREIGN KEY([Продукт_id])
+REFERENCES [dbo].[Продукты] ([id])
+GO
+ALTER TABLE [dbo].[Рецептуры]  WITH CHECK ADD FOREIGN KEY([Технологическая_карта_id])
+REFERENCES [dbo].[Технологические_карты] ([id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Склады]  WITH CHECK ADD FOREIGN KEY([Ответственный_id])
+REFERENCES [dbo].[Пользователи] ([id])
+GO
+ALTER TABLE [dbo].[Строки_документов]  WITH CHECK ADD FOREIGN KEY([Документ_id])
+REFERENCES [dbo].[Документы] ([id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Строки_документов]  WITH CHECK ADD FOREIGN KEY([Продукт_id])
+REFERENCES [dbo].[Продукты] ([id])
+GO
+ALTER TABLE [dbo].[Строки_калькуляции]  WITH CHECK ADD FOREIGN KEY([Калькуляционная_карточка_id])
+REFERENCES [dbo].[Калькуляционные_карточки] ([id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Строки_калькуляции]  WITH CHECK ADD FOREIGN KEY([Продукт_id])
+REFERENCES [dbo].[Продукты] ([id])
+GO
+ALTER TABLE [dbo].[Строки_меню]  WITH CHECK ADD FOREIGN KEY([Блюдо_id])
+REFERENCES [dbo].[Блюда] ([id])
+GO
+ALTER TABLE [dbo].[Строки_меню]  WITH CHECK ADD FOREIGN KEY([Меню_id])
+REFERENCES [dbo].[Меню_на_день] ([id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Технологические_карты]  WITH CHECK ADD FOREIGN KEY([Блюдо_id])
+REFERENCES [dbo].[Блюда] ([id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Технологические_карты]  WITH CHECK ADD FOREIGN KEY([Кто_утвердил_id])
+REFERENCES [dbo].[Пользователи] ([id])
+GO
+ALTER TABLE [dbo].[Требования_накладные]  WITH CHECK ADD FOREIGN KEY([Документ_id])
+REFERENCES [dbo].[Документы] ([id])
+GO
+ALTER TABLE [dbo].[Требования_накладные]  WITH CHECK ADD FOREIGN KEY([Кладовщик_id])
+REFERENCES [dbo].[Пользователи] ([id])
+GO
+ALTER TABLE [dbo].[Требования_накладные]  WITH CHECK ADD FOREIGN KEY([Меню_id])
+REFERENCES [dbo].[Меню_на_день] ([id])
+GO
+ALTER TABLE [dbo].[Требования_накладные]  WITH CHECK ADD FOREIGN KEY([Технолог_id])
+REFERENCES [dbo].[Пользователи] ([id])
+GO
+USE [master]
+GO
+ALTER DATABASE [MenuStolovayaDB] SET  READ_WRITE 
+GO
