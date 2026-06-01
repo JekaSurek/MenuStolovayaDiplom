@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="7f16178e12664be98c6e9aa4e0ea45a6" Name="Diagram1" ZoomLevel="47">
+      <Diagram DiagramId="7f16178e12664be98c6e9aa4e0ea45a6" Name="Diagram1" ZoomLevel="40">
         <EntityTypeShape EntityType="MenuStolovayaDBModel.Блюда" Width="1.5" PointX="5.25" PointY="9.625" IsExpanded="true" />
         <EntityTypeShape EntityType="MenuStolovayaDBModel.Виды_блюд" Width="1.5" PointX="3" PointY="6.625" IsExpanded="true" />
         <EntityTypeShape EntityType="MenuStolovayaDBModel.Калькуляционные_карточки" Width="1.5" PointX="12.75" PointY="9.625" IsExpanded="true" />

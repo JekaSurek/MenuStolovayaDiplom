@@ -18,6 +18,8 @@ namespace MenuStolovaya.Views
 {
     public partial class AddEditProductWindow : Window
     {
+
+
         public ProductModel Product { get; private set; }
         public string WindowTitle { get; private set; }
         public List<string> Units { get; private set; }
@@ -30,6 +32,36 @@ namespace MenuStolovaya.Views
         public string CarbsText { get; set; }
         public string CalorieText { get; set; }
         public string PriceText { get; set; }
+
+
+
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            foreach (char ch in e.Text)
+            {
+                if (!char.IsDigit(ch) && ch != '.' && ch != ',')
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            TextBox textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                string currentText = textBox.Text;
+                string newText = currentText.Insert(textBox.SelectionStart, e.Text);
+
+                int dotCount = newText.Count(c => c == '.');
+                int commaCount = newText.Count(c => c == ',');
+
+                if (dotCount > 1 || commaCount > 1 || (dotCount > 0 && commaCount > 0))
+                {
+                    e.Handled = true;
+                }
+            }
+        }
+
 
         public AddEditProductWindow(Продукты product = null)
         {
@@ -195,6 +227,41 @@ namespace MenuStolovaya.Views
                 // Обновляем числовые значения из текстовых полей
                 UpdateProductFromTextFields();
 
+                // Сохраняем вес штуки (если единица измерения "шт")
+                if (WeightPerPiecePanel.Visibility == Visibility.Visible)
+                {
+                    if (decimal.TryParse(WeightPerPieceTextBox.Text?.Replace(',', '.'),
+                        System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        out decimal weightPerPiece))
+                    {
+                        Product.Вес_единицы_кг = weightPerPiece > 0 ? weightPerPiece : 0.1m;
+                    }
+                    else
+                    {
+                        Product.Вес_единицы_кг = 0.1m;
+                    }
+                }
+
+                // Сохраняем плотность (если единица измерения "л" или "мл")
+                if (DensityPanel.Visibility == Visibility.Visible)
+                {
+                    if (decimal.TryParse(DensityTextBox.Text?.Replace(',', '.'),
+                        System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        out decimal density))
+                    {
+                        Product.Плотность_кг_л = density > 0 ? density : 1.0m;
+                    }
+                    else
+                    {
+                        Product.Плотность_кг_л = 1.0m;
+                    }
+                }
+
+                // ... остальные проверки (артикул, наименование, категория и т.д.) ...
+
+                // Проверка артикула
                 if (string.IsNullOrWhiteSpace(Product.Артикул))
                 {
                     MessageBox.Show("Введите артикул продукта", "Ошибка",
@@ -202,6 +269,7 @@ namespace MenuStolovaya.Views
                     return;
                 }
 
+                // Проверка наименования
                 if (string.IsNullOrWhiteSpace(Product.Наименование))
                 {
                     MessageBox.Show("Введите наименование продукта", "Ошибка",
@@ -209,6 +277,7 @@ namespace MenuStolovaya.Views
                     return;
                 }
 
+                // Проверка категории
                 if (Product.Категория_id == null || Product.Категория_id <= 0)
                 {
                     MessageBox.Show("Выберите категорию", "Ошибка",
@@ -216,6 +285,7 @@ namespace MenuStolovaya.Views
                     return;
                 }
 
+                // Проверка единицы измерения
                 if (string.IsNullOrWhiteSpace(Product.Единица_измерения))
                 {
                     MessageBox.Show("Выберите единицу измерения", "Ошибка",
@@ -223,7 +293,7 @@ namespace MenuStolovaya.Views
                     return;
                 }
 
-                // Проверка числовых полей
+                // Проверка потерь
                 if (Product.Потери_холодной_обработки < 0 || Product.Потери_холодной_обработки > 100)
                 {
                     MessageBox.Show("Потери холодной обработки должны быть в диапазоне от 0 до 100%", "Ошибка",
@@ -238,6 +308,7 @@ namespace MenuStolovaya.Views
                     return;
                 }
 
+                // Проверка БЖУ
                 if (Product.Белки.HasValue && Product.Белки.Value < 0)
                 {
                     MessageBox.Show("Белки не могут быть отрицательными", "Ошибка",
@@ -259,6 +330,7 @@ namespace MenuStolovaya.Views
                     return;
                 }
 
+                // Проверка калорийности
                 if (Product.Калорийность.HasValue && Product.Калорийность.Value < 0)
                 {
                     MessageBox.Show("Калорийность не может быть отрицательной", "Ошибка",
@@ -266,6 +338,7 @@ namespace MenuStolovaya.Views
                     return;
                 }
 
+                // Проверка цены
                 if (Product.Цена < 0)
                 {
                     MessageBox.Show("Цена не может быть отрицательной", "Ошибка",
@@ -302,6 +375,36 @@ namespace MenuStolovaya.Views
             if (UnitComboBox.SelectedItem != null)
             {
                 Product.Единица_измерения = UnitComboBox.SelectedItem.ToString();
+
+                string unit = Product.Единица_измерения;
+
+                if (unit == "шт")
+                {
+                    WeightPerPiecePanel.Visibility = Visibility.Visible;
+                    DensityPanel.Visibility = Visibility.Collapsed;
+
+                    // Загружаем сохранённый вес штуки
+                    if (Product.Вес_единицы_кг.HasValue && Product.Вес_единицы_кг.Value > 0)
+                        WeightPerPieceTextBox.Text = Product.Вес_единицы_кг.Value.ToString();
+                    else
+                        WeightPerPieceTextBox.Text = "0.1";
+                }
+                else if (unit == "л" || unit == "мл")
+                {
+                    WeightPerPiecePanel.Visibility = Visibility.Collapsed;
+                    DensityPanel.Visibility = Visibility.Visible;
+
+                    // Загружаем сохранённую плотность
+                    if (Product.Плотность_кг_л.HasValue && Product.Плотность_кг_л.Value > 0)
+                        DensityTextBox.Text = Product.Плотность_кг_л.Value.ToString();
+                    else
+                        DensityTextBox.Text = "1.0";
+                }
+                else
+                {
+                    WeightPerPiecePanel.Visibility = Visibility.Collapsed;
+                    DensityPanel.Visibility = Visibility.Collapsed;
+                }
             }
         }
 

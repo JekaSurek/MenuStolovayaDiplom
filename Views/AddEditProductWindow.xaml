@@ -132,6 +132,36 @@
                                 Foreground="White"
                                 Margin="0,0,10,0"/>
                     </StackPanel>
+
+                    <StackPanel x:Name="WeightPerPiecePanel" Visibility="Collapsed" Margin="0,10,0,0">
+                        <TextBlock Text="Вес одной штуки (кг):" Margin="10,10,10,5" FontWeight="SemiBold"/>
+                        <TextBox x:Name="WeightPerPieceTextBox" 
+             Text="0.1"
+             PreviewTextInput="NumberValidationTextBox"
+             Margin="10,5,10,10">
+                            <TextBox.ToolTip>
+                                <ToolTip>Вес одной штуки в килограммах (например, 1 яйцо = 0.05 кг, 1 луковица = 0.08 кг)</ToolTip>
+                            </TextBox.ToolTip>
+                        </TextBox>
+                        <TextBlock Text="Примеры: яйцо - 0.05, лук - 0.08, картофель - 0.12" 
+               FontSize="11" Foreground="Gray" Margin="10,0,10,10"/>
+                    </StackPanel>
+
+                    <!-- Поле для плотности (показывается только при выборе "л" или "мл") -->
+                    <StackPanel x:Name="DensityPanel" Visibility="Collapsed" Margin="0,10,0,0">
+                        <TextBlock Text="Плотность (кг/л):" Margin="10,10,10,5" FontWeight="SemiBold"/>
+                        <TextBox x:Name="DensityTextBox" 
+             Text="1.0"
+             PreviewTextInput="NumberValidationTextBox"
+             Margin="10,5,10,10">
+                            <TextBox.ToolTip>
+                                <ToolTip>Плотность продукта (кг/л). Например, молоко = 1.03, масло = 0.92, вода = 1.0</ToolTip>
+                            </TextBox.ToolTip>
+                        </TextBox>
+                        <TextBlock Text="Примеры: вода/молоко - 1.0-1.03, масло - 0.92, мёд - 1.42" 
+               FontSize="11" Foreground="Gray" Margin="10,0,10,10"/>
+                    </StackPanel>
+                    
                     <TextBlock Text="💡 ВАЖНО: Все рецептуры ведутся в КИЛОГРАММАХ!" 
 Foreground="#FF2196F3" 
 FontSize="12" 

@@ -127,6 +127,9 @@
           <Property Name="Кто_утвердил_цену_id" Type="int" />
           <Property Name="Дата_утверждения_цены" Type="datetime" />
           <Property Name="Активен" Type="bit" />
+          <Property Name="Вес_единицы_кг" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="Плотность_кг_л" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="Примечание" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Рецептуры">
           <Key>
@@ -1121,6 +1124,9 @@ FROM [dbo].[vw_Требования_накладные] AS [vw_Требован�
           <NavigationProperty Name="Строки_калькуляции" Relationship="Self.FK__Строки_ка__Проду__66603565" FromRole="Продукты" ToRole="Строки_калькуляции" />
           <NavigationProperty Name="Остатки_продуктов" Relationship="MenuStolovayaDBModel.FK__Остатки_п__Проду__4D5F7D71" FromRole="Продукты" ToRole="Остатки_продуктов" />
           <NavigationProperty Name="Строки_документов" Relationship="MenuStolovayaDBModel.FK__Строки_до__Проду__5CA1C101" FromRole="Продукты" ToRole="Строки_документов" />
+          <Property Name="Вес_единицы_кг" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="Плотность_кг_л" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="Примечание" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Рецептуры">
           <Key>
@@ -2015,6 +2021,9 @@ FROM [dbo].[vw_Требования_накладные] AS [vw_Требован�
           <EntitySetMapping Name="Продукты">
             <EntityTypeMapping TypeName="MenuStolovayaDBModel.Продукты">
               <MappingFragment StoreEntitySet="Продукты">
+                <ScalarProperty Name="Примечание" ColumnName="Примечание" />
+                <ScalarProperty Name="Плотность_кг_л" ColumnName="Плотность_кг_л" />
+                <ScalarProperty Name="Вес_единицы_кг" ColumnName="Вес_единицы_кг" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="Артикул" ColumnName="Артикул" />
                 <ScalarProperty Name="Наименование" ColumnName="Наименование" />

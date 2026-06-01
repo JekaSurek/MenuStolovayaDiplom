@@ -35,5 +35,8 @@ namespace MenuStolovaya.Models
 
         public DateTime? Дата_утверждения_цены { get; set; }
         public bool Активен { get; set; }
+        public decimal? Вес_единицы_кг { get; set; }  // Вес одной штуки (для единицы "шт")
+        public decimal? Плотность_кг_л { get; set; }  // Плотность (для единиц "л", "мл")
+        public string Примечание { get; set; }
     }
 }

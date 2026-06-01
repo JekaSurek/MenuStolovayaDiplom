@@ -11,9 +11,9 @@ namespace MenuStolovaya.Views
 {
     public partial class AccountantWindow : Window
     {
-        private List<CalcCardDisplay> _calcCards;
+        private List<CalcCardDisplayWithColor> _calcCards;
         private List<AccountantProductPriceDisplay> _products;
-        private List<AccountantTechCardDisplay> _techCards;
+        private List<AccountantTechCardDisplayWithColor> _techCards;
         private Dictionary<Button, Style> _buttonStyles = new Dictionary<Button, Style>();
         private bool _isMaximized = false;
         private CalcCardService _calcCardService;
@@ -63,7 +63,6 @@ namespace MenuStolovaya.Views
             }
         }
 
-        // Если окно сворачивается/разворачивается другими способами, добавьте обработчик
         protected override void OnStateChanged(EventArgs e)
         {
             base.OnStateChanged(e);
@@ -144,7 +143,25 @@ namespace MenuStolovaya.Views
         {
             try
             {
-                _calcCards = _calcCardService.GetCalcCards();
+                var cards = _calcCardService.GetCalcCards();
+                _calcCards = cards.Select(c => new CalcCardDisplayWithColor
+                {
+                    Id = c.Id,
+                    Номер = c.Номер,
+                    Блюдо = c.Блюдо,
+                    Выход_порции_г = c.Выход_порции_г,
+                    Себестоимость = c.Себестоимость,
+                    Цена_реализации = c.Цена_реализации,
+                    Фудкост_процент = c.Фудкост_процент,
+                    Процент_наценки = c.Процент_наценки,
+                    Маржинальность = c.Маржинальность,
+                    Статус = c.Статус,
+                    Дата_составления = c.Дата_составления,
+                    Кто_утвердил = c.Кто_утвердил,
+                    Тех_карта = c.Тех_карта,
+                    StatusColor = GetStatusColor(c.Статус)
+                }).ToList();
+
                 CalcCardsDataGrid.ItemsSource = _calcCards;
                 UpdateCalcCardStats();
             }
@@ -154,9 +171,24 @@ namespace MenuStolovaya.Views
             }
         }
 
+        private SolidColorBrush GetStatusColor(string status)
+        {
+            switch (status)
+            {
+                case "Утверждена":
+                    return new SolidColorBrush(Color.FromRgb(76, 175, 80)); // Зелёный
+                case "Черновик":
+                    return new SolidColorBrush(Color.FromRgb(158, 158, 158)); // Серый
+                case "На пересмотре":
+                    return new SolidColorBrush(Color.FromRgb(255, 152, 0)); // Оранжевый
+                default:
+                    return new SolidColorBrush(Color.FromRgb(158, 158, 158)); // Серый по умолчанию
+            }
+        }
+
         private void ReturnToReviewButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay selectedCard)
+            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplayWithColor selectedCard)
             {
                 var result = MessageBox.Show(
                     $"Отправить калькуляционную карточку {selectedCard.Номер} на пересмотр?\n\n" +
@@ -187,7 +219,7 @@ namespace MenuStolovaya.Views
 
         private void ReturnToDraftButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay selectedCard)
+            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplayWithColor selectedCard)
             {
                 var result = MessageBox.Show(
                     $"Вернуть калькуляционную карточку {selectedCard.Номер} в черновик?\n\n" +
@@ -246,21 +278,12 @@ namespace MenuStolovaya.Views
             ReturnToReviewButton.IsEnabled = hasSelection;
             ReturnToDraftButton.IsEnabled = hasSelection;
 
-            if (hasSelection && CalcCardsDataGrid.SelectedItem is CalcCardDisplay selectedCard)
+            if (hasSelection && CalcCardsDataGrid.SelectedItem is CalcCardDisplayWithColor selectedCard)
             {
-                // Кнопка "Утвердить" - только для черновиков
                 ApproveCalcCardButton.IsEnabled = selectedCard.Статус == "Черновик";
-
-                // Кнопка "На пересмотр" - только для утверждённых
                 ReturnToReviewButton.IsEnabled = selectedCard.Статус == "Утверждена";
-
-                // Кнопка "В черновик" - только для карточек на пересмотре
                 ReturnToDraftButton.IsEnabled = selectedCard.Статус == "На пересмотре";
-
-                // Кнопка "Редактировать" - для черновиков и на пересмотре
                 EditCalcCardButton.IsEnabled = selectedCard.Статус == "Черновик" || selectedCard.Статус == "На пересмотре";
-
-                // Кнопка "Удалить" - всё кроме утверждённых
                 DeleteCalcCardButton.IsEnabled = selectedCard.Статус != "Утверждена";
             }
             else
@@ -286,7 +309,7 @@ namespace MenuStolovaya.Views
 
         private void EditCalcCardButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay card)
+            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplayWithColor card)
             {
                 try
                 {
@@ -299,7 +322,7 @@ namespace MenuStolovaya.Views
 
         private void ApproveCalcCardButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay card && Confirm($"утвердить карточку {card.Номер}"))
+            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplayWithColor card && Confirm($"утвердить карточку {card.Номер}"))
             {
                 if (_calcCardService.ApproveCalcCard(card.Id)) LoadCalcCards();
             }
@@ -307,7 +330,7 @@ namespace MenuStolovaya.Views
 
         private void DeleteCalcCardButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay card && Confirm($"удалить карточку {card.Номер}", true))
+            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplayWithColor card && Confirm($"удалить карточку {card.Номер}", true))
             {
                 if (_calcCardService.DeleteCalcCard(card.Id)) LoadCalcCards();
             }
@@ -315,7 +338,7 @@ namespace MenuStolovaya.Views
 
         private void ViewCalcLinesButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplay card)
+            if (CalcCardsDataGrid.SelectedItem is CalcCardDisplayWithColor card)
             {
                 var dialog = new CalcLinesDialog(card.Id);
                 dialog.ShowDialog();
@@ -418,7 +441,21 @@ namespace MenuStolovaya.Views
         {
             try
             {
-                _techCards = _techCardService.GetTechCards(TechCardSearchBox.Text);
+                var cards = _techCardService.GetTechCards(TechCardSearchBox.Text);
+                _techCards = cards.Select(t => new AccountantTechCardDisplayWithColor
+                {
+                    Id = t.Id,
+                    Номер = t.Номер,
+                    Блюдо = t.Блюдо,
+                    Выход = t.Выход,
+                    Статус = t.Статус,
+                    Дата_создания = t.Дата_создания,
+                    Количество_ингредиентов = t.Количество_ингредиентов,
+                    Кто_утвердил = t.Кто_утвердил,
+                    Дата_утверждения = t.Дата_утверждения,
+                    StatusColor = GetStatusColor(t.Статус)
+                }).ToList();
+
                 TechCardsDataGrid.ItemsSource = _techCards;
                 FilterTechCards();
             }
@@ -430,14 +467,26 @@ namespace MenuStolovaya.Views
             bool hasSelection = TechCardsDataGrid.SelectedItem != null;
             ApproveTechCardButton.IsEnabled = hasSelection;
             ViewTechCardDetailsButton.IsEnabled = hasSelection;
+            ReturnTechCardToDraftButton.IsEnabled = hasSelection;
 
-            if (hasSelection && TechCardsDataGrid.SelectedItem is AccountantTechCardDisplay card)
-                ApproveTechCardButton.IsEnabled = card.Статус != "Утверждена";
+            if (hasSelection && TechCardsDataGrid.SelectedItem is AccountantTechCardDisplayWithColor card)
+            {
+                // Кнопка "Утвердить" - только для черновиков
+                ApproveTechCardButton.IsEnabled = card.Статус == "Черновик";
+                // Кнопка "В черновик" - только для утверждённых
+                ReturnTechCardToDraftButton.IsEnabled = card.Статус == "Утверждена";
+            }
+            else
+            {
+                ApproveTechCardButton.IsEnabled = false;
+                ReturnTechCardToDraftButton.IsEnabled = false;
+                ViewTechCardDetailsButton.IsEnabled = false;
+            }
         }
 
         private void ApproveTechCardButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TechCardsDataGrid.SelectedItem is AccountantTechCardDisplay card && Confirm($"утвердить тех. карту {card.Номер}"))
+            if (TechCardsDataGrid.SelectedItem is AccountantTechCardDisplayWithColor card && Confirm($"утвердить тех. карту {card.Номер}"))
             {
                 if (_techCardService.ApproveTechCard(card.Id) && _calcCardService.CreateCalcCardFromTechCard(card.Id))
                 {
@@ -448,9 +497,85 @@ namespace MenuStolovaya.Views
             }
         }
 
+        /// <summary>
+        /// Отправка утверждённой технологической карты в черновик с удалением связанной калькуляционной карточки
+        /// </summary>
+        private void ReturnTechCardToDraftButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (TechCardsDataGrid.SelectedItem is AccountantTechCardDisplayWithColor selectedCard)
+            {
+                // Ищем связанную калькуляционную карточку
+                int? linkedCalcCardId = null;
+                using (var db = new MenuStolovayaDBEntities())
+                {
+                    var calcCard = db.Калькуляционные_карточки
+                        .FirstOrDefault(cc => cc.Технологическая_карта_id == selectedCard.Id);
+                    if (calcCard != null)
+                    {
+                        linkedCalcCardId = calcCard.id;
+                    }
+                }
+
+                // Формируем сообщение с предупреждением
+                string warningMessage = $"Вы уверены, что хотите отправить технологическую карту \"{selectedCard.Номер}\" в черновик?\n\n";
+
+                if (linkedCalcCardId.HasValue)
+                {
+                    warningMessage += "⚠️ ВНИМАНИЕ! Связанная калькуляционная карточка будет УДАЛЕНА!\n";
+                    warningMessage += "После этого потребуется создать новую калькуляционную карточку при повторном утверждении.\n\n";
+                }
+
+                warningMessage += "Продолжить?";
+
+                var result = MessageBox.Show(warningMessage, "Подтверждение отправки в черновик",
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        // Удаляем связанную калькуляционную карточку, если она есть
+                        if (linkedCalcCardId.HasValue)
+                        {
+                            if (!_calcCardService.DeleteCalcCard(linkedCalcCardId.Value))
+                            {
+                                MessageBox.Show("Не удалось удалить связанную калькуляционную карточку.", "Ошибка",
+                                    MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
+                        }
+
+                        // Меняем статус технологической карты на "Черновик"
+                        using (var db = new MenuStolovayaDBEntities())
+                        {
+                            var techCard = db.Технологические_карты.Find(selectedCard.Id);
+                            if (techCard != null)
+                            {
+                                techCard.Статус = "Черновик";
+                                techCard.Кто_утвердил_id = null;
+                                techCard.Дата_утверждения = null;
+                                db.SaveChanges();
+                            }
+                        }
+
+                        LoadTechCards();
+                        LoadCalcCards();
+                        MessageBox.Show("Технологическая карта отправлена в черновик" +
+                            (linkedCalcCardId.HasValue ? "\nСвязанная калькуляционная карточка удалена." : ""),
+                            "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при отправке в черновик: {ex.Message}", "Ошибка",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
+
         private void ViewTechCardDetailsButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TechCardsDataGrid.SelectedItem is AccountantTechCardDisplay card)
+            if (TechCardsDataGrid.SelectedItem is AccountantTechCardDisplayWithColor card)
             {
                 var dialog = new TechCardDetailsDialog(card.Id);
                 dialog.ShowDialog();
@@ -503,6 +628,18 @@ namespace MenuStolovaya.Views
         }
 
         #endregion
+    }
+
+    // Класс для отображения калькуляционных карточек с цветом статуса
+    public class CalcCardDisplayWithColor : CalcCardDisplay
+    {
+        public Brush StatusColor { get; set; }
+    }
+
+    // Класс для отображения технологических карт с цветом статуса
+    public class AccountantTechCardDisplayWithColor : AccountantTechCardDisplay
+    {
+        public Brush StatusColor { get; set; }
     }
 
     public class AccountantProductPriceDisplay

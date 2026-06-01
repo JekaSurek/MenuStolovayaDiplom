@@ -64,6 +64,12 @@ public partial class Продукты
 
     public Nullable<bool> Активен { get; set; }
 
+    public Nullable<decimal> Вес_единицы_кг { get; set; }
+
+    public Nullable<decimal> Плотность_кг_л { get; set; }
+
+    public string Примечание { get; set; }
+
 
 
     public virtual Категории_продуктов Категории_продуктов { get; set; }

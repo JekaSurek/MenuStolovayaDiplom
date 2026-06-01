@@ -43,28 +43,26 @@
             <Setter Property="Height" Value="36"/>
             <Setter Property="MinWidth" Value="90"/>
             <Setter Property="Padding" Value="15,0,15,0"/>
-            <!-- Лево и право по 15 -->
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="border" 
-                        Background="{TemplateBinding Background}" 
-                        CornerRadius="6">
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="6">
                             <ContentPresenter HorizontalAlignment="Center" 
-                                    VerticalAlignment="Center"
-                                    Margin="{TemplateBinding Padding}"/>
-                            <!-- Добавлен Margin -->
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="Background" 
-                                Value="{StaticResource PrimaryDarkBrush}"/>
+                                        Value="{StaticResource PrimaryDarkBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="border" Property="Background" 
-                                Value="{StaticResource PrimaryDarkBrush}"/>
+                                        Value="{StaticResource PrimaryDarkBrush}"/>
                                 <Setter TargetName="border" Property="RenderTransform">
                                     <Setter.Value>
                                         <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
@@ -99,7 +97,7 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="3">
+                                CornerRadius="6">
                             <ScrollViewer x:Name="PART_ContentHost" 
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                           HorizontalAlignment="Stretch"/>
@@ -109,6 +107,162 @@
                                 <Setter TargetName="border" Property="BorderBrush" 
                                         Value="{StaticResource PrimaryBrush}"/>
                                 <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для выпадающего списка ComboBox -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="#FFDDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="8,0,0,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="border" 
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="6">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="30"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Поле ввода -->
+                                    <TextBox x:Name="PART_EditableTextBox"
+                                             Grid.Column="0"
+                                             Margin="0"
+                                             Padding="8,0,0,0"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             VerticalContentAlignment="Center"
+                                             IsReadOnly="{TemplateBinding IsReadOnly}"
+                                             Visibility="Collapsed"/>
+
+                                    <!-- Выбранный элемент (для нередактируемого режима) -->
+                                    <ContentPresenter x:Name="ContentSite"
+                                                      Grid.Column="0"
+                                                      Margin="8,0,0,0"
+                                                      VerticalAlignment="Center"
+                                                      Content="{TemplateBinding SelectionBoxItem}"
+                                                      ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                      ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                      IsHitTestVisible="False"/>
+
+                                    <!-- Кнопка раскрытия -->
+                                    <ToggleButton x:Name="toggleButton" 
+                                                  Grid.Column="1"
+                                                  Background="Transparent"
+                                                  BorderThickness="0"
+                                                  Focusable="False"
+                                                  IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                                  ClickMode="Press">
+                                        <ToggleButton.Content>
+                                            <TextBlock Text="▼" 
+                                                       FontSize="10" 
+                                                       Foreground="{StaticResource TextLightBrush}"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"/>
+                                        </ToggleButton.Content>
+                                    </ToggleButton>
+                                </Grid>
+                            </Border>
+
+                            <!-- Выпадающий список -->
+                            <Popup x:Name="PART_Popup"
+                                   IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Slide">
+                                <Border x:Name="dropDownBorder"
+                                        Background="White"
+                                        BorderBrush="#FFDDDDDD"
+                                        BorderThickness="1"
+                                        CornerRadius="6"
+                                        Margin="0,2,0,0">
+                                    <ScrollViewer x:Name="DropDownScrollViewer"
+                                                  Margin="0"
+                                                  SnapsToDevicePixels="True"
+                                                  HorizontalScrollBarVisibility="Auto"
+                                                  VerticalScrollBarVisibility="Auto">
+                                        <ItemsPresenter x:Name="ItemsPresenter"
+                                                        KeyboardNavigation.DirectionalNavigation="Contained"
+                                                        SnapsToDevicePixels="True"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <!-- При наведении -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                            </Trigger>
+                            <!-- При фокусе -->
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <!-- При раскрытии списка -->
+                            <Trigger Property="IsDropDownOpen" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <!-- Для редактируемого режима -->
+                            <Trigger Property="IsEditable" Value="True">
+                                <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <!-- Для отключённого состояния -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#FFF5F5F5"/>
+                                <Setter Property="Foreground" Value="#FF999999"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для элемента в выпадающем списке ComboBoxItem -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="4"
+                                Margin="2">
+                            <ContentPresenter HorizontalAlignment="Left" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#FF999999"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

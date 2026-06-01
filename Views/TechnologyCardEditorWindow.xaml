@@ -113,7 +113,7 @@
                              Grid.Column="0"
                              Style="{StaticResource ModernTextBoxStyle}"
                              PreviewTextInput="NumberValidationTextBox"
-                             Margin="0,5,5,5"/>
+                             Margin="0,0,252,0"/>
 
                     <Button x:Name="CalculateOutputButton"
                             Content="⟳ Рассчитать"

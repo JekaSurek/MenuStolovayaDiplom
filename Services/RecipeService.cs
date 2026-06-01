@@ -26,11 +26,12 @@ namespace MenuStolovaya.Services
                                 Продукт = p.Наименование,
                                 Артикул = p.Артикул,
                                 Единица_измерения = p.Единица_измерения,
-                                Количество_брутто = r.Количество_брутто,
+                                Количество_брутто = r.Количество_брутто, // УЖЕ В КГ
                                 Количество_нетто = r.Количество_нетто,
                                 Порядок_закладки = r.Порядок_закладки,
                                 Потери_холодной = p.Потери_холодной_обработки,
-                                Потери_горячей = p.Потери_горячей_обработки
+                                Потери_горячей = p.Потери_горячей_обработки,
+                                Продукт_объект = p
                             })
                         .ToList();
 
@@ -38,12 +39,6 @@ namespace MenuStolovaya.Services
 
                     foreach (var r in recipesData)
                     {
-                        // Конвертируем количество в кг для отображения
-                        decimal quantityInKg = UnitConverter.ConvertToKg(
-                            r.Количество_брутто,
-                            r.Единица_измерения,
-                            r.Продукт);
-
                         result.Add(new RecipeDisplay
                         {
                             Id = r.Id,
@@ -51,11 +46,12 @@ namespace MenuStolovaya.Services
                             Продукт = r.Продукт,
                             Артикул = r.Артикул,
                             Единица_измерения = r.Единица_измерения,
-                            Количество_брутто = quantityInKg, // В КГ!
-                            Количество_нетто = r.Количество_нетто ?? quantityInKg,
+                            Количество_брутто = r.Количество_брутто, // УЖЕ В КГ
+                            Количество_нетто = r.Количество_нетто ?? r.Количество_брутто,
                             Порядок_закладки = r.Порядок_закладки ?? 0,
                             Потери_холодной = r.Потери_холодной ?? 0,
-                            Потери_горячей = r.Потери_горячей ?? 0
+                            Потери_горячей = r.Потери_горячей ?? 0,
+                            Количество_для_отображения = FormatQuantityForDisplay(r.Количество_брутто, r.Единица_измерения, r.Продукт_объект)
                         });
                     }
 
@@ -68,6 +64,11 @@ namespace MenuStolovaya.Services
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 return new List<RecipeDisplay>();
             }
+        }
+
+        private string FormatQuantityForDisplay(decimal quantityInKg, string unit, Продукты product)
+        {
+            return UnitConverter.FormatQuantity(quantityInKg, unit, product);
         }
 
         public bool AddRecipe(RecipeModel recipe)
@@ -88,7 +89,7 @@ namespace MenuStolovaya.Services
                         return false;
                     }
 
-                    // Получаем единицу измерения продукта
+                    // Получаем продукт из БД
                     var product = db.Продукты.Find(recipe.Продукт_id);
                     if (product == null)
                     {
@@ -101,13 +102,13 @@ namespace MenuStolovaya.Services
                     decimal quantityInKg = UnitConverter.ConvertToKg(
                         recipe.Количество_брутто,
                         product.Единица_измерения,
-                        product.Наименование);
+                        product);
 
                     var newRecipe = new Рецептуры
                     {
                         Технологическая_карта_id = recipe.Технологическая_карта_id,
                         Продукт_id = recipe.Продукт_id,
-                        Количество_брутто = quantityInKg, // Сохраняем ВСЕГДА в кг!
+                        Количество_брутто = quantityInKg,
                         Порядок_закладки = recipe.Порядок_закладки
                     };
 
@@ -137,15 +138,13 @@ namespace MenuStolovaya.Services
                     var existingRecipe = db.Рецептуры.Find(recipe.Id);
                     if (existingRecipe != null)
                     {
-                        // Получаем единицу измерения продукта
                         var product = db.Продукты.Find(existingRecipe.Продукт_id);
                         if (product != null)
                         {
-                            // Конвертируем введённое количество в КГ
                             decimal quantityInKg = UnitConverter.ConvertToKg(
                                 recipe.Количество_брутто,
                                 product.Единица_измерения,
-                                product.Наименование);
+                                product);
 
                             existingRecipe.Количество_брутто = quantityInKg;
                         }
@@ -245,5 +244,6 @@ namespace MenuStolovaya.Services
         public int Порядок_закладки { get; set; }
         public decimal Потери_холодной { get; set; }
         public decimal Потери_горячей { get; set; }
+        public string Количество_для_отображения { get; set; } // Для отображения в DataGrid
     }
 }

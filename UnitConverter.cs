@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System;
-using System.Collections.Generic;
 
 namespace MenuStolovaya.Services
 {
@@ -15,60 +10,50 @@ namespace MenuStolovaya.Services
     /// </summary>
     public static class UnitConverter
     {
-        // Коэффициенты перевода в килограммы
+        // Коэффициенты перевода в килограммы (для весовых единиц)
         private static readonly Dictionary<string, decimal> ConversionToKg = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
         {
             { "кг", 1m },      // 1 кг = 1 кг
             { "г", 0.001m },   // 1 г = 0.001 кг
-            { "л", 1m },       // 1 л воды ≈ 1 кг (для других жидкостей нужна плотность)
-            { "мл", 0.001m },  // 1 мл = 0.001 кг (для воды)
-            { "шт", 0m }       // Штуки - требуют среднего веса
-        };
-
-        // Плотность продуктов (кг/л) для перевода объёма в массу
-        private static readonly Dictionary<string, decimal> Density = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
-        {
-            { "молоко", 1.03m },      // 1 л молока ≈ 1.03 кг
-            { "сливки", 1.01m },      // 1 л сливок ≈ 1.01 кг
-            { "масло растительное", 0.92m }, // 1 л масла ≈ 0.92 кг
-            { "масло подсолнечное", 0.92m },
-            { "вода", 1.0m },
-            { "бульон", 1.02m },
-            { "сок", 1.05m },
-            { "мёд", 1.42m },         // 1 л мёда ≈ 1.42 кг
-            { "кефир", 1.03m },
-            { "йогурт", 1.04m },
-            { "сметана", 1.02m }
         };
 
         /// <summary>
         /// Переводит количество продукта в килограммы
         /// </summary>
-        /// <param name="quantity">Количество</param>
+        /// <param name="quantity">Количество в исходных единицах</param>
         /// <param name="unit">Единица измерения (кг, г, л, мл, шт)</param>
-        /// <param name="productName">Название продукта (для определения плотности)</param>
+        /// <param name="product">Продукт (для получения плотности или веса штуки)</param>
         /// <returns>Количество в килограммах</returns>
-        public static decimal ConvertToKg(decimal quantity, string unit, string productName = "")
+        public static decimal ConvertToKg(decimal quantity, string unit, Продукты product)
         {
             if (quantity <= 0) return 0;
+            if (product == null) return quantity;
 
             unit = unit?.Trim().ToLower() ?? "кг";
 
-            // Штуки - нужен средний вес
+            // Штуки - используем вес из БД
             if (unit == "шт")
             {
-                return ConvertPiecesToKg(quantity, productName);
+                decimal weightPerPiece = product.Вес_единицы_кг ?? 0.1m;
+                if (weightPerPiece <= 0) weightPerPiece = 0.1m;
+                return quantity * weightPerPiece;
             }
 
-            // Объёмные единицы (л, мл)
-            if (unit == "л" || unit == "мл")
+            // Объёмные единицы (л, мл) - используем плотность из БД
+            if (unit == "л")
             {
-                decimal liters = unit == "л" ? quantity : quantity / 1000m;
-                decimal density = GetDensity(productName);
+                decimal density = product.Плотность_кг_л ?? 1.0m;
+                return quantity * density;
+            }
+
+            if (unit == "мл")
+            {
+                decimal density = product.Плотность_кг_л ?? 1.0m;
+                decimal liters = quantity / 1000m;
                 return liters * density;
             }
 
-            // Весовые единицы
+            // Весовые единицы (кг, г)
             if (ConversionToKg.ContainsKey(unit))
             {
                 return quantity * ConversionToKg[unit];
@@ -79,123 +64,114 @@ namespace MenuStolovaya.Services
         }
 
         /// <summary>
-        /// Переводит штуки в килограммы (средний вес продукта)
+        /// Переводит килограммы обратно в исходные единицы для отображения
         /// </summary>
-        private static decimal ConvertPiecesToKg(decimal pieces, string productName)
+        public static string FormatQuantity(decimal quantityInKg, string targetUnit, Продукты product)
         {
-            // Средний вес популярных продуктов (в кг)
-            var averageWeight = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "яйцо", 0.05m },       // 1 яйцо ≈ 50 г
-                { "яйца", 0.05m },
-                { "лук", 0.08m },         // 1 луковица ≈ 80 г
-                { "лук репчатый", 0.08m },
-                { "картофель", 0.12m },   // 1 картофелина ≈ 120 г
-                { "морковь", 0.10m },     // 1 морковь ≈ 100 г
-                { "помидор", 0.10m },     // 1 помидор ≈ 100 г
-                { "огурец", 0.12m },      // 1 огурец ≈ 120 г
-                { "перец", 0.15m },       // 1 перец ≈ 150 г
-                { "чеснок", 0.005m },     // 1 зубчик ≈ 5 г
-                { "лимон", 0.10m },       // 1 лимон ≈ 100 г
-                { "апельсин", 0.15m },    // 1 апельсин ≈ 150 г
-                { "банан", 0.15m },       // 1 банан ≈ 150 г
-                { "хлеб", 0.03m },        // 1 кусок хлеба ≈ 30 г (для бутербродов)
-                { "булка", 0.30m },       // 1 булка ≈ 300 г
-            };
+            if (product == null) return $"{quantityInKg:F3} кг";
 
-            // Ищем средний вес по названию продукта
-            foreach (var kvp in averageWeight)
+            targetUnit = targetUnit?.Trim().ToLower() ?? "кг";
+
+            if (targetUnit == "шт")
             {
-                if (productName.ToLower().Contains(kvp.Key))
-                {
-                    return pieces * kvp.Value;
-                }
+                decimal weightPerPiece = product.Вес_единицы_кг ?? 0.1m;
+                if (weightPerPiece <= 0) weightPerPiece = 0.1m;
+                decimal pieces = quantityInKg / weightPerPiece;
+                return $"{pieces:F1} {targetUnit}";
             }
 
-            // Если продукт не найден, показываем предупреждение
-            System.Diagnostics.Debug.WriteLine($"ВНИМАНИЕ: Не указан средний вес для продукта '{productName}' в штуках!");
-            return pieces * 0.1m; // По умолчанию 100 г
+            if (targetUnit == "л")
+            {
+                decimal density = product.Плотность_кг_л ?? 1.0m;
+                decimal liters = quantityInKg / density;
+                return $"{liters:F3} {targetUnit}";
+            }
+
+            if (targetUnit == "мл")
+            {
+                decimal density = product.Плотность_кг_л ?? 1.0m;
+                decimal liters = quantityInKg / density;
+                decimal ml = liters * 1000;
+                return $"{ml:F0} {targetUnit}";
+            }
+
+            if (targetUnit == "г")
+            {
+                decimal grams = quantityInKg * 1000;
+                return $"{grams:F0} {targetUnit}";
+            }
+
+            return $"{quantityInKg:F3} {targetUnit}";
         }
 
         /// <summary>
-        /// Получает плотность продукта (кг/л)
+        /// Получает цену за кг на основе цены за единицу и единицы измерения
         /// </summary>
-        private static decimal GetDensity(string productName)
+        public static decimal GetPricePerKg(decimal pricePerUnit, string unit, Продукты product)
         {
-            if (string.IsNullOrEmpty(productName)) return 1.0m;
+            if (product == null) return pricePerUnit;
 
-            foreach (var kvp in Density)
+            unit = unit?.Trim().ToLower() ?? "кг";
+
+            switch (unit)
             {
-                if (productName.ToLower().Contains(kvp.Key))
-                {
-                    return kvp.Value;
-                }
-            }
+                case "кг":
+                    return pricePerUnit;
 
-            // По умолчанию - плотность воды
-            return 1.0m;
+                case "г":
+                    return pricePerUnit * 1000;
+
+                case "л":
+                    decimal density = product.Плотность_кг_л ?? 1.0m;
+                    return pricePerUnit / density;
+
+                case "мл":
+                    density = product.Плотность_кг_л ?? 1.0m;
+                    return (pricePerUnit * 1000) / density;
+
+                case "шт":
+                    decimal weightPerPiece = product.Вес_единицы_кг ?? 0.1m;
+                    if (weightPerPiece <= 0) weightPerPiece = 0.1m;
+                    return pricePerUnit / weightPerPiece;
+
+                default:
+                    return pricePerUnit;
+            }
         }
 
         /// <summary>
-        /// Получает коэффициент перевода для единицы измерения
+        /// Получает цену за единицу на основе цены за кг
         /// </summary>
-        public static decimal GetConversionFactor(string unit)
+        public static decimal GetPricePerUnit(decimal pricePerKg, string unit, Продукты product)
         {
-            if (ConversionToKg.ContainsKey(unit))
-                return ConversionToKg[unit];
-            return 1m;
-        }
+            if (product == null) return pricePerKg;
 
-        /// <summary>
-        /// Форматирует количество для отображения с правильной единицей
-        /// </summary>
-        public static string FormatQuantity(decimal quantityInKg, string originalUnit, string productName = "")
-        {
-            if (originalUnit == "шт")
+            unit = unit?.Trim().ToLower() ?? "кг";
+
+            switch (unit)
             {
-                var pieces = ConvertKgToPieces(quantityInKg, productName);
-                return $"{pieces:F1} {originalUnit}";
+                case "кг":
+                    return pricePerKg;
+
+                case "г":
+                    return pricePerKg / 1000;
+
+                case "л":
+                    decimal density = product.Плотность_кг_л ?? 1.0m;
+                    return pricePerKg * density;
+
+                case "мл":
+                    density = product.Плотность_кг_л ?? 1.0m;
+                    return (pricePerKg * density) / 1000;
+
+                case "шт":
+                    decimal weightPerPiece = product.Вес_единицы_кг ?? 0.1m;
+                    if (weightPerPiece <= 0) weightPerPiece = 0.1m;
+                    return pricePerKg * weightPerPiece;
+
+                default:
+                    return pricePerKg;
             }
-
-            if (originalUnit == "л" || originalUnit == "мл")
-            {
-                decimal liters = quantityInKg / GetDensity(productName);
-                if (originalUnit == "мл")
-                    return $"{liters * 1000:F0} {originalUnit}";
-                return $"{liters:F3} {originalUnit}";
-            }
-
-            if (originalUnit == "г")
-                return $"{quantityInKg * 1000:F0} {originalUnit}";
-
-            return $"{quantityInKg:F3} {originalUnit}";
-        }
-
-        /// <summary>
-        /// Переводит килограммы обратно в штуки
-        /// </summary>
-        private static decimal ConvertKgToPieces(decimal kg, string productName)
-        {
-            var averageWeight = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "яйцо", 0.05m },
-                { "яйца", 0.05m },
-                { "лук", 0.08m },
-                { "картофель", 0.12m },
-                { "морковь", 0.10m },
-                { "помидор", 0.10m },
-                { "огурец", 0.12m }
-            };
-
-            foreach (var kvp in averageWeight)
-            {
-                if (productName.ToLower().Contains(kvp.Key))
-                {
-                    return kg / kvp.Value;
-                }
-            }
-
-            return kg / 0.1m;
         }
     }
 }

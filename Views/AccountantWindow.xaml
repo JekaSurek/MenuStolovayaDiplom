@@ -88,6 +88,16 @@
         <Style x:Key="ActionButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
             <Setter Property="Width" Value="120"/>
         </Style>
+
+        <!-- Стили для подсветки статусов -->
+        <Style x:Key="StatusTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
     </Window.Resources>
 
     <Border CornerRadius="15" Margin="10">
@@ -147,46 +157,44 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" 
-            Orientation="Horizontal" 
-            VerticalAlignment="Center" 
-            Margin="0,0,20,0">
+                                Orientation="Horizontal" 
+                                VerticalAlignment="Center" 
+                                Margin="0,0,20,0">
                         <Border Background="#30FFFFFF" 
-            CornerRadius="15" 
-            Padding="10,5">
+                                CornerRadius="15" 
+                                Padding="10,5">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="👤 " Foreground="White"/>
                                 <TextBlock x:Name="CurrentUserText" 
-                       FontWeight="SemiBold" 
-                       Foreground="White"/>
+                                           FontWeight="SemiBold" 
+                                           Foreground="White"/>
                             </StackPanel>
                         </Border>
 
-                        <!-- КНОПКА СВЕРНУТЬ -->
                         <Button Content="─" 
-            Style="{StaticResource WindowControlButtonStyle}"
-            Click="MinimizeButton_Click"
-            ToolTip="Свернуть"
-            Margin="10,0,0,0"/>
+                                Style="{StaticResource WindowControlButtonStyle}"
+                                Click="MinimizeButton_Click"
+                                ToolTip="Свернуть"
+                                Margin="10,0,0,0"/>
 
-                        <!-- КНОПКА РАЗВЕРНУТЬ/ВОССТАНОВИТЬ -->
                         <Button x:Name="MaximizeButton" 
-            Content="□" 
-            Style="{StaticResource WindowControlButtonStyle}"
-            Click="MaximizeButton_Click"
-            ToolTip="Развернуть"
-            Margin="5,0,0,0"/>
+                                Content="□" 
+                                Style="{StaticResource WindowControlButtonStyle}"
+                                Click="MaximizeButton_Click"
+                                ToolTip="Развернуть"
+                                Margin="5,0,0,0"/>
 
                         <Button Content="🚪" 
-            Style="{StaticResource WindowControlButtonStyle}"
-            Click="LogoutButton_Click"
-            ToolTip="Выйти"
-            Margin="5,0,0,0"/>
+                                Style="{StaticResource WindowControlButtonStyle}"
+                                Click="LogoutButton_Click"
+                                ToolTip="Выйти"
+                                Margin="5,0,0,0"/>
 
                         <Button Content="✕" 
-            Style="{StaticResource WindowControlButtonStyle}"
-            Click="CloseButton_Click"
-            ToolTip="Закрыть"
-            Margin="5,0,0,0"/>
+                                Style="{StaticResource WindowControlButtonStyle}"
+                                Click="CloseButton_Click"
+                                ToolTip="Закрыть"
+                                Margin="5,0,0,0"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -215,7 +223,13 @@
                             <Button x:Name="CalcCardsTabButton" 
                                     Content="📊 Калькуляционные карты" 
                                     Style="{StaticResource TabButtonStyle}"
-                                    Click="CalcCardsTabButton_Click"/>
+                                    Click="CalcCardsTabButton_Click">
+                                <Button.ContentTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="📊 Калькуляционные карты" TextWrapping="Wrap" MaxWidth="180"/>
+                                    </DataTemplate>
+                                </Button.ContentTemplate>
+                            </Button>
 
                             <Button x:Name="PricesTabButton" 
                                     Content="💰 Цены продуктов" 
@@ -253,8 +267,8 @@
 
                     <!-- Калькуляционные карточки -->
                     <Grid x:Name="CalcCardsContent" 
-      Visibility="Visible" 
-      Style="{StaticResource ContentAreaStyle}">
+                          Visibility="Visible" 
+                          Style="{StaticResource ContentAreaStyle}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -263,94 +277,91 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0" 
-               Text="Калькуляционные карточки" 
-               Style="{StaticResource TitleStyle}"/>
+                                   Text="Калькуляционные карточки" 
+                                   Style="{StaticResource TitleStyle}"/>
 
-                        <!-- Панель инструментов с WrapPanel для переноса кнопок -->
                         <Border Grid.Row="1" 
-            Style="{StaticResource CardStyle}" 
-            Margin="0,0,0,15">
+                                Style="{StaticResource CardStyle}" 
+                                Margin="0,0,0,15">
                             <WrapPanel Margin="5">
                                 <TextBox x:Name="CalcCardSearchBox" 
-                     Width="250" 
-                     Style="{StaticResource ModernTextBoxStyle}"
-                     TextChanged="CalcCardSearchBox_TextChanged"
-                     Margin="5"
-                     ToolTip="Поиск по номеру или блюду"/>
+                                         Width="250" 
+                                         Style="{StaticResource ModernTextBoxStyle}"
+                                         TextChanged="CalcCardSearchBox_TextChanged"
+                                         Margin="5"
+                                         ToolTip="Поиск по номеру или блюду"/>
 
                                 <Button Content="➕ Добавить" 
-                    Style="{StaticResource PrimaryButtonStyle}"
-                    Click="AddCalcCardButton_Click"
-                    Margin="5"
-                    Height="35"/>
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="AddCalcCardButton_Click"
+                                        Margin="5"
+                                        Height="35"/>
 
                                 <Button x:Name="EditCalcCardButton" 
-                    Content="✏️ Редактировать" 
-                    Style="{StaticResource PrimaryButtonStyle}"
-                    Click="EditCalcCardButton_Click"
-                    Margin="5"
-                    Height="35"
-                    IsEnabled="False"/>
+                                        Content="✏️ Редактировать" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="EditCalcCardButton_Click"
+                                        Margin="5"
+                                        Height="35"
+                                        IsEnabled="False"/>
 
                                 <Button x:Name="ApproveCalcCardButton" 
-                    Content="✓ Утвердить" 
-                    Style="{StaticResource PrimaryButtonStyle}"
-                    Background="#FF4CAF50"
-                    Click="ApproveCalcCardButton_Click"
-                    Margin="5"
-                    Height="35"
-                    IsEnabled="False"/>
+                                        Content="✓ Утвердить" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Background="#FF4CAF50"
+                                        Click="ApproveCalcCardButton_Click"
+                                        Margin="5"
+                                        Height="35"
+                                        IsEnabled="False"/>
 
-                                <!-- ВОЗВРАЩАЕМ КНОПКУ "На пересмотр" -->
                                 <Button x:Name="ReturnToReviewButton" 
-                    Content="🔄 На пересмотр" 
-                    Style="{StaticResource WarningButtonStyle}"
-                    Click="ReturnToReviewButton_Click"
-                    Margin="5"
-                    Height="35"
-                    IsEnabled="False"
-                    ToolTip="Отправить утверждённую карточку на пересмотр"/>
+                                        Content="🔄 На пересмотр" 
+                                        Style="{StaticResource WarningButtonStyle}"
+                                        Click="ReturnToReviewButton_Click"
+                                        Margin="5"
+                                        Height="35"
+                                        IsEnabled="False"
+                                        ToolTip="Отправить утверждённую карточку на пересмотр"/>
 
-                                <!-- ВОЗВРАЩАЕМ КНОПКУ "В черновик" -->
                                 <Button x:Name="ReturnToDraftButton" 
-                    Content="📝 В черновик" 
-                    Style="{StaticResource PrimaryButtonStyle}"
-                    Background="#FFFF9800"
-                    Click="ReturnToDraftButton_Click"
-                    Margin="5"
-                    Height="35"
-                    IsEnabled="False"
-                    ToolTip="Вернуть карточку из пересмотра в черновик"/>
+                                        Content="📝 В черновик" 
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Background="#FFFF9800"
+                                        Click="ReturnToDraftButton_Click"
+                                        Margin="5"
+                                        Height="35"
+                                        IsEnabled="False"
+                                        ToolTip="Вернуть карточку из пересмотра в черновик"/>
 
                                 <Button x:Name="DeleteCalcCardButton" 
-                    Content="🗑️ Удалить" 
-                    Style="{StaticResource DangerButtonStyle}"
-                    Click="DeleteCalcCardButton_Click"
-                    Margin="5"
-                    Height="35"
-                    IsEnabled="False"/>
+                                        Content="🗑️ Удалить" 
+                                        Style="{StaticResource DangerButtonStyle}"
+                                        Click="DeleteCalcCardButton_Click"
+                                        Margin="5"
+                                        Height="35"
+                                        IsEnabled="False"/>
 
                                 <Button x:Name="ViewCalcLinesButton" 
-                    Content="📋 Просмотр" 
-                    Style="{StaticResource InfoButtonStyle}"
-                    Click="ViewCalcLinesButton_Click"
-                    Margin="5"
-                    Height="35"
-                    IsEnabled="False"/>
+                                        Content="📋 Просмотр" 
+                                        Style="{StaticResource InfoButtonStyle}"
+                                        Click="ViewCalcLinesButton_Click"
+                                        Margin="5"
+                                        Height="35"
+                                        IsEnabled="False"/>
 
                                 <Button Content="🔄 Обновить" 
-                    Style="{StaticResource PrimaryButtonStyle}"
-                    Click="RefreshCalcCardsButton_Click"
-                    Margin="5"
-                    Height="35"/>
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Click="RefreshCalcCardsButton_Click"
+                                        Margin="5"
+                                        Height="35"/>
                             </WrapPanel>
                         </Border>
 
                         <DataGrid x:Name="CalcCardsDataGrid" 
-              Grid.Row="2" 
-              Style="{StaticResource ModernDataGridStyle}"
-              AutoGenerateColumns="False"
-              SelectionChanged="CalcCardsDataGrid_SelectionChanged">
+                                  Grid.Row="2" 
+                                  Style="{StaticResource ModernDataGridStyle}"
+                                  AutoGenerateColumns="False"
+                                  SelectionChanged="CalcCardsDataGrid_SelectionChanged">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Номер" Binding="{Binding Номер}" Width="120"/>
                                 <DataGridTextColumn Header="Блюдо" Binding="{Binding Блюдо}" Width="200"/>
@@ -359,7 +370,23 @@
                                 <DataGridTextColumn Header="Цена" Binding="{Binding Цена_реализации, StringFormat={}{0:N2} руб.}" Width="120"/>
                                 <DataGridTextColumn Header="Food Cost" Binding="{Binding Фудкост_процент, StringFormat={}{0:N2}%}" Width="100"/>
                                 <DataGridTextColumn Header="Наценка" Binding="{Binding Процент_наценки, StringFormat={}{0:N2}%}" Width="100"/>
-                                <DataGridTextColumn Header="Статус" Binding="{Binding Статус}" Width="100"/>
+
+                                <!-- Статус с цветной подсветкой - ширина увеличена до 140 -->
+                                <DataGridTemplateColumn Header="Статус" Width="140">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="10" 
+                                                    Background="{Binding StatusColor}"
+                                                    Margin="2,2">
+                                                <TextBlock Text="{Binding Статус}" 
+                                                           Style="{StaticResource StatusTextBlockStyle}"
+                                                           Foreground="White"
+                                                           TextWrapping="Wrap"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
                                 <DataGridTextColumn Header="Дата" Binding="{Binding Дата_составления, StringFormat={}{0:dd.MM.yyyy}}" Width="100"/>
                                 <DataGridTextColumn Header="Кто утвердил" Binding="{Binding Кто_утвердил}" Width="150"/>
                             </DataGrid.Columns>
@@ -367,8 +394,8 @@
 
                         <!-- Панель статистики -->
                         <Border Grid.Row="3" 
-            Style="{StaticResource CardStyle}" 
-            Margin="0,15,0,0">
+                                Style="{StaticResource CardStyle}" 
+                                Margin="0,15,0,0">
                             <WrapPanel Margin="10,5">
                                 <TextBlock Text="Всего карточек: " Margin="10,0,5,0"/>
                                 <TextBlock x:Name="TotalCalcCardsText" FontWeight="Bold" Margin="0,0,20,0"/>
@@ -449,15 +476,23 @@
                                 <DataGridTextColumn Header="Категория" Binding="{Binding Категория}" Width="150"/>
                                 <DataGridTextColumn Header="Ед. изм." Binding="{Binding Единица_измерения}" Width="80"/>
                                 <DataGridTextColumn Header="Цена" Binding="{Binding Цена, StringFormat={}{0:N2} руб.}" Width="120"/>
-                                <DataGridTextColumn Header="Статус" Binding="{Binding СтатусЦены}" Width="120">
-                                    <DataGridTextColumn.CellStyle>
-                                        <Style TargetType="DataGridCell">
-                                            <Setter Property="HorizontalAlignment" Value="Center"/>
-                                            <Setter Property="FontWeight" Value="Bold"/>
-                                            <Setter Property="Foreground" Value="{Binding ЦветСтатуса}"/>
-                                        </Style>
-                                    </DataGridTextColumn.CellStyle>
-                                </DataGridTextColumn>
+
+                                <!-- Статус с цветной подсветкой - ширина увеличена до 140 -->
+                                <DataGridTemplateColumn Header="Статус" Width="140">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="10" 
+                                                    Background="{Binding ЦветСтатуса}"
+                                                    Margin="2,2">
+                                                <TextBlock Text="{Binding СтатусЦены}" 
+                                                           Style="{StaticResource StatusTextBlockStyle}"
+                                                           Foreground="White"
+                                                           TextWrapping="Wrap"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
                                 <DataGridTextColumn Header="Дата утверждения" Binding="{Binding Дата_утверждения_цены, StringFormat={}{0:dd.MM.yyyy}}" Width="120"/>
                                 <DataGridTextColumn Header="Кто утвердил" Binding="{Binding Кто_утвердил_цену}" Width="150"/>
                             </DataGrid.Columns>
@@ -479,8 +514,8 @@
 
                     <!-- Технологические карты -->
                     <Grid x:Name="TechCardsContent" 
-                          Visibility="Collapsed" 
-                          Style="{StaticResource ContentAreaStyle}">
+      Visibility="Collapsed" 
+      Style="{StaticResource ContentAreaStyle}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -488,57 +523,85 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0" 
-                                   Text="Технологические карты" 
-                                   Style="{StaticResource TitleStyle}"/>
+               Text="Технологические карты" 
+               Style="{StaticResource TitleStyle}"/>
 
                         <Border Grid.Row="1" 
-                                Style="{StaticResource CardStyle}" 
-                                Margin="0,0,0,15">
+            Style="{StaticResource CardStyle}" 
+            Margin="0,0,0,15">
                             <StackPanel Orientation="Horizontal">
                                 <TextBox x:Name="TechCardSearchBox" 
-                                         Width="300" 
-                                         Style="{StaticResource ModernTextBoxStyle}"
-                                         TextChanged="TechCardSearchBox_TextChanged"
-                                         Margin="10"
-                                         ToolTip="Поиск по номеру или блюду"/>
+                     Width="300" 
+                     Style="{StaticResource ModernTextBoxStyle}"
+                     TextChanged="TechCardSearchBox_TextChanged"
+                     Margin="10"
+                     ToolTip="Поиск по номеру или блюду"/>
                                 <ComboBox x:Name="TechCardStatusCombo" 
-                                          Width="150" 
-                                          Margin="5"
-                                          SelectionChanged="TechCardStatusCombo_SelectionChanged">
+                      Width="150" 
+                      Margin="5"
+                      SelectionChanged="TechCardStatusCombo_SelectionChanged">
                                     <ComboBoxItem Content="Все статусы" IsSelected="True"/>
                                     <ComboBoxItem Content="Черновик"/>
                                     <ComboBoxItem Content="Утверждена"/>
                                 </ComboBox>
+
                                 <Button x:Name="ApproveTechCardButton" 
-                                        Content="✓ Утвердить" 
-                                        Style="{StaticResource PrimaryButtonStyle}"
-                                        Background="#FF4CAF50"
-                                        Click="ApproveTechCardButton_Click"
-                                        Margin="5"
-                                        IsEnabled="False"/>
+                    Content="✓ Утвердить" 
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Background="#FF4CAF50"
+                    Click="ApproveTechCardButton_Click"
+                    Margin="5"
+                    IsEnabled="False"/>
+
+                                <!-- ДОБАВЛЕНА КНОПКА "В черновик" -->
+                                <Button x:Name="ReturnTechCardToDraftButton" 
+                    Content="📝 В черновик" 
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Background="#FFFF9800"
+                    Click="ReturnTechCardToDraftButton_Click"
+                    Margin="5"
+                    IsEnabled="False"
+                    ToolTip="Отправить утверждённую тех. карту в черновик (калькуляционная карточка будет удалена)"/>
+
                                 <Button x:Name="ViewTechCardDetailsButton" 
-                                        Content="📋 Детали" 
-                                        Style="{StaticResource InfoButtonStyle}"
-                                        Click="ViewTechCardDetailsButton_Click"
-                                        Margin="5"
-                                        IsEnabled="False"/>
+                    Content="📋 Детали" 
+                    Style="{StaticResource InfoButtonStyle}"
+                    Click="ViewTechCardDetailsButton_Click"
+                    Margin="5"
+                    IsEnabled="False"/>
                                 <Button Content="🔄 Обновить" 
-                                        Style="{StaticResource PrimaryButtonStyle}"
-                                        Click="RefreshTechCardsButton_Click"
-                                        Margin="5"/>
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Click="RefreshTechCardsButton_Click"
+                    Margin="5"/>
                             </StackPanel>
                         </Border>
 
                         <DataGrid x:Name="TechCardsDataGrid" 
-                                  Grid.Row="2" 
-                                  Style="{StaticResource ModernDataGridStyle}"
-                                  AutoGenerateColumns="False"
-                                  SelectionChanged="TechCardsDataGrid_SelectionChanged">
+              Grid.Row="2" 
+              Style="{StaticResource ModernDataGridStyle}"
+              AutoGenerateColumns="False"
+              SelectionChanged="TechCardsDataGrid_SelectionChanged">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Номер" Binding="{Binding Номер}" Width="120"/>
                                 <DataGridTextColumn Header="Блюдо" Binding="{Binding Блюдо}" Width="200"/>
                                 <DataGridTextColumn Header="Выход (г)" Binding="{Binding Выход}" Width="100"/>
-                                <DataGridTextColumn Header="Статус" Binding="{Binding Статус}" Width="100"/>
+
+                                <!-- Статус с цветной подсветкой -->
+                                <DataGridTemplateColumn Header="Статус" Width="140">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="10" 
+                                Background="{Binding StatusColor}"
+                                Margin="2,2">
+                                                <TextBlock Text="{Binding Статус}" 
+                                       Style="{StaticResource StatusTextBlockStyle}"
+                                       Foreground="White"
+                                       TextWrapping="Wrap"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
                                 <DataGridTextColumn Header="Дата создания" Binding="{Binding Дата_создания, StringFormat={}{0:dd.MM.yyyy}}" Width="100"/>
                                 <DataGridTextColumn Header="Ингредиентов" Binding="{Binding Количество_ингредиентов}" Width="100"/>
                                 <DataGridTextColumn Header="Кто утвердил" Binding="{Binding Кто_утвердил}" Width="150"/>

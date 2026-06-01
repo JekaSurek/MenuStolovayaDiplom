@@ -15,14 +15,12 @@
         ResizeMode="CanResizeWithGrip">
 
     <Window.Resources>
-        <!-- Градиент для верхней панели -->
         <LinearGradientBrush x:Key="HeaderGradient" StartPoint="0,0" EndPoint="1,0">
             <GradientStop Color="#FF2E7D32" Offset="0"/>
             <GradientStop Color="#FF4CAF50" Offset="0.5"/>
             <GradientStop Color="#FF2E7D32" Offset="1"/>
         </LinearGradientBrush>
 
-        <!-- Стиль для кнопки закрытия -->
         <Style x:Key="WindowControlButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="35"/>
             <Setter Property="Height" Value="35"/>
@@ -50,23 +48,14 @@
             </Setter>
         </Style>
 
-        <!-- Стиль для активной вкладки -->
-        <Style x:Key="ActiveTabButtonStyle" TargetType="Button">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Color="#FF4CAF50" Offset="0"/>
-                        <GradientStop Color="#FF45A049" Offset="1"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="White"/>
+        <Style x:Key="TabButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Height" Value="50"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="Padding" Value="20,0"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -80,12 +69,19 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#FF45A049"/>
+                                <Setter TargetName="border" Property="Background" 
+                                        Value="{StaticResource PrimaryLightBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <Style x:Key="ActiveTabButtonStyle" TargetType="Button" BasedOn="{StaticResource TabButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
     </Window.Resources>
 
@@ -146,46 +142,44 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" 
-            Orientation="Horizontal" 
-            VerticalAlignment="Center" 
-            Margin="0,0,20,0">
+                                Orientation="Horizontal" 
+                                VerticalAlignment="Center" 
+                                Margin="0,0,20,0">
                         <Border Background="#30FFFFFF" 
-            CornerRadius="15" 
-            Padding="10,5">
+                                CornerRadius="15" 
+                                Padding="10,5">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="👤 " Foreground="White"/>
                                 <TextBlock x:Name="CurrentUserText" 
-                       FontWeight="SemiBold" 
-                       Foreground="White"/>
+                                           FontWeight="SemiBold" 
+                                           Foreground="White"/>
                             </StackPanel>
                         </Border>
 
-                        <!-- КНОПКА СВЕРНУТЬ -->
                         <Button Content="─" 
-            Style="{StaticResource WindowControlButtonStyle}"
-            Click="MinimizeButton_Click"
-            ToolTip="Свернуть"
-            Margin="10,0,0,0"/>
+                                Style="{StaticResource WindowControlButtonStyle}"
+                                Click="MinimizeButton_Click"
+                                ToolTip="Свернуть"
+                                Margin="10,0,0,0"/>
 
-                        <!-- КНОПКА РАЗВЕРНУТЬ/ВОССТАНОВИТЬ -->
                         <Button x:Name="MaximizeButton" 
-            Content="□" 
-            Style="{StaticResource WindowControlButtonStyle}"
-            Click="MaximizeButton_Click"
-            ToolTip="Развернуть"
-            Margin="5,0,0,0"/>
+                                Content="□" 
+                                Style="{StaticResource WindowControlButtonStyle}"
+                                Click="MaximizeButton_Click"
+                                ToolTip="Развернуть"
+                                Margin="5,0,0,0"/>
 
                         <Button Content="🚪" 
-            Style="{StaticResource WindowControlButtonStyle}"
-            Click="LogoutButton_Click"
-            ToolTip="Выйти"
-            Margin="5,0,0,0"/>
+                                Style="{StaticResource WindowControlButtonStyle}"
+                                Click="LogoutButton_Click"
+                                ToolTip="Выйти"
+                                Margin="5,0,0,0"/>
 
                         <Button Content="✕" 
-            Style="{StaticResource WindowControlButtonStyle}"
-            Click="CloseButton_Click"
-            ToolTip="Закрыть"
-            Margin="5,0,0,0"/>
+                                Style="{StaticResource WindowControlButtonStyle}"
+                                Click="CloseButton_Click"
+                                ToolTip="Закрыть"
+                                Margin="5,0,0,0"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -199,69 +193,68 @@
 
                 <!-- Левая панель с вкладками -->
                 <Border Grid.Column="0" 
-        Background="{StaticResource CardBrush}" 
-        BorderBrush="#FFEEEEEE" 
-        BorderThickness="0,1,1,0"
-        CornerRadius="0,0,0,15">
+                        Background="{StaticResource CardBrush}" 
+                        BorderBrush="#FFEEEEEE" 
+                        BorderThickness="0,1,1,0"
+                        CornerRadius="0,0,0,15">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="10,15">
                             <TextBlock Text="ОСНОВНЫЕ" 
-                       FontSize="11" 
-                       Foreground="#FF888888"
-                       Margin="15,0,0,10"
-                       FontWeight="SemiBold"/>
+                                       FontSize="11" 
+                                       Foreground="#FF888888"
+                                       Margin="15,0,0,10"
+                                       FontWeight="SemiBold"/>
 
-                           
                             <Button x:Name="ProductsTabButton" 
-                    Content="📦 Продукты" 
-                    Style="{StaticResource TabButtonStyle}"
-                    Click="ProductsTabButton_Click"/>
+                                    Content="📦 Продукты" 
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Click="ProductsTabButton_Click"/>
 
                             <Button x:Name="CategoriesTabButton" 
-                    Content="📂 Категории" 
-                    Style="{StaticResource TabButtonStyle}"
-                    Click="CategoriesTabButton_Click"/>
+                                    Content="📂 Категории" 
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Click="CategoriesTabButton_Click"/>
 
                             <Button x:Name="DishesTabButton" 
-                    Content="🍲 Блюда" 
-                    Style="{StaticResource TabButtonStyle}"
-                    Click="DishesTabButton_Click"/>
+                                    Content="🍲 Блюда" 
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Click="DishesTabButton_Click"/>
 
                             <Button x:Name="DishTypesTabButton" 
-                    Content="🏷️ Виды блюд" 
-                    Style="{StaticResource TabButtonStyle}"
-                    Click="DishTypesTabButton_Click"/>
+                                    Content="🏷️ Виды блюд" 
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Click="DishTypesTabButton_Click"/>
 
                             <Separator Margin="15,20,15,10" Background="#FFEEEEEE"/>
 
                             <TextBlock Text="ТЕХНОЛОГИЯ" 
-                       FontSize="11" 
-                       Foreground="#FF888888"
-                       Margin="15,0,0,10"
-                       FontWeight="SemiBold"/>
+                                       FontSize="11" 
+                                       Foreground="#FF888888"
+                                       Margin="15,0,0,10"
+                                       FontWeight="SemiBold"/>
 
                             <Button x:Name="TechnologyCardsTabButton" 
-                    Content="📋 Тех. карты" 
-                    Style="{StaticResource TabButtonStyle}"
-                    Click="TechnologyCardsTabButton_Click"/>
+                                    Content="📋 Тех. карты" 
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Click="TechnologyCardsTabButton_Click"/>
 
                             <Button x:Name="MenusTabButton" 
-                    Content="📅 Меню" 
-                    Style="{StaticResource TabButtonStyle}"
-                    Click="MenusTabButton_Click"/>
+                                    Content="📅 Меню" 
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Click="MenusTabButton_Click"/>
 
                             <Separator Margin="15,20,15,10" Background="#FFEEEEEE"/>
 
                             <TextBlock Text="СПРАВКА" 
-                       FontSize="11" 
-                       Foreground="#FF888888"
-                       Margin="15,0,0,10"
-                       FontWeight="SemiBold"/>
+                                       FontSize="11" 
+                                       Foreground="#FF888888"
+                                       Margin="15,0,0,10"
+                                       FontWeight="SemiBold"/>
 
                             <Button x:Name="HelpTabButton" 
-                    Content="❓ Справка" 
-                    Style="{StaticResource TabButtonStyle}"
-                    Click="HelpTabButton_Click"/>
+                                    Content="❓ Справка" 
+                                    Style="{StaticResource TabButtonStyle}"
+                                    Click="HelpTabButton_Click"/>
                         </StackPanel>
                     </ScrollViewer>
                 </Border>
@@ -580,7 +573,7 @@
                         </DataGrid>
                     </Grid>
 
-                    <!-- Меню -->
+                    <!-- Меню (исправлено: убрана калорийность) -->
                     <Grid x:Name="MenusContent" 
                           Visibility="Collapsed" 
                           Style="{StaticResource ContentAreaStyle}">
@@ -636,7 +629,7 @@
                                 <DataGridTextColumn Header="Дата" Binding="{Binding Дата, StringFormat={}{0:dd.MM.yyyy}}" Width="100"/>
                                 <DataGridTextColumn Header="Ответственный" Binding="{Binding Ответственный}" Width="200"/>
                                 <DataGridTextColumn Header="Дата составления" Binding="{Binding Дата_составления, StringFormat={}{0:dd.MM.yyyy HH:mm}}" Width="140"/>
-                                <DataGridTextColumn Header="Калорийность" Binding="{Binding Калорийность_общая, StringFormat={}{0:F0} ккал}" Width="100"/>
+                                <!-- Колонка калорийности удалена -->
                                 <DataGridTextColumn Header="Статус" Binding="{Binding Статус}" Width="100"/>
                                 <DataGridTextColumn Header="Блюд" Binding="{Binding Количество_блюд}" Width="60"/>
                                 <DataGridTextColumn Header="Порций" Binding="{Binding Всего_порций}" Width="60"/>
