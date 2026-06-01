@@ -10,8 +10,9 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Text.RegularExpressions;
+using System.IO;
+using System.Diagnostics;
 using MenuStolovaya.Models;
 using MenuStolovaya.Services;
 
@@ -589,10 +590,116 @@ namespace MenuStolovaya.Views
             Close();
         }
 
+        /// <summary>
+        /// Печать технологической карты
+        /// </summary>
+        private void PrintTechCard_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_cardId.HasValue)
+            {
+                MessageBox.Show("Сначала сохраните технологическую карту", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                string htmlContent = GenerateTechCardPrintHtml();
+                string tempFile = Path.Combine(Path.GetTempPath(), $"TechCard_{_cardId}_{DateTime.Now:yyyyMMddHHmmss}.html");
+                File.WriteAllText(tempFile, htmlContent, Encoding.UTF8);
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = tempFile,
+                    UseShellExecute = true,
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при печати: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private string GenerateTechCardPrintHtml()
+        {
+            using (var db = new MenuStolovayaDBEntities())
+            {
+                var techCard = db.Технологические_карты
+                    .Include("Блюда")
+                    .Include("Блюда.Виды_блюд")
+                    .FirstOrDefault(tc => tc.id == _cardId.Value);
+
+                if (techCard == null) return "<html><body><h1>Карта не найдена</h1></body></html>";
+
+                var recipes = _recipeService.GetRecipes(_cardId.Value);
+                var dish = db.Блюда.Find(techCard.Блюдо_id);
+
+                StringBuilder html = new StringBuilder();
+                html.AppendLine("<!DOCTYPE html>");
+                html.AppendLine("<html lang='ru'>");
+                html.AppendLine("<head>");
+                html.AppendLine("    <meta charset='UTF-8'>");
+                html.AppendLine("    <title>Технологическая карта</title>");
+                html.AppendLine("    <style>");
+                html.AppendLine("        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; }");
+                html.AppendLine("        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; }");
+                html.AppendLine("        h1 { color: #2e7d32; border-bottom: 2px solid #4caf50; padding-bottom: 10px; }");
+                html.AppendLine("        h2 { color: #333; margin-top: 20px; }");
+                html.AppendLine("        .info-grid { display: grid; grid-template-columns: 150px 1fr; gap: 10px; margin: 20px 0; }");
+                html.AppendLine("        .info-label { font-weight: bold; }");
+                html.AppendLine("        table { width: 100%; border-collapse: collapse; margin: 15px 0; }");
+                html.AppendLine("        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }");
+                html.AppendLine("        th { background-color: #4caf50; color: white; }");
+                html.AppendLine("        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 15px; }");
+                html.AppendLine("        @media print { body { margin: 0; } .no-print { display: none; } }");
+                html.AppendLine("    </style>");
+                html.AppendLine("</head>");
+                html.AppendLine("<body>");
+                html.AppendLine("<div class='container'>");
+                html.AppendLine($"    <h1>Технологическая карта №{techCard.Номер}</h1>");
+                html.AppendLine("    <div class='info-grid'>");
+                html.AppendLine($"        <div class='info-label'>Блюдо:</div><div>{techCard.Блюда?.Наименование ?? "Неизвестно"}</div>");
+                html.AppendLine($"        <div class='info-label'>Вид блюда:</div><div>{techCard.Блюда?.Виды_блюд?.Наименование ?? "Не указано"}</div>");
+                html.AppendLine($"        <div class='info-label'>Выход:</div><div>{techCard.Выход:N1} г</div>");
+                html.AppendLine($"        <div class='info-label'>Калорийность:</div><div>{(dish?.Калорийность_расчетная ?? 0):F1} ккал/100г</div>");
+                html.AppendLine($"        <div class='info-label'>Время приготовления:</div><div>{dish?.Время_приготовления ?? 30} мин</div>");
+                html.AppendLine($"        <div class='info-label'>Статус:</div><div>{techCard.Статус}</div>");
+                html.AppendLine($"        <div class='info-label'>Дата создания:</div><div>{techCard.Дата_создания:dd.MM.yyyy}</div>");
+                html.AppendLine("    </div>");
+                html.AppendLine("    <h2>Рецептура</h2>");
+                html.AppendLine("    <table>");
+                html.AppendLine("        <thead>");
+                html.AppendLine("            <tr><th>№</th><th>Артикул</th><th>Продукт</th><th>Ед. изм.</th><th>Кол-во брутто (кг)</th><th>Потери холод.</th><th>Потери гор.</th><th>Кол-во нетто (кг)</th></tr>");
+                html.AppendLine("        </thead>");
+                html.AppendLine("        <tbody>");
+
+                int index = 1;
+                foreach (var recipe in recipes)
+                {
+                    html.AppendLine($"            <tr><td>{index++}</td><td>{recipe.Артикул}</td><td>{recipe.Продукт}</td><td>{recipe.Единица_измерения}</td><td>{recipe.Количество_брутто:F3}</td><td>{recipe.Потери_холодной:F1}%</td><td>{recipe.Потери_горячей:F1}%</td><td>{recipe.Количество_нетто:F3}</td></tr>");
+                }
+
+                html.AppendLine("        </tbody>");
+                html.AppendLine("    </table>");
+                html.AppendLine("    <h2>Технология приготовления</h2>");
+                html.AppendLine($"    <p>{techCard.Технология_приготовления ?? "Не указана"}</p>");
+                html.AppendLine("    <div class='footer'>");
+                html.AppendLine($"        <div>© {DateTime.Now.Year} Меню столовой. Все права защищены.</div>");
+                html.AppendLine("        <button class='no-print' onclick='window.print()'>🖨️ Распечатать</button>");
+                html.AppendLine("    </div>");
+                html.AppendLine("</div>");
+                html.AppendLine("</body>");
+                html.AppendLine("</html>");
+
+                return html.ToString();
+            }
+        }
+
         // ИСПРАВЛЕННЫЙ МЕТОД - теперь работает с запятой
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
-            // Разрешаем только цифры, точку и запятую
             foreach (char ch in e.Text)
             {
                 if (!char.IsDigit(ch) && ch != '.' && ch != ',')
@@ -602,18 +709,15 @@ namespace MenuStolovaya.Views
                 }
             }
 
-            // Проверяем, что не вводится вторая точка или запятая
             TextBox textBox = sender as TextBox;
             if (textBox != null)
             {
                 string currentText = textBox.Text;
                 string newText = currentText.Insert(textBox.SelectionStart, e.Text);
 
-                // Подсчитываем количество десятичных разделителей
                 int dotCount = newText.Count(c => c == '.');
                 int commaCount = newText.Count(c => c == ',');
 
-                // Если больше одного разделителя - запрещаем
                 if (dotCount > 1 || commaCount > 1 || (dotCount > 0 && commaCount > 0))
                 {
                     e.Handled = true;

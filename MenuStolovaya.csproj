@@ -95,7 +95,9 @@
     <Compile Include="Models\DishTypeModel.cs" />
     <Compile Include="Models\MenuItemModel.cs" />
     <Compile Include="Models\Product.cs" />
+    <Compile Include="Services\HolidayService.cs" />
     <Compile Include="Services\MenuPrinterService.cs" />
+    <Compile Include="Services\NormControlService.cs" />
     <Compile Include="Services\NutrientCalculator.cs" />
     <Compile Include="Services\ProductPriceService.cs" />
     <Compile Include="Services\ProductService.cs" />

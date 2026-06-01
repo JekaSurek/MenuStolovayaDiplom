@@ -379,21 +379,27 @@
 
         <!-- Кнопки внизу -->
         <Border Grid.Row="3" 
-                Style="{StaticResource CardStyle}" 
-                Margin="0,15,0,0">
+        Style="{StaticResource CardStyle}" 
+        Margin="0,15,0,0">
             <StackPanel Orientation="Horizontal" 
-                        HorizontalAlignment="Right">
+                HorizontalAlignment="Right">
+                <Button Content="🖨️ Печать" 
+                Style="{StaticResource PrimaryButtonStyle}"
+                Background="{StaticResource InfoBrush}"
+                Width="100"
+                Click="PrintTechCard_Click"
+                Margin="5"/>
                 <Button Content="💾 Сохранить" 
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Width="120"
-                        Click="SaveButton_Click"
-                        Margin="5"/>
+                Style="{StaticResource PrimaryButtonStyle}"
+                Width="120"
+                Click="SaveButton_Click"
+                Margin="5"/>
                 <Button Content="❌ Отмена" 
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Background="{StaticResource DangerBrush}"
-                        Width="120"
-                        Click="CancelButton_Click"
-                        Margin="5"/>
+                Style="{StaticResource PrimaryButtonStyle}"
+                Background="{StaticResource DangerBrush}"
+                Width="120"
+                Click="CancelButton_Click"
+                Margin="5"/>
             </StackPanel>
         </Border>
     </Grid>

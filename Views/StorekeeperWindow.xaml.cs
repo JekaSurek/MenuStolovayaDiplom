@@ -2,10 +2,13 @@
 using MenuStolovaya.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.IO;
 
 namespace MenuStolovaya.Views
 {
@@ -445,6 +448,105 @@ namespace MenuStolovaya.Views
         private void StockSearchBox_TextChanged(object sender, TextChangedEventArgs e) => ApplyStockFilter();
         private void WarehouseFilter_SelectionChanged(object sender, SelectionChangedEventArgs e) => ApplyStockFilter();
         private void RefreshStocksButton_Click(object sender, RoutedEventArgs e) => LoadStocks();
+
+        private void PrintStocksButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_stocks == null || !_stocks.Any())
+                {
+                    MessageBox.Show("Нет данных для печати", "Ошибка",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                string htmlContent = GenerateStocksPrintHtml();
+                string tempFile = Path.Combine(Path.GetTempPath(), $"Stocks_{DateTime.Now:yyyyMMddHHmmss}.html");
+                File.WriteAllText(tempFile, htmlContent, Encoding.UTF8);
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = tempFile,
+                    UseShellExecute = true,
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при печати: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private string GenerateStocksPrintHtml()
+        {
+            var filtered = _stocks.AsEnumerable();
+
+            string search = StockSearchBox.Text?.ToLower() ?? "";
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                filtered = filtered.Where(s =>
+                    s.Продукт.ToLower().Contains(search) ||
+                    (s.Артикул?.ToLower().Contains(search) ?? false) ||
+                    s.Склад.ToLower().Contains(search));
+            }
+
+            if (WarehouseFilter.SelectedValue != null && (int)WarehouseFilter.SelectedValue > 0)
+            {
+                int warehouseId = (int)WarehouseFilter.SelectedValue;
+                filtered = filtered.Where(s => s.Склад_id == warehouseId);
+            }
+
+            var stocks = filtered.ToList();
+            decimal totalValue = stocks.Sum(s => s.Сумма);
+
+            StringBuilder html = new StringBuilder();
+            html.AppendLine("<!DOCTYPE html>");
+            html.AppendLine("<html lang='ru'>");
+            html.AppendLine("<head>");
+            html.AppendLine("    <meta charset='UTF-8'>");
+            html.AppendLine("    <title>Текущие остатки</title>");
+            html.AppendLine("    <style>");
+            html.AppendLine("        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; }");
+            html.AppendLine("        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; }");
+            html.AppendLine("        h1 { color: #2e7d32; border-bottom: 2px solid #4caf50; padding-bottom: 10px; }");
+            html.AppendLine("        .info { margin: 20px 0; color: #666; }");
+            html.AppendLine("        table { width: 100%; border-collapse: collapse; margin: 15px 0; }");
+            html.AppendLine("        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }");
+            html.AppendLine("        th { background-color: #4caf50; color: white; }");
+            html.AppendLine("        .total-row { font-weight: bold; background-color: #f0f8ff; }");
+            html.AppendLine("        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 15px; }");
+            html.AppendLine("        @media print { body { margin: 0; } .no-print { display: none; } }");
+            html.AppendLine("    </style>");
+            html.AppendLine("</head>");
+            html.AppendLine("<body>");
+            html.AppendLine("<div class='container'>");
+            html.AppendLine($"    <h1>Текущие остатки на складе</h1>");
+            html.AppendLine($"    <div class='info'>Дата формирования: {DateTime.Now:dd.MM.yyyy HH:mm:ss}</div>");
+            html.AppendLine("    <table>");
+            html.AppendLine("        <thead>");
+            html.AppendLine("            <tr><th>Склад</th><th>Артикул</th><th>Продукт</th><th>Категория</th><th>Ед. изм.</th><th>Количество</th><th>Цена за ед.</th><th>Сумма</th></tr>");
+            html.AppendLine("        </thead>");
+            html.AppendLine("        <tbody>");
+
+            foreach (var s in stocks)
+            {
+                html.AppendLine($"            <tr><td>{s.Склад}</td><td>{s.Артикул}</td><td>{s.Продукт}</td><td>{s.Категория}</td><td>{s.Единица_измерения}</td><td>{s.Количество:F3}</td><td>{s.Цена_за_единицу:N2} руб.</td><td>{s.Сумма:N2} руб.</td></tr>");
+            }
+
+            html.AppendLine($"            <tr class='total-row'><td colspan='7' style='text-align: right;'><strong>Общая стоимость:</strong></td><td><strong>{totalValue:N2} руб.</strong></td></tr>");
+            html.AppendLine("        </tbody>");
+            html.AppendLine("    </table>");
+            html.AppendLine("    <div class='footer'>");
+            html.AppendLine($"        <div>© {DateTime.Now.Year} Меню столовой. Все права защищены.</div>");
+            html.AppendLine("        <button class='no-print' onclick='window.print()'>🖨️ Распечатать</button>");
+            html.AppendLine("    </div>");
+            html.AppendLine("</div>");
+            html.AppendLine("</body>");
+            html.AppendLine("</html>");
+
+            return html.ToString();
+        }
 
         #endregion
 

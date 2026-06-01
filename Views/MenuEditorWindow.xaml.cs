@@ -14,6 +14,9 @@ using System.Windows.Shapes;
 using System.Text.RegularExpressions;
 using MenuStolovaya.Models;
 using MenuStolovaya.Services;
+using System.IO;
+using System.Diagnostics;
+
 
 namespace MenuStolovaya.Views
 {
@@ -48,10 +51,12 @@ namespace MenuStolovaya.Views
             }
             else
             {
-                // Новая карта
+                // Новая карта - устанавливаем следующий рабочий день
                 TitleText.Text = "Новое меню";
                 SubtitleText.Text = "Выберите дату и добавьте блюда";
-                MenuDatePicker.SelectedDate = DateTime.Today;
+
+                DateTime nextWorkDay = HolidayService.GetNextWorkDay(DateTime.Today);
+                MenuDatePicker.SelectedDate = nextWorkDay;
                 CreationDateText.Text = DateTime.Now.ToString("dd.MM.yyyy HH:mm");
 
                 using (var db = new MenuStolovayaDBEntities())
@@ -64,6 +69,80 @@ namespace MenuStolovaya.Views
                 _menuItems = new List<MenuItemWithDetails>();
                 UpdateMenuItemsDisplay();
                 UpdateStats();
+
+                // Предупреждение о праздничной дате
+                if (HolidayService.IsHoliday(nextWorkDay))
+                {
+                    string holidayName = HolidayService.GetHolidayName(nextWorkDay);
+                    MessageBox.Show($"Обратите внимание: {nextWorkDay:dd.MM.yyyy} - {holidayName}.\n" +
+                                   "В праздничные дни столовая может не работать.\n" +
+                                   "Рекомендуется выбрать другой день.",
+                        "Праздничная дата", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+        }
+
+        private void MenuDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!MenuDatePicker.SelectedDate.HasValue) return;
+
+            DateTime selectedDate = MenuDatePicker.SelectedDate.Value.Date;
+            DateTime today = DateTime.Today;
+
+            // Проверка на прошедшую дату
+            if (selectedDate < today)
+            {
+                MessageBox.Show("Нельзя создавать меню на прошедшие даты.\n" +
+                               "Будет автоматически установлена следующая рабочая дата.",
+                    "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                DateTime nextWorkDay = HolidayService.GetNextWorkDay(today);
+                MenuDatePicker.SelectedDate = nextWorkDay;
+                return;
+            }
+
+            // Проверка на праздничную дату
+            if (HolidayService.IsHoliday(selectedDate))
+            {
+                string holidayName = HolidayService.GetHolidayName(selectedDate);
+                var result = MessageBox.Show(
+                    $"Выбранная дата {selectedDate:dd.MM.yyyy} - {holidayName}.\n" +
+                    $"В этот день столовая может не работать.\n\n" +
+                    $"Установить следующий рабочий день ({HolidayService.GetNextWorkDay(selectedDate):dd.MM.yyyy})?\n" +
+                    $"Да - изменить дату, Нет - оставить выбранную.",
+                    "Праздничная дата",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    MenuDatePicker.SelectedDate = HolidayService.GetNextWorkDay(selectedDate);
+                }
+            }
+
+            // Проверка на существующее меню (только для новых)
+            if (_isNewMenu)
+            {
+                using (var db = new MenuStolovayaDBEntities())
+                {
+                    var existing = db.Меню_на_день
+                        .FirstOrDefault(m => m.Дата == selectedDate);
+
+                    if (existing != null && existing.Статус != "Черновик")
+                    {
+                        MessageBox.Show($"Меню на дату {selectedDate:dd.MM.yyyy} уже существует!\n" +
+                                       "Пожалуйста, выберите другую дату.",
+                            "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                        // Устанавливаем следующий свободный день
+                        DateTime nextDate = selectedDate.AddDays(1);
+                        while (db.Меню_на_день.Any(m => m.Дата == nextDate && m.Статус != "Черновик"))
+                        {
+                            nextDate = nextDate.AddDays(1);
+                        }
+                        MenuDatePicker.SelectedDate = nextDate;
+                    }
+                }
             }
         }
 
@@ -226,21 +305,21 @@ namespace MenuStolovaya.Views
             {
                 TotalDishesText.Text = "0";
                 TotalPortionsText.Text = "0";
-                TotalCaloriesText.Text = "0 ккал";  // ИСПРАВЛЕНО
+                TotalCaloriesText.Text = "0 ккал";
                 return;
             }
 
             TotalDishesText.Text = _menuItems.Count.ToString();
             TotalPortionsText.Text = _menuItems.Sum(i => i.Количество_порций).ToString();
 
-            _totalCalories = _menuItems.Sum(i => i.Калорийность_всего);
-            TotalCaloriesText.Text = $"{_totalCalories:F0} ккал";  // ИСПРАВЛЕНО
+            _totalCalories = _menuItems.Sum(i => i.Калорийность_на_порцию);
+            TotalCaloriesText.Text = $"{_totalCalories:F0} ккал";
         }
 
         private void RecalculateCalories()
         {
-            _totalCalories = _menuItems.Sum(i => i.Калорийность_всего);
-            TotalCaloriesText.Text = $"{_totalCalories:F0} ккал";  // ИСПРАВЛЕНО
+            _totalCalories = _menuItems.Sum(i => i.Калорийность_на_порцию);
+            TotalCaloriesText.Text = $"{_totalCalories:F0} ккал";
         }
 
         private void DishComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -259,30 +338,6 @@ namespace MenuStolovaya.Views
             {
                 dynamic selected = DishComboBox.SelectedItem;
                 OutputTextBox.Text = selected.StandardOutput.ToString("F0");
-            }
-        }
-
-        private void MenuDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Проверка на существующее меню
-            if (MenuDatePicker.SelectedDate.HasValue && _isNewMenu)
-            {
-                using (var db = new MenuStolovayaDBEntities())
-                {
-                    // Исправлено: получаем дату в переменную и используем DbFunctions.TruncateTime или EntityFunctions
-                    DateTime selectedDate = MenuDatePicker.SelectedDate.Value.Date;
-
-                    var existing = db.Меню_на_день
-                        .Where(m => m.Дата == selectedDate)
-                        .FirstOrDefault();
-
-                    if (existing != null)
-                    {
-                        MessageBox.Show($"Меню на дату {selectedDate:dd.MM.yyyy} уже существует!\n" +
-                                       "Будет создана новая версия или выберите другую дату.",
-                            "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    }
-                }
             }
         }
 
@@ -625,6 +680,27 @@ namespace MenuStolovaya.Views
                     return;
                 }
 
+                // === НОРМОКОНТРОЛЬ ===
+                var normCheck = NormControlService.CheckMenu(_menuItems);
+                if (!normCheck.IsValid)
+                {
+                    var warningMessage = NormControlService.GetWarningMessage(normCheck);
+                    var result = MessageBox.Show(
+                        warningMessage + "\n\nПродолжить сохранение меню?",
+                        "Нормоконтроль пищевой ценности",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Warning);
+
+                    if (result == MessageBoxResult.No)
+                        return;
+                }
+                else
+                {
+                    //Опционально: показать сообщение, что нормы соблюдены
+                    MessageBox.Show("Меню соответствует нормам!", "Нормоконтроль", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                // === КОНЕЦ НОРМОКОНТРОЛЯ ===
+
                 using (var db = new MenuStolovayaDBEntities())
                 {
                     Меню_на_день menu;
@@ -732,9 +808,26 @@ namespace MenuStolovaya.Views
                 }
             }
         }
+        private void CheckNormsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_menuItems.Any())
+            {
+                MessageBox.Show("Добавьте блюда в меню для проверки", "Внимание",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var normCheck = NormControlService.CheckMenu(_menuItems);
+            var message = NormControlService.GetWarningMessage(normCheck);
+
+            MessageBox.Show(message, "Нормоконтроль пищевой ценности",
+                MessageBoxButton.OK,
+                normCheck.IsValid ? MessageBoxImage.Information : MessageBoxImage.Warning);
+        }
     }
 
-    // Класс для группировки по времени - ИСПРАВЛЕНО
+
+
     public class TimeGroup
     {
         public string Name { get; set; }  // ← Переименовано с TimeGroup на Name

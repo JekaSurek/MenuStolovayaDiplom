@@ -76,10 +76,11 @@
                            VerticalAlignment="Center"
                            FontWeight="SemiBold"/>
                 <DatePicker x:Name="MenuDatePicker" 
-                            Grid.Row="0" Grid.Column="1" 
-                            Height="35"
-                            Margin="0,5,10,5"
-                            SelectedDateChanged="MenuDatePicker_SelectedDateChanged"/>
+            Grid.Row="0" Grid.Column="1" 
+            Height="35"
+            Margin="0,5,10,5"
+            SelectedDateChanged="MenuDatePicker_SelectedDateChanged"
+            ToolTip="Выберите дату меню. Праздничные и выходные дни отмечены красным."/>
 
                 <TextBlock Grid.Row="0" Grid.Column="2" 
                            Text="Статус:" 
@@ -271,27 +272,27 @@
                                 <StackPanel>
                                     <!-- Заголовок группы -->
                                     <Border Background="{StaticResource PrimaryLightBrush}" 
-                                            Padding="8,3" 
-                                            Margin="0,5,0,2">
+                            Padding="8,3" 
+                            Margin="0,5,0,2">
                                         <TextBlock Text="{Binding TimeGroup}" 
-                                                   FontWeight="Bold"
-                                                   Foreground="{StaticResource PrimaryDarkBrush}"/>
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource PrimaryDarkBrush}"/>
                                     </Border>
 
                                     <!-- DataGrid для группы -->
                                     <DataGrid ItemsSource="{Binding Items}"
-                                              AutoGenerateColumns="False"
-                                              CanUserAddRows="False"
-                                              CanUserDeleteRows="False"
-                                              SelectionMode="Single"
-                                              SelectionUnit="FullRow"
-                                              RowHeight="35"
-                                              Margin="0,0,0,5"
-                                              BorderThickness="0">
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              RowHeight="35"
+                              Margin="0,0,0,5"
+                              BorderThickness="0">
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Порядок" 
-                                                                Binding="{Binding Порядок_подачи}" 
-                                                                Width="60">
+                                                Binding="{Binding Порядок_подачи}" 
+                                                Width="60">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="DataGridCell">
                                                         <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -299,14 +300,14 @@
                                                 </DataGridTextColumn.CellStyle>
                                             </DataGridTextColumn>
                                             <DataGridTextColumn Header="Блюдо" 
-                                                                Binding="{Binding Блюдо}" 
-                                                                Width="250"/>
+                                                Binding="{Binding Блюдо}" 
+                                                Width="250"/>
                                             <DataGridTextColumn Header="Вид блюда" 
-                                                                Binding="{Binding Вид_блюда}" 
-                                                                Width="150"/>
+                                                Binding="{Binding Вид_блюда}" 
+                                                Width="150"/>
                                             <DataGridTextColumn Header="Порций" 
-                                                                Binding="{Binding Количество_порций}" 
-                                                                Width="80">
+                                                Binding="{Binding Количество_порций}" 
+                                                Width="80">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="DataGridCell">
                                                         <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -314,35 +315,33 @@
                                                 </DataGridTextColumn.CellStyle>
                                             </DataGridTextColumn>
                                             <DataGridTextColumn Header="Выход, г" 
-                                                                Binding="{Binding Выход_на_порцию, StringFormat={}{0:F0}}" 
-                                                                Width="100"/>
+                                                Binding="{Binding Выход_на_порцию, StringFormat={}{0:F0}}" 
+                                                Width="100"/>
                                             <DataGridTextColumn Header="Ккал/порц" 
-                    Binding="{Binding Калорийность_на_порцию, StringFormat={}{0:F0}}" 
-                    Width="100"/>
-                                            <DataGridTextColumn Header="Ккал всего" 
-                    Binding="{Binding Калорийность_всего, StringFormat={}{0:F0}}" 
-                    Width="110"/>
+                                                Binding="{Binding Калорийность_на_порцию, StringFormat={}{0:F0}}" 
+                                                Width="100"/>
+                                            <!-- КОЛОНКА "Ккал всего" УДАЛЕНА -->
                                             <DataGridTextColumn Header="Время подачи" 
-                                                                Binding="{Binding Время_подачи}" 
-                                                                Width="100"/>
+                                                Binding="{Binding Время_подачи}" 
+                                                Width="100"/>
                                             <DataGridTemplateColumn Header="Действия" Width="100">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal">
                                                             <Button Content="✏" 
-                                                                    Width="30" 
-                                                                    Height="28"
-                                                                    Margin="2"
-                                                                    Background="#FFFF9800" 
-                                                                    Foreground="White"
-                                                                    Click="EditMenuItemButton_Click"/>
+                                                    Width="30" 
+                                                    Height="28"
+                                                    Margin="2"
+                                                    Background="#FFFF9800" 
+                                                    Foreground="White"
+                                                    Click="EditMenuItemButton_Click"/>
                                                             <Button Content="✕" 
-                                                                    Width="30" 
-                                                                    Height="28"
-                                                                    Margin="2"
-                                                                    Background="#FFF44336" 
-                                                                    Foreground="White"
-                                                                    Click="DeleteMenuItemButton_Click"/>
+                                                    Width="30" 
+                                                    Height="28"
+                                                    Margin="2"
+                                                    Background="#FFF44336" 
+                                                    Foreground="White"
+                                                    Click="DeleteMenuItemButton_Click"/>
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
@@ -353,7 +352,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </ScrollViewer>
+                </ScrollViewer> 
 
                 <!-- Панель управления порядком и кнопки -->
                 <Border Grid.Row="3" 
@@ -381,19 +380,26 @@
                         </StackPanel>
 
                         <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <Button x:Name="CheckNormsButton"
+            Content="📊 Проверить нормы"
+            Width="165"
+            Style="{StaticResource PrimaryButtonStyle}"
+            Background="{StaticResource WarningBrush}"
+            Click="CheckNormsButton_Click"
+            Margin="0,0,10,0"/>
                             <Button x:Name="PrintMenuButton"
-                                    Content="🖨️ Печать меню"
-                                    Width="165"
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Background="{StaticResource AccentBrush}"
-                                    Click="PrintMenuButton_Click"
-                                    Margin="0,0,10,0"/>
+            Content="🖨️ Печать меню"
+            Width="165"
+            Style="{StaticResource PrimaryButtonStyle}"
+            Background="{StaticResource AccentBrush}"
+            Click="PrintMenuButton_Click"
+            Margin="0,0,10,0"/>
                             <Button x:Name="CreateRequestButton"
-                                    Content="📋 Требование накладная"
-                                    Width="232"
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Background="{StaticResource InfoBrush}"
-                                    Click="CreateRequestButton_Click"/>
+            Content="📋 Требование накладная"
+            Width="232"
+            Style="{StaticResource PrimaryButtonStyle}"
+            Background="{StaticResource InfoBrush}"
+            Click="CreateRequestButton_Click"/>
                         </StackPanel>
                     </Grid>
                 </Border>

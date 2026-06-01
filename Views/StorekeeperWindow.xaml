@@ -435,10 +435,12 @@
 
                         <TextBlock Grid.Row="0" Text="Текущие остатки" Style="{StaticResource TitleStyle}"/>
 
+                        <!-- Панель инструментов -->
                         <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0,0,0,15">
                             <StackPanel Orientation="Horizontal">
                                 <TextBox x:Name="StockSearchBox" Width="300" Style="{StaticResource ModernTextBoxStyle}" TextChanged="StockSearchBox_TextChanged" Margin="10" ToolTip="Поиск по продукту или артикулу"/>
                                 <ComboBox x:Name="WarehouseFilter" Width="200" Margin="5" SelectionChanged="WarehouseFilter_SelectionChanged"/>
+                                <Button Content="🖨️ Печать" Style="{StaticResource PrimaryButtonStyle}" Background="{StaticResource InfoBrush}" Click="PrintStocksButton_Click" Margin="5"/>
                                 <Button Content="🔄 Обновить" Style="{StaticResource PrimaryButtonStyle}" Click="RefreshStocksButton_Click" Margin="5"/>
                             </StackPanel>
                         </Border>
