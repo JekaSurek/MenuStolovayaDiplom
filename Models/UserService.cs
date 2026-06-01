@@ -23,7 +23,6 @@ namespace MenuStolovaya.Models
 
                     if (user != null)
                     {
-                        // Исправление для nullable bool
                         if (user.Блокировка ?? false)
                         {
                             MessageBox.Show("Пользователь заблокирован. Обратитесь к администратору.",

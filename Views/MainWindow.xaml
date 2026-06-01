@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="MenuStolovaya" Height="450" Width="800">
+        Title="MenuStolovaya" Height="450" Width="800" Icon="/Resources/Logo.ico">
     <Grid>
         <TextBlock Text="Запустите программу для входа в систему" 
                    HorizontalAlignment="Center" 

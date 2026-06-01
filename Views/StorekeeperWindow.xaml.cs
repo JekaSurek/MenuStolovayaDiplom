@@ -64,8 +64,6 @@ namespace MenuStolovaya.Views
                 MaximizeButton.ToolTip = "Восстановить";
             }
         }
-
-        // Если окно сворачивается/разворачивается другими способами, добавьте обработчик
         protected override void OnStateChanged(EventArgs e)
         {
             base.OnStateChanged(e);
@@ -538,7 +536,7 @@ namespace MenuStolovaya.Views
             html.AppendLine("        </tbody>");
             html.AppendLine("    </table>");
             html.AppendLine("    <div class='footer'>");
-            html.AppendLine($"        <div>© {DateTime.Now.Year} Меню столовой. Все права защищены.</div>");
+            html.AppendLine($"        <div>© {DateTime.Now.Year} MenuStolovaya. Все права защищены.</div>");
             html.AppendLine("        <button class='no-print' onclick='window.print()'>🖨️ Распечатать</button>");
             html.AppendLine("    </div>");
             html.AppendLine("</div>");

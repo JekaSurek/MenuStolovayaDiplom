@@ -4,6 +4,11 @@
              xmlns:local="clr-namespace:MenuStolovaya">
 
     <Application.Resources>
+
+        <Style TargetType="Window">
+            <Setter Property="Icon" Value="/Resources/Logo.ico"/>
+        </Style>
+        
         <!-- Основные цвета -->
         <Color x:Key="PrimaryColor">#FF4CAF50</Color>
         <Color x:Key="PrimaryDarkColor">#FF45A049</Color>

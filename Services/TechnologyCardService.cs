@@ -259,7 +259,7 @@ namespace MenuStolovaya.Services
                         db.Технологические_карты.Remove(card);
                         db.SaveChanges();
 
-                        // Обновляем калорийность блюда - ИСПРАВЛЕНО: используем UpdateDishCalculations
+                        // Обновляем калорийность блюда
                         CalorieCalculator.UpdateDishCalculations(cardId);
 
                         MessageBox.Show("Технологическая карта успешно удалена", "Успех",
@@ -295,7 +295,6 @@ namespace MenuStolovaya.Services
                     var dish = db.Блюда.Find(dishId);
                     if (dish != null)
                     {
-                        // ИСПРАВЛЕНО: используем новый метод CalculateDishCaloriesPer100g
                         dish.Калорийность_расчетная = CalorieCalculator.CalculateDishCaloriesPer100g(dishId);
                         db.SaveChanges();
                     }

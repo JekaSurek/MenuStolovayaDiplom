@@ -73,7 +73,6 @@ namespace MenuStolovaya.Views
             }
         }
 
-        // Если окно сворачивается/разворачивается другими способами, добавьте обработчик
         protected override void OnStateChanged(EventArgs e)
         {
             base.OnStateChanged(e);
@@ -478,7 +477,7 @@ namespace MenuStolovaya.Views
                 if (result == MessageBoxResult.Yes)
                 {
                     CalorieCalculator.UpdateAllDishesCalories();
-                    MessageBox.Show("Калорийность всех блюд обновлена (в ккал/100г)", "Успех",  // ИСПРАВЛЕНО
+                    MessageBox.Show("Калорийность всех блюд обновлена (в ккал/100г)", "Успех",
                         MessageBoxButton.OK, MessageBoxImage.Information);
                     LoadDishes();
                 }
@@ -719,32 +718,6 @@ namespace MenuStolovaya.Views
                     MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
-
-        /*private void EditRecipeButton_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedCard = TechnologyCardsDataGrid.SelectedItem as TechnologyCardDisplay;
-            if (selectedCard != null)
-            {
-                try
-                {
-                    var editWindow = new EditRecipeWindow(selectedCard.Id);
-                    editWindow.ShowDialog();
-                    LoadTechnologyCards();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при открытии редактора рецептуры: {ex.Message}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Выберите технологическую карту для редактирования рецептуры",
-                    "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        } 
-        */
-
         private void RefreshTechnologyCardsButton_Click(object sender, RoutedEventArgs e)
         {
             LoadTechnologyCards();
@@ -859,35 +832,6 @@ namespace MenuStolovaya.Views
                     MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
-
-       /* private void EditMenuItemsButton_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedMenu = MenusDataGrid.SelectedItem as DailyMenuDisplay;
-            if (selectedMenu != null)
-            {
-                try
-                {
-                    var editWindow = new EditMenuItemsWindow(selectedMenu.Id);
-                    if (editWindow.ShowDialog() == true)
-                    {
-                        MessageBox.Show("Состав меню успешно обновлен", "Успех",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadMenus();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при редактировании состава меню: {ex.Message}",
-                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Выберите меню для редактирования состава",
-                    "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        } */
-
         private void RefreshMenusButton_Click(object sender, RoutedEventArgs e)
         {
             LoadMenus();
@@ -1130,7 +1074,7 @@ namespace MenuStolovaya.Views
                                                 Документ_id = document.id,
                                                 Продукт_id = recipe.Продукт_id,
                                                 Количество = netto,
-                                                Цена = product.Цена ?? 0 // Исправлено: используем ?? 0 для decimal?
+                                                Цена = product.Цена ?? 0 
                                             });
                                         }
                                     }

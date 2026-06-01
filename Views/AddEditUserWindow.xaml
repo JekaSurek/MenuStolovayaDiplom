@@ -8,7 +8,7 @@
         Height="700" 
         Width="400"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize" Icon="/Resources/Logo.ico">
 
     <Window.Resources>
         <Style TargetType="TextBox">

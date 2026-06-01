@@ -53,7 +53,6 @@ namespace MenuStolovaya.Views
             }
         }
 
-        // Если окно сворачивается/разворачивается другими способами, добавьте обработчик
         protected override void OnStateChanged(EventArgs e)
         {
             base.OnStateChanged(e);

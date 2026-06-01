@@ -37,7 +37,7 @@ namespace MenuStolovaya.Models
                     FullName = $"{user.Фамилия} {user.Имя} {user.Отчество}".Trim(),
                     RoleId = user.Роль_id,
                     RoleName = roleName,
-                    IsBlocked = user.Блокировка ?? false // Исправление для nullable bool
+                    IsBlocked = user.Блокировка ?? false 
                 };
             }
         }

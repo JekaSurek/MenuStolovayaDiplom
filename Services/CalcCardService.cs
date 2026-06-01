@@ -465,7 +465,6 @@ namespace MenuStolovaya.Services
             }
         }
 
-        // Обновите метод CreateCalcCardFromTechCard для корректного создания карточек:
         public bool CreateCalcCardFromTechCard(int techCardId, decimal markup = 150)
         {
             try

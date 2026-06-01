@@ -159,13 +159,11 @@ namespace MenuStolovaya.Views
                             d.id,
                             d.Наименование,
                             StandardOutput = d.Выход_стандартный ?? 100,
-                            // ИСПРАВЛЕНО: Калорийность_расчетная уже в ккал/100г
                             CaloriesPer100g = d.Калорийность_расчетная ?? 0,
                             DishType = d.Виды_блюд != null ? d.Виды_блюд.Наименование : "Не указано"
                         })
                         .ToList();
 
-                    // ИСПРАВЛЕНО: Убрано деление на 1000
                     var dishes = dishesRaw.Select(d => new
                     {
                         d.id,
@@ -279,7 +277,7 @@ namespace MenuStolovaya.Views
                 .OrderBy(g => GetTimeOrder(g.Key))
                 .Select(g => new TimeGroup
                 {
-                    Name = g.Key,  // ← Исправлено: переименовано с TimeGroup на Name
+                    Name = g.Key,  
                     Items = g.OrderBy(i => i.Порядок_подачи).ToList()
                 })
                 .ToList();
@@ -830,7 +828,7 @@ namespace MenuStolovaya.Views
 
     public class TimeGroup
     {
-        public string Name { get; set; }  // ← Переименовано с TimeGroup на Name
+        public string Name { get; set; }  
         public List<MenuItemWithDetails> Items { get; set; }
     }
 

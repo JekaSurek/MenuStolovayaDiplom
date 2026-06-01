@@ -102,7 +102,7 @@ namespace MenuStolovaya.Views
                 return;
             }
 
-            // ПРАВИЛЬНАЯ ПРОВЕРКА ВИДА БЛЮДА
+            // ПРОВЕРКА ВИДА БЛЮДА
             if (DishTypeComboBox.SelectedValue == null)
             {
                 MessageBox.Show("Выберите вид блюда", "Ошибка",

@@ -259,8 +259,6 @@ namespace MenuStolovaya.Views
                     }
                 }
 
-                // ... остальные проверки (артикул, наименование, категория и т.д.) ...
-
                 // Проверка артикула
                 if (string.IsNullOrWhiteSpace(Product.Артикул))
                 {

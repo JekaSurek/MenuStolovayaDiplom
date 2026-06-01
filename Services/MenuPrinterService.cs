@@ -380,7 +380,7 @@ namespace MenuStolovaya.Services
 
         private string GetEnterpriseName()
         {
-            return "Столовая №1";
+            return "MenuStolovaya";
         }
 
         private string GetDayOfWeek(DateTime date)

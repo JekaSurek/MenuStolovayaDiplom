@@ -153,17 +153,8 @@
     <Compile Include="Views\EditCalcCardDialog.xaml.cs">
       <DependentUpon>EditCalcCardDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EditMenuItemsWindow.xaml.cs">
-      <DependentUpon>EditMenuItemsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\EditMenuItemWindow.xaml.cs">
-      <DependentUpon>EditMenuItemWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\EditProductPriceDialog.xaml.cs">
       <DependentUpon>EditProductPriceDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\EditRecipeWindow.xaml.cs">
-      <DependentUpon>EditRecipeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
@@ -319,19 +310,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\EditMenuItemsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\EditMenuItemWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\EditProductPriceDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\EditRecipeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

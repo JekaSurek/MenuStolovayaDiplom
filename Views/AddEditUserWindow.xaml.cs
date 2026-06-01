@@ -47,8 +47,8 @@ namespace MenuStolovaya.Views
                     Имя = user.Имя,
                     Отчество = user.Отчество ?? "",
                     Роль_id = user.Роль_id,
-                    Блокировка = user.Блокировка ?? false, // Исправление для nullable
-                    Дата_регистрации = user.Дата_регистрации ?? DateTime.Now // Исправление для nullable DateTime
+                    Блокировка = user.Блокировка ?? false,
+                    Дата_регистрации = user.Дата_регистрации ?? DateTime.Now 
                 };
                 WindowTitle = "Редактирование пользователя";
             }
@@ -201,12 +201,12 @@ namespace MenuStolovaya.Views
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            // Можно добавить логику валидации пароля в реальном времени
+            //Можно добавить логику валидации пароля в реальном времени
         }
 
         private void ConfirmPasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            // Можно добавить логику проверки совпадения паролей в реальном времени
+            //Можно добавить логику проверки совпадения паролей в реальном времени
         }
     }
 }

@@ -108,7 +108,7 @@ namespace MenuStolovaya.Services
                                 Время_подачи = sm.Время_подачи,
                                 Порядок_подачи = sm.Порядок_подачи
                             })
-                        .ToList(); // Выполняем запрос здесь
+                        .ToList(); 
 
                     // Теперь безопасно преобразуем на стороне клиента
                     var result = new List<MenuItemDisplay>();

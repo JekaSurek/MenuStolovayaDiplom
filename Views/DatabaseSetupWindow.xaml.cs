@@ -59,7 +59,6 @@ namespace MenuStolovaya.Views
 
         private void AuthType_Changed(object sender, RoutedEventArgs e)
         {
-            // ИСПРАВЛЕНО: Добавлена проверка на null
             if (SqlAuthRadio == null || SqlAuthPanel == null)
                 return;
 
@@ -109,7 +108,6 @@ namespace MenuStolovaya.Views
             string server = ServerTextBox.Text.Trim();
             string database = DatabaseTextBox.Text.Trim();
 
-            // ИСПРАВЛЕНО: Добавлена проверка на null для RadioButton
             if (WindowsAuthRadio != null && WindowsAuthRadio.IsChecked == true)
             {
                 return $"data source={server};initial catalog={database};integrated security=True;TrustServerCertificate=True";

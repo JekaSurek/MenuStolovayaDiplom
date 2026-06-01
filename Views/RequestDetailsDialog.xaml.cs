@@ -85,7 +85,7 @@ namespace MenuStolovaya.Views
                 string tempFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"Print_{DateTime.Now:yyyyMMddHHmmss}.html");
                 File.WriteAllText(tempFile, htmlContent, Encoding.UTF8);
 
-                // Просто открываем в браузере (без print verb)
+                // Просто открываем в браузере
                 var psi = new ProcessStartInfo
                 {
                     FileName = tempFile,
@@ -162,7 +162,7 @@ namespace MenuStolovaya.Views
                 html.AppendLine("        </tbody>");
                 html.AppendLine("    </table>");
                 html.AppendLine("    <div class='footer'>");
-                html.AppendLine($"        <div>© {DateTime.Now.Year} Меню столовой. Все права защищены.</div>");
+                html.AppendLine($"        <div>© {DateTime.Now.Year} MenuStolovaya. Все права защищены.</div>");
                 html.AppendLine("        <button class='no-print' onclick='window.print()'>🖨️ Распечатать</button>");
                 html.AppendLine("    </div>");
                 html.AppendLine("</div>");

@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace MenuStolovaya
 {
@@ -12,6 +13,7 @@ namespace MenuStolovaya
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            Startup += App_Startup;
 
             // Проверяем подключение к базе данных
             if (!CheckDatabaseConnection())
@@ -44,6 +46,32 @@ namespace MenuStolovaya
             // Запускаем окно входа
             var loginWindow = new Views.LoginWindow();
             loginWindow.Show();
+        }
+
+        private void App_Startup(object sender, StartupEventArgs e)
+        {
+            // Подписываемся на событие создания каждого окна
+            EventManager.RegisterClassHandler(typeof(Window), Window.LoadedEvent, new RoutedEventHandler(Window_Loaded));
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var window = sender as Window;
+            if (window != null)
+            {
+                // Устанавливаем иконку для окна
+                try
+                {
+                    // Путь к иконке (файл должен быть в папке Resources)
+                    var uri = new Uri("pack://application:,,,/Resources/Logo.ico", UriKind.RelativeOrAbsolute);
+                    window.Icon = BitmapFrame.Create(uri);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Не удалось загрузить иконку: {ex.Message}");
+                    // Иконка не загрузилась - просто продолжаем без неё
+                }
+            }
         }
 
         /// <summary>

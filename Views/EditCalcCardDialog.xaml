@@ -8,7 +8,7 @@
         Height="600" 
         Width="800"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource BackgroundBrush}">
+        Background="{StaticResource BackgroundBrush}" Icon="/Resources/Logo.ico">
 
     <Grid Margin="15">
         <Grid.RowDefinitions>

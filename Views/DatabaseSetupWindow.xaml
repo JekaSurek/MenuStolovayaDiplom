@@ -6,7 +6,7 @@
         Width="600"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        ShowInTaskbar="True">
+        ShowInTaskbar="True" Icon="/Resources/Logo.ico">
 
     <Grid Margin="20">
         <Grid.RowDefinitions>

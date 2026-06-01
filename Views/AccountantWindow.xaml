@@ -629,7 +629,7 @@
                                         <TextBlock Text="📖 О программе" Style="{StaticResource SubtitleStyle}"/>
                                         <TextBlock TextWrapping="Wrap" Margin="0,10">
                                             Система составления меню для столовой ООО СФ "Белка-Фаворит".
-                                            Версия 1.0. Разработчик: Виноградов Евгений Фёдорович.
+                                            Версия 1.2.0 Разработчик: Виноградов Евгений Фёдорович.
                                         </TextBlock>
                                     </StackPanel>
                                 </Border>

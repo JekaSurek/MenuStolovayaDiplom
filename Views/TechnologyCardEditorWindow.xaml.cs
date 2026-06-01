@@ -686,7 +686,7 @@ namespace MenuStolovaya.Views
                 html.AppendLine("    <h2>Технология приготовления</h2>");
                 html.AppendLine($"    <p>{techCard.Технология_приготовления ?? "Не указана"}</p>");
                 html.AppendLine("    <div class='footer'>");
-                html.AppendLine($"        <div>© {DateTime.Now.Year} Меню столовой. Все права защищены.</div>");
+                html.AppendLine($"        <div>© {DateTime.Now.Year} MenuStolovaya. Все права защищены.</div>");
                 html.AppendLine("        <button class='no-print' onclick='window.print()'>🖨️ Распечатать</button>");
                 html.AppendLine("    </div>");
                 html.AppendLine("</div>");
@@ -697,7 +697,6 @@ namespace MenuStolovaya.Views
             }
         }
 
-        // ИСПРАВЛЕННЫЙ МЕТОД - теперь работает с запятой
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
             foreach (char ch in e.Text)

@@ -1,9 +1,6 @@
 ﻿using MenuStolovaya.Views;
 using System;
-using System;
 using System.Collections.Generic;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -204,7 +201,6 @@ namespace MenuStolovaya.Services
 {
     var nutrients = NutrientCalculator.CalculateDishNutrients(item.Блюдо_id);
     decimal выход = item.Выход_на_порцию > 0 ? item.Выход_на_порцию : 100m;
-    // Убираем умножение на Количество_порций - считаем только одну порцию!
     return (nutrients.Белки / 100m) * выход;
 }
 

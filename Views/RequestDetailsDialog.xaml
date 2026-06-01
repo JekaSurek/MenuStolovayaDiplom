@@ -5,7 +5,7 @@
         Height="550" 
         Width="900"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource BackgroundBrush}" WindowState="Maximized">
+        Background="{StaticResource BackgroundBrush}" WindowState="Maximized" Icon="/Resources/Logo.ico">
 
     <Grid Margin="15">
         <Grid.RowDefinitions>

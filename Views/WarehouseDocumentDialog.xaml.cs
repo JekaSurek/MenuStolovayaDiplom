@@ -66,7 +66,7 @@ namespace MenuStolovaya.Views
                             p.Единица_измерения,
                             Цена = p.Цена ?? 0m
                         })
-                        .ToList(); // <-- ВАЖНО: сначала выполняем запрос
+                        .ToList(); 
 
                     // Теперь форматируем DisplayText в памяти
                     var products = productsRaw.Select(p => new
@@ -296,7 +296,6 @@ namespace MenuStolovaya.Views
                             return;
                         }
 
-                        // Удаляем старые строки
                         var oldLines = db.Строки_документов.Where(sd => sd.Документ_id == document.id).ToList();
                         foreach (var oldLine in oldLines)
                         {
