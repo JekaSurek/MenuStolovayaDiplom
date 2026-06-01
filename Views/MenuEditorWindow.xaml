@@ -7,8 +7,11 @@
         Title="Редактор меню" 
         Height="800" 
         Width="1300"
+        MinHeight="650"
+        MinWidth="1000"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource BackgroundBrush}" WindowState="Maximized" Icon="/Resources/Logo.ico">
+        Background="{StaticResource BackgroundBrush}"
+        Icon="/Resources/Logo.ico">
 
     <Window.Resources>
         <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
@@ -18,7 +21,6 @@
             <Setter Property="Margin" Value="0,0,0,10"/>
         </Style>
 
-        <!-- Стиль для группировки блюд по времени подачи -->
         <Style x:Key="TimeGroupHeaderStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -64,9 +66,9 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="Auto" MinWidth="100"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="Auto" MinWidth="100"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
@@ -76,11 +78,11 @@
                            VerticalAlignment="Center"
                            FontWeight="SemiBold"/>
                 <DatePicker x:Name="MenuDatePicker" 
-            Grid.Row="0" Grid.Column="1" 
-            Height="35"
-            Margin="0,5,10,5"
-            SelectedDateChanged="MenuDatePicker_SelectedDateChanged"
-            ToolTip="Выберите дату меню. Праздничные и выходные дни отмечены красным."/>
+                            Grid.Row="0" Grid.Column="1" 
+                            Height="35"
+                            Margin="0,5,10,5"
+                            SelectedDateChanged="MenuDatePicker_SelectedDateChanged"
+                            ToolTip="Выберите дату меню"/>
 
                 <TextBlock Grid.Row="0" Grid.Column="2" 
                            Text="Статус:" 
@@ -125,7 +127,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,0,20,0">
@@ -146,10 +148,12 @@
                         <Button Grid.Column="3" 
                                 Content="⟳ Пересчитать калорийность"
                                 Height="30"
+                                Width="200"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Background="{StaticResource AccentBrush}"
                                 Click="RecalculateCaloriesButton_Click"
-                                Margin="20,0,-12,0"/>
+                                Margin="20,0,0,0"
+                                HorizontalAlignment="Right"/>
                     </Grid>
                 </Border>
             </Grid>
@@ -175,7 +179,7 @@
                                FontWeight="SemiBold"/>
                 </Border>
 
-                <!-- Панель добавления блюда -->
+                <!-- Панель добавления блюда (адаптивная) -->
                 <Border Grid.Row="1" 
                         Background="#FFF9F9F9" 
                         Padding="10"
@@ -183,11 +187,11 @@
                         BorderThickness="0,0,0,1">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="98"/>
-                            <ColumnDefinition Width="213"/>
-                            <ColumnDefinition Width="169.103"/>
-                            <ColumnDefinition Width="Auto" MinWidth="117.897"/>
+                            <ColumnDefinition Width="*" MinWidth="200"/>
+                            <ColumnDefinition Width="Auto" MinWidth="70"/>
+                            <ColumnDefinition Width="Auto" MinWidth="120"/>
+                            <ColumnDefinition Width="Auto" MinWidth="120"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -197,9 +201,10 @@
                         <TextBlock Grid.Column="0" 
                                    Text="Блюдо:" 
                                    VerticalAlignment="Center"
-                                   FontWeight="SemiBold" Height="16"/>
+                                   FontWeight="SemiBold"/>
                         <ComboBox x:Name="DishComboBox" 
                                   Grid.Row="1" Grid.Column="0"
+                                  Height="35"
                                   DisplayMemberPath="DisplayText"
                                   SelectedValuePath="Id"
                                   SelectionChanged="DishComboBox_SelectionChanged"
@@ -209,45 +214,49 @@
                                    Text="Порций:" 
                                    VerticalAlignment="Center"
                                    FontWeight="SemiBold"
-                                   HorizontalAlignment="Center" Height="16" Width="50"/>
+                                   HorizontalAlignment="Center"/>
                         <TextBox x:Name="PortionsTextBox" 
                                  Grid.Row="1" Grid.Column="1"
+                                 Width="60"
+                                 Height="35"
                                  Text="1"
                                  PreviewTextInput="NumberValidationTextBox"
-                                 Margin="0,0,10,0"/>
+                                 Margin="0,0,10,0"
+                                 HorizontalAlignment="Left"/>
 
-                        <TextBlock Grid.Column="2" 
-                                   Text="Выход (г):" 
-                                   VerticalAlignment="Center"
-                                   FontWeight="SemiBold"
-                                   HorizontalAlignment="Left" Height="16" Width="56" Margin="50,0,0,0"/>
-                        <Grid Grid.Row="1" Grid.Column="2" Margin="15,0,0,0">
+                        <Grid Grid.Row="1" Grid.Column="2">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBox x:Name="OutputTextBox" 
                                      Grid.Column="0"
+                                     Width="80"
                                      Height="35"
-                                     PreviewTextInput="NumberValidationTextBox"/>
+                                     PreviewTextInput="NumberValidationTextBox"
+                                     Margin="0,0,5,0"/>
                             <Button Grid.Column="1"
-                                    Content="⚡"
+                                    Content="⚡ Станд."
                                     Height="35"
+                                    Width="60"
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Background="{StaticResource AccentBrush}"
                                     Click="UseStandardOutputButton_Click"
-                                    ToolTip="Использовать стандартный выход блюда" Margin="10,0,10,0"/>
+                                    ToolTip="Использовать стандартный выход блюда"
+                                    FontSize="11"/>
                         </Grid>
 
                         <TextBlock Grid.Column="3" 
                                    Text="Время подачи:" 
                                    VerticalAlignment="Center"
                                    FontWeight="SemiBold"
-                                   HorizontalAlignment="Center" Height="16" Width="84"/>
+                                   HorizontalAlignment="Center"/>
                         <ComboBox x:Name="TimeComboBox" 
                                   Grid.Row="1" Grid.Column="3"
+                                  Width="100"
+                                  Height="35"
                                   SelectedIndex="1"
-                                  Margin="1,0,10,0">
+                                  Margin="0,0,10,0">
                             <ComboBoxItem Content="Завтрак"/>
                             <ComboBoxItem Content="Обед"/>
                             <ComboBoxItem Content="Ужин"/>
@@ -257,42 +266,42 @@
                         <Button x:Name="AddDishButton"
                                 Grid.Row="1" Grid.Column="4"
                                 Content="➕ Добавить"
-                                Height="NaN"
+                                Height="35"
+                                Width="100"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Click="AddDishButton_Click"
-                                Margin="5,0,0,0"/>
+                                Margin="10,0,0,0"/>
                     </Grid>
                 </Border>
 
-                <!-- DataGrid с блюдами в меню (группировка по времени подачи) -->
-                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl x:Name="MenuItemsControl">
+                <!-- DataGrid с блюдами в меню -->
+                <ScrollViewer Grid.Row="2" 
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="MenuItemsControl" MinWidth="800">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    <!-- Заголовок группы -->
                                     <Border Background="{StaticResource PrimaryLightBrush}" 
-                            Padding="8,3" 
-                            Margin="0,5,0,2">
+                                            Padding="8,3" 
+                                            Margin="0,5,0,2">
                                         <TextBlock Text="{Binding TimeGroup}" 
-                                   FontWeight="Bold"
-                                   Foreground="{StaticResource PrimaryDarkBrush}"/>
+                                                   FontWeight="Bold"
+                                                   Foreground="{StaticResource PrimaryDarkBrush}"/>
                                     </Border>
-
-                                    <!-- DataGrid для группы -->
                                     <DataGrid ItemsSource="{Binding Items}"
-                              AutoGenerateColumns="False"
-                              CanUserAddRows="False"
-                              CanUserDeleteRows="False"
-                              SelectionMode="Single"
-                              SelectionUnit="FullRow"
-                              RowHeight="35"
-                              Margin="0,0,0,5"
-                              BorderThickness="0">
+                                              AutoGenerateColumns="False"
+                                              CanUserAddRows="False"
+                                              CanUserDeleteRows="False"
+                                              SelectionMode="Single"
+                                              SelectionUnit="FullRow"
+                                              RowHeight="35"
+                                              Margin="0,0,0,5"
+                                              BorderThickness="0">
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Порядок" 
-                                                Binding="{Binding Порядок_подачи}" 
-                                                Width="60">
+                                                                Binding="{Binding Порядок_подачи}" 
+                                                                Width="60">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="DataGridCell">
                                                         <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -300,14 +309,14 @@
                                                 </DataGridTextColumn.CellStyle>
                                             </DataGridTextColumn>
                                             <DataGridTextColumn Header="Блюдо" 
-                                                Binding="{Binding Блюдо}" 
-                                                Width="250"/>
+                                                                Binding="{Binding Блюдо}" 
+                                                                Width="200"/>
                                             <DataGridTextColumn Header="Вид блюда" 
-                                                Binding="{Binding Вид_блюда}" 
-                                                Width="150"/>
+                                                                Binding="{Binding Вид_блюда}" 
+                                                                Width="120"/>
                                             <DataGridTextColumn Header="Порций" 
-                                                Binding="{Binding Количество_порций}" 
-                                                Width="80">
+                                                                Binding="{Binding Количество_порций}" 
+                                                                Width="70">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="DataGridCell">
                                                         <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -315,33 +324,32 @@
                                                 </DataGridTextColumn.CellStyle>
                                             </DataGridTextColumn>
                                             <DataGridTextColumn Header="Выход, г" 
-                                                Binding="{Binding Выход_на_порцию, StringFormat={}{0:F0}}" 
-                                                Width="100"/>
+                                                                Binding="{Binding Выход_на_порцию, StringFormat={}{0:F0}}" 
+                                                                Width="80"/>
                                             <DataGridTextColumn Header="Ккал/порц" 
-                                                Binding="{Binding Калорийность_на_порцию, StringFormat={}{0:F0}}" 
-                                                Width="100"/>
-                                            <!-- КОЛОНКА "Ккал всего" УДАЛЕНА -->
+                                                                Binding="{Binding Калорийность_на_порцию, StringFormat={}{0:F0}}" 
+                                                                Width="80"/>
                                             <DataGridTextColumn Header="Время подачи" 
-                                                Binding="{Binding Время_подачи}" 
-                                                Width="100"/>
-                                            <DataGridTemplateColumn Header="Действия" Width="100">
+                                                                Binding="{Binding Время_подачи}" 
+                                                                Width="100"/>
+                                            <DataGridTemplateColumn Header="Действия" Width="80">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal">
                                                             <Button Content="✏" 
-                                                    Width="30" 
-                                                    Height="28"
-                                                    Margin="2"
-                                                    Background="#FFFF9800" 
-                                                    Foreground="White"
-                                                    Click="EditMenuItemButton_Click"/>
+                                                                    Width="30" 
+                                                                    Height="28"
+                                                                    Margin="2"
+                                                                    Background="#FFFF9800" 
+                                                                    Foreground="White"
+                                                                    Click="EditMenuItemButton_Click"/>
                                                             <Button Content="✕" 
-                                                    Width="30" 
-                                                    Height="28"
-                                                    Margin="2"
-                                                    Background="#FFF44336" 
-                                                    Foreground="White"
-                                                    Click="DeleteMenuItemButton_Click"/>
+                                                                    Width="30" 
+                                                                    Height="28"
+                                                                    Margin="2"
+                                                                    Background="#FFF44336" 
+                                                                    Foreground="White"
+                                                                    Click="DeleteMenuItemButton_Click"/>
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
@@ -352,9 +360,9 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </ScrollViewer> 
+                </ScrollViewer>
 
-                <!-- Панель управления порядком и кнопки -->
+                <!-- Панель управления порядком -->
                 <Border Grid.Row="3" 
                         Background="#FFF9F9F9" 
                         Padding="10"
@@ -367,39 +375,45 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
+                        <!-- Кнопки Вверх/Вниз всегда видны -->
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
                             <Button Content="↑ Вверх" 
                                     Width="80"
+                                    Height="32"
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Click="MoveUpButton_Click"
                                     Margin="0,0,5,0"/>
                             <Button Content="↓ Вниз" 
                                     Width="80"
+                                    Height="32"
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Click="MoveDownButton_Click"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="2" Orientation="Horizontal">
                             <Button x:Name="CheckNormsButton"
-            Content="📊 Проверить нормы"
-            Width="165"
-            Style="{StaticResource PrimaryButtonStyle}"
-            Background="{StaticResource WarningBrush}"
-            Click="CheckNormsButton_Click"
-            Margin="0,0,10,0"/>
+                                    Content="📊 Проверить нормы"
+                                    Width="150"
+                                    Height="32"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Background="{StaticResource WarningBrush}"
+                                    Click="CheckNormsButton_Click"
+                                    Margin="0,0,10,0"/>
                             <Button x:Name="PrintMenuButton"
-            Content="🖨️ Печать меню"
-            Width="165"
-            Style="{StaticResource PrimaryButtonStyle}"
-            Background="{StaticResource AccentBrush}"
-            Click="PrintMenuButton_Click"
-            Margin="0,0,10,0"/>
+                                    Content="🖨️ Печать меню"
+                                    Width="130"
+                                    Height="32"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Background="{StaticResource AccentBrush}"
+                                    Click="PrintMenuButton_Click"
+                                    Margin="0,0,10,0"/>
                             <Button x:Name="CreateRequestButton"
-            Content="📋 Требование накладная"
-            Width="232"
-            Style="{StaticResource PrimaryButtonStyle}"
-            Background="{StaticResource InfoBrush}"
-            Click="CreateRequestButton_Click"/>
+                                    Content="📋 Требование накладная"
+                                    Width="180"
+                                    Height="32"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Background="{StaticResource InfoBrush}"
+                                    Click="CreateRequestButton_Click"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -415,12 +429,14 @@
                 <Button Content="💾 Сохранить" 
                         Style="{StaticResource PrimaryButtonStyle}"
                         Width="120"
+                        Height="35"
                         Click="SaveButton_Click"
                         Margin="5"/>
                 <Button Content="❌ Отмена" 
                         Style="{StaticResource PrimaryButtonStyle}"
                         Background="{StaticResource DangerBrush}"
                         Width="120"
+                        Height="35"
                         Click="CancelButton_Click"
                         Margin="5"/>
             </StackPanel>
