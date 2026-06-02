@@ -148,7 +148,7 @@
                         <Button Grid.Column="3" 
                                 Content="⟳ Пересчитать калорийность"
                                 Height="30"
-                                Width="200"
+                                Width="250"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Background="{StaticResource AccentBrush}"
                                 Click="RecalculateCaloriesButton_Click"
@@ -267,7 +267,7 @@
                                 Grid.Row="1" Grid.Column="4"
                                 Content="➕ Добавить"
                                 Height="35"
-                                Width="100"
+                                Width="150"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Click="AddDishButton_Click"
                                 Margin="10,0,0,0"/>
@@ -393,7 +393,7 @@
                         <StackPanel Grid.Column="2" Orientation="Horizontal">
                             <Button x:Name="CheckNormsButton"
                                     Content="📊 Проверить нормы"
-                                    Width="150"
+                                    Width="200"
                                     Height="32"
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Background="{StaticResource WarningBrush}"
@@ -401,7 +401,7 @@
                                     Margin="0,0,10,0"/>
                             <Button x:Name="PrintMenuButton"
                                     Content="🖨️ Печать меню"
-                                    Width="130"
+                                    Width="200"
                                     Height="32"
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Background="{StaticResource AccentBrush}"
@@ -409,7 +409,7 @@
                                     Margin="0,0,10,0"/>
                             <Button x:Name="CreateRequestButton"
                                     Content="📋 Требование накладная"
-                                    Width="180"
+                                    Width="200"
                                     Height="32"
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Background="{StaticResource InfoBrush}"
