@@ -1,13 +1,19 @@
 ﻿using System;
-using System.Data.SqlClient;
-using System.Windows;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
+using System.Windows;
+using System.Xml;
 
 namespace MenuStolovaya.Views
 {
     public partial class DatabaseSetupWindow : Window
     {
+        private static string SettingsFilePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "MenuStolovaya", "connection.config");
+
         public DatabaseSetupWindow()
         {
             InitializeComponent();
@@ -18,6 +24,24 @@ namespace MenuStolovaya.Views
         {
             try
             {
+                // Пробуем загрузить из пользовательского файла
+                if (File.Exists(SettingsFilePath))
+                {
+                    string savedConnectionString = File.ReadAllText(SettingsFilePath);
+                    if (!string.IsNullOrEmpty(savedConnectionString))
+                    {
+                        var dataSource = ExtractValue(savedConnectionString, "data source");
+                        var initialCatalog = ExtractValue(savedConnectionString, "initial catalog");
+
+                        if (!string.IsNullOrEmpty(dataSource))
+                            ServerTextBox.Text = dataSource;
+                        if (!string.IsNullOrEmpty(initialCatalog))
+                            DatabaseTextBox.Text = initialCatalog;
+                        return;
+                    }
+                }
+
+                // Если нет, пробуем из App.config
                 var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 var connectionString = config.ConnectionStrings.ConnectionStrings["MenuStolovayaDBEntities"]?.ConnectionString;
 
@@ -40,6 +64,9 @@ namespace MenuStolovaya.Views
             catch (Exception ex)
             {
                 StatusText.Text = $"Ошибка загрузки: {ex.Message}";
+                // Значения по умолчанию
+                ServerTextBox.Text = ".";
+                DatabaseTextBox.Text = "MenuStolovayaDB";
             }
         }
 
@@ -131,20 +158,35 @@ namespace MenuStolovaya.Views
 
         private void SaveConnectionString(string connectionString)
         {
-            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            // Сохраняем в пользовательский файл
+            string directory = Path.GetDirectoryName(SettingsFilePath);
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
 
-            if (config.ConnectionStrings.ConnectionStrings["MenuStolovayaDBEntities"] != null)
-            {
-                config.ConnectionStrings.ConnectionStrings["MenuStolovayaDBEntities"].ConnectionString = connectionString;
-            }
-            else
-            {
-                config.ConnectionStrings.ConnectionStrings.Add(
-                    new ConnectionStringSettings("MenuStolovayaDBEntities", connectionString, "System.Data.EntityClient"));
-            }
+            File.WriteAllText(SettingsFilePath, connectionString);
 
-            config.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection("connectionStrings");
+            // Также пробуем сохранить в App.config (если есть права)
+            try
+            {
+                var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                if (config.ConnectionStrings.ConnectionStrings["MenuStolovayaDBEntities"] != null)
+                {
+                    config.ConnectionStrings.ConnectionStrings["MenuStolovayaDBEntities"].ConnectionString = connectionString;
+                }
+                else
+                {
+                    config.ConnectionStrings.ConnectionStrings.Add(
+                        new ConnectionStringSettings("MenuStolovayaDBEntities", connectionString, "System.Data.EntityClient"));
+                }
+
+                config.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection("connectionStrings");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Нет прав на запись в App.config — игнорируем, пользовательский файл уже сохранён
+            }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -163,7 +205,6 @@ namespace MenuStolovaya.Views
                 return;
             }
 
-            // Проверка SQL аутентификации (с проверкой на null)
             if (SqlAuthRadio != null && SqlAuthRadio.IsChecked == true)
             {
                 if (string.IsNullOrEmpty(LoginTextBox?.Text))
@@ -176,7 +217,6 @@ namespace MenuStolovaya.Views
 
             string sqlConnectionString = BuildSqlConnectionString();
 
-            // Проверяем подключение
             try
             {
                 using (var connection = new SqlConnection(sqlConnectionString))
@@ -201,7 +241,11 @@ namespace MenuStolovaya.Views
                 MessageBox.Show("Настройки сохранены!", "Успех",
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
-                DialogResult = true;
+                // Устанавливаем DialogResult только если окно было открыто как диалог
+                if (IsVisible && Owner != null)
+                {
+                    DialogResult = true;
+                }
                 Close();
             }
             catch (Exception ex)
@@ -213,7 +257,10 @@ namespace MenuStolovaya.Views
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
+            if (IsVisible && Owner != null)
+            {
+                DialogResult = false;
+            }
             Close();
         }
 
@@ -223,15 +270,12 @@ namespace MenuStolovaya.Views
 
             if (System.IO.File.Exists(helpPath))
             {
-                System.Diagnostics.Process.Start(helpPath);
+                Process.Start(new ProcessStartInfo(helpPath) { UseShellExecute = true });
             }
             else
             {
-                MessageBox.Show("Файл справки не найден!\n\n" +
-                               "Ожидаемый путь: " + helpPath,
-                               "Ошибка",
-                               MessageBoxButton.OK,
-                               MessageBoxImage.Error);
+                MessageBox.Show("Файл справки не найден!\n\nОжидаемый путь: " + helpPath,
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
