@@ -19,7 +19,7 @@ namespace MenuStolovaya
             if (!CheckDatabaseConnection())
             {
                 // Показываем окно настройки
-                var setupWindow = new Views.DatabaseSetupWindow();
+                var setupWindow = new Views.LoginWindow();
                 var result = setupWindow.ShowDialog();
 
                 if (result != true)
@@ -44,7 +44,7 @@ namespace MenuStolovaya
             }
 
             // Запускаем окно входа
-            var loginWindow = new Views.LoginWindow();
+            var loginWindow = new Views.DatabaseSetupWindow();
             loginWindow.Show();
         }
 
