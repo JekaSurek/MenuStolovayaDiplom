@@ -125,7 +125,6 @@ namespace MenuStolovaya.Views
                 var details = _service.GetTechCardDetails(_techCardId);
                 if (details == null) return "<html><body><h1>Карта не найдена</h1></body></html>";
 
-                // Получаем рецептуру с ценами
                 var recipes = db.Рецептуры
                     .Where(r => r.Технологическая_карта_id == _techCardId)
                     .Join(db.Продукты,
@@ -145,10 +144,8 @@ namespace MenuStolovaya.Views
                         })
                     .ToList();
 
-                // Получаем калорийность блюда из таблицы Блюда
                 var dish = db.Блюда.FirstOrDefault(b => b.Наименование == details.Блюдо);
                 decimal caloriesPer100g = dish?.Калорийность_расчетная ?? 0;
-
                 decimal totalCost = recipes.Sum(r => r.Сумма);
 
                 StringBuilder html = new StringBuilder();
@@ -160,7 +157,27 @@ namespace MenuStolovaya.Views
                 html.AppendLine("    <style>");
                 html.AppendLine("        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; }");
                 html.AppendLine("        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; }");
-                html.AppendLine("        h1 { color: #2e7d32; border-bottom: 2px solid #4caf50; padding-bottom: 10px; }");
+                html.AppendLine("        .approval-header {");
+                html.AppendLine("            border-bottom: 1px solid #ddd;");
+                html.AppendLine("            margin-bottom: 20px;");
+                html.AppendLine("            padding-bottom: 15px;");
+                html.AppendLine("            text-align: right;");
+                html.AppendLine("        }");
+                html.AppendLine("        .approval-header .approval-block {");
+                html.AppendLine("            display: inline-block;");
+                html.AppendLine("            text-align: center;");
+                html.AppendLine("            font-size: 11px;");
+                html.AppendLine("            border: 1px solid #ccc;");
+                html.AppendLine("            padding: 8px 15px;");
+                html.AppendLine("            background: #f9f9f9;");
+                html.AppendLine("            border-radius: 6px;");
+                html.AppendLine("        }");
+                html.AppendLine("        .approval-header .approval-block strong {");
+                html.AppendLine("            font-size: 12px;");
+                html.AppendLine("            display: block;");
+                html.AppendLine("            margin-bottom: 4px;");
+                html.AppendLine("        }");
+                html.AppendLine("        h1 { color: #2e7d32; border-bottom: 2px solid #4caf50; padding-bottom: 10px; margin-top: 0; font-size: 22px; }");
                 html.AppendLine("        h2 { color: #333; margin-top: 20px; }");
                 html.AppendLine("        .info-grid { display: grid; grid-template-columns: 150px 1fr; gap: 10px; margin: 20px 0; }");
                 html.AppendLine("        .info-label { font-weight: bold; }");
@@ -168,12 +185,47 @@ namespace MenuStolovaya.Views
                 html.AppendLine("        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }");
                 html.AppendLine("        th { background-color: #4caf50; color: white; }");
                 html.AppendLine("        .total-row { font-weight: bold; background-color: #f0f8ff; }");
+                html.AppendLine("        .signatures {");
+                html.AppendLine("            display: flex;");
+                html.AppendLine("            justify-content: space-between;");
+                html.AppendLine("            margin-top: 40px;");
+                html.AppendLine("            padding-top: 20px;");
+                html.AppendLine("            border-top: 1px solid #ddd;");
+                html.AppendLine("        }");
+                html.AppendLine("        .signature-item {");
+                html.AppendLine("            text-align: center;");
+                html.AppendLine("            width: 45%;");
+                html.AppendLine("        }");
+                html.AppendLine("        .signature-line {");
+                html.AppendLine("            margin-top: 40px;");
+                html.AppendLine("            border-top: 1px solid #000;");
+                html.AppendLine("            width: 80%;");
+                html.AppendLine("            margin-left: auto;");
+                html.AppendLine("            margin-right: auto;");
+                html.AppendLine("        }");
+                html.AppendLine("        .signature-name {");
+                html.AppendLine("            margin-top: 8px;");
+                html.AppendLine("            font-size: 12px;");
+                html.AppendLine("            color: #666;");
+                html.AppendLine("        }");
                 html.AppendLine("        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 15px; }");
                 html.AppendLine("        @media print { body { margin: 0; } .no-print { display: none; } }");
                 html.AppendLine("    </style>");
                 html.AppendLine("</head>");
                 html.AppendLine("<body>");
                 html.AppendLine("<div class='container'>");
+
+                // Блок утверждения над заголовком
+                html.AppendLine("    <div class='approval-header'>");
+                html.AppendLine("        <div class='approval-block'>");
+                html.AppendLine("            <strong>УТВЕРЖДАЮ</strong>");
+                html.AppendLine("            <div>Директор ООО «СФ „Белка-Фаворит“»</div>");
+                html.AppendLine("            <div style='margin-top: 8px;'>_______________ /_______________________/</div>");
+                html.AppendLine("            <div style='font-size: 9px;'>подпись                         ФИО</div>");
+                html.AppendLine("            <div style='margin-top: 3px;'>«__» _________ 20___ г.</div>");
+                html.AppendLine("        </div>");
+                html.AppendLine("    </div>");
+
                 html.AppendLine($"    <h1>Технологическая карта №{details.Номер}</h1>");
                 html.AppendLine("    <div class='info-grid'>");
                 html.AppendLine($"        <div class='info-label'>Блюдо:</div><div>{details.Блюдо}</div>");
@@ -203,16 +255,33 @@ namespace MenuStolovaya.Views
                     html.AppendLine($"            <td>{r.Количество_нетто:F3}</td>");
                     html.AppendLine($"            <td>{r.Цена:N2}</td>");
                     html.AppendLine($"            <td>{r.Сумма:N2}</td>");
-                    html.AppendLine("            </tr>");
+                    html.AppendLine("             </tr>");
                 }
 
                 html.AppendLine($"            <tr class='total-row'><td colspan='9' style='text-align: right;'><strong>Общая себестоимость:</strong></td><td><strong>{totalCost:N2} руб.</strong></td></tr>");
                 html.AppendLine("        </tbody>");
-                html.AppendLine("    </table>");
+                html.AppendLine("     </table>");
                 html.AppendLine("    <h2>Технология приготовления</h2>");
                 html.AppendLine($"    <p>{details.Технология_приготовления ?? "Не указана"}</p>");
+
+                // Подписи снизу
+                html.AppendLine("    <div class='signatures'>");
+                html.AppendLine("    <div class='signature-item'>");
+                html.AppendLine("        <div class='signature-line'></div>");
+                html.AppendLine("        <div class='signature-name'>Технолог / Заведующий производством</div>");
+                html.AppendLine("        <div class='signature-name'>_______________ /_______________________/</div>");
+                html.AppendLine("        <div class='signature-name' style='font-size: 10px;'>подпись                         ФИО</div>");
+                html.AppendLine("    </div>");
+                html.AppendLine("        <div class='signature-item'>");
+                html.AppendLine("            <div class='signature-line'></div>");
+                html.AppendLine("            <div class='signature-name'>Бухгалтер</div>");
+                html.AppendLine("            <div class='signature-name'>_______________ /_______________________/</div>");
+                html.AppendLine("            <div class='signature-name' style='font-size: 10px;'>подпись                         ФИО</div>");
+                html.AppendLine("        </div>");
+                html.AppendLine("    </div>");
+
                 html.AppendLine("    <div class='footer'>");
-                html.AppendLine($"        <div>© {DateTime.Now.Year} MenuStolovaya. Все права защищены.</div>");
+                html.AppendLine($"        <div>© {DateTime.Now.Year} ООО «СФ „Белка-Фаворит“». Все права защищены.</div>");
                 html.AppendLine("        <button class='no-print' onclick='window.print()'>🖨️ Распечатать</button>");
                 html.AppendLine("    </div>");
                 html.AppendLine("</div>");

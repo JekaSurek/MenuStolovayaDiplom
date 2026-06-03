@@ -633,8 +633,30 @@ namespace MenuStolovaya.Views
 
                 if (techCard == null) return "<html><body><h1>Карта не найдена</h1></body></html>";
 
-                var recipes = _recipeService.GetRecipes(_cardId.Value);
+                // Получаем рецептуру с ценами из базы данных (как в других формах)
+                var recipesWithPrices = db.Рецептуры
+                    .Where(r => r.Технологическая_карта_id == _cardId.Value)
+                    .Join(db.Продукты,
+                        r => r.Продукт_id,
+                        p => p.id,
+                        (r, p) => new
+                        {
+                            Порядок_закладки = r.Порядок_закладки ?? 0,
+                            Артикул = p.Артикул,
+                            Продукт = p.Наименование,
+                            Единица_измерения = p.Единица_измерения,
+                            Количество_брутто = r.Количество_брутто,
+                            Количество_нетто = r.Количество_нетто ?? r.Количество_брутто,
+                            Потери_холодной = p.Потери_холодной_обработки ?? 0,
+                            Потери_горячей = p.Потери_горячей_обработки ?? 0,
+                            Цена_за_кг = p.Цена ?? 0,
+                            Сумма = (r.Количество_нетто ?? r.Количество_брутто) * (p.Цена ?? 0)
+                        })
+                    .OrderBy(r => r.Порядок_закладки)
+                    .ToList();
+
                 var dish = db.Блюда.Find(techCard.Блюдо_id);
+                decimal totalCost = recipesWithPrices.Sum(r => r.Сумма);
 
                 StringBuilder html = new StringBuilder();
                 html.AppendLine("<!DOCTYPE html>");
@@ -644,20 +666,76 @@ namespace MenuStolovaya.Views
                 html.AppendLine("    <title>Технологическая карта</title>");
                 html.AppendLine("    <style>");
                 html.AppendLine("        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; }");
-                html.AppendLine("        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; }");
-                html.AppendLine("        h1 { color: #2e7d32; border-bottom: 2px solid #4caf50; padding-bottom: 10px; }");
+                html.AppendLine("        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 20px; }");
+                html.AppendLine("        .approval-header {");
+                html.AppendLine("            border-bottom: 1px solid #ddd;");
+                html.AppendLine("            margin-bottom: 20px;");
+                html.AppendLine("            padding-bottom: 15px;");
+                html.AppendLine("            text-align: right;");
+                html.AppendLine("        }");
+                html.AppendLine("        .approval-header .approval-block {");
+                html.AppendLine("            display: inline-block;");
+                html.AppendLine("            text-align: center;");
+                html.AppendLine("            font-size: 11px;");
+                html.AppendLine("            border: 1px solid #ccc;");
+                html.AppendLine("            padding: 8px 15px;");
+                html.AppendLine("            background: #f9f9f9;");
+                html.AppendLine("            border-radius: 6px;");
+                html.AppendLine("        }");
+                html.AppendLine("        .approval-header .approval-block strong {");
+                html.AppendLine("            font-size: 12px;");
+                html.AppendLine("            display: block;");
+                html.AppendLine("            margin-bottom: 4px;");
+                html.AppendLine("        }");
+                html.AppendLine("        h1 { color: #2e7d32; border-bottom: 2px solid #4caf50; padding-bottom: 10px; margin-top: 0; font-size: 22px; }");
                 html.AppendLine("        h2 { color: #333; margin-top: 20px; }");
                 html.AppendLine("        .info-grid { display: grid; grid-template-columns: 150px 1fr; gap: 10px; margin: 20px 0; }");
                 html.AppendLine("        .info-label { font-weight: bold; }");
                 html.AppendLine("        table { width: 100%; border-collapse: collapse; margin: 15px 0; }");
                 html.AppendLine("        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }");
                 html.AppendLine("        th { background-color: #4caf50; color: white; }");
+                html.AppendLine("        .total-row { font-weight: bold; background-color: #f0f8ff; }");
+                html.AppendLine("        .signatures {");
+                html.AppendLine("            display: flex;");
+                html.AppendLine("            justify-content: space-between;");
+                html.AppendLine("            margin-top: 40px;");
+                html.AppendLine("            padding-top: 20px;");
+                html.AppendLine("            border-top: 1px solid #ddd;");
+                html.AppendLine("        }");
+                html.AppendLine("        .signature-item {");
+                html.AppendLine("            text-align: center;");
+                html.AppendLine("            width: 45%;");
+                html.AppendLine("        }");
+                html.AppendLine("        .signature-line {");
+                html.AppendLine("            margin-top: 40px;");
+                html.AppendLine("            border-top: 1px solid #000;");
+                html.AppendLine("            width: 80%;");
+                html.AppendLine("            margin-left: auto;");
+                html.AppendLine("            margin-right: auto;");
+                html.AppendLine("        }");
+                html.AppendLine("        .signature-name {");
+                html.AppendLine("            margin-top: 8px;");
+                html.AppendLine("            font-size: 12px;");
+                html.AppendLine("            color: #666;");
+                html.AppendLine("        }");
                 html.AppendLine("        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 15px; }");
                 html.AppendLine("        @media print { body { margin: 0; } .no-print { display: none; } }");
                 html.AppendLine("    </style>");
                 html.AppendLine("</head>");
                 html.AppendLine("<body>");
                 html.AppendLine("<div class='container'>");
+
+                // Блок утверждения над заголовком (как в других формах)
+                html.AppendLine("    <div class='approval-header'>");
+                html.AppendLine("        <div class='approval-block'>");
+                html.AppendLine("            <strong>УТВЕРЖДАЮ</strong>");
+                html.AppendLine("            <div>Директор ООО «СФ „Белка-Фаворит“»</div>");
+                html.AppendLine("            <div style='margin-top: 8px;'>_______________ /_______________________/</div>");
+                html.AppendLine("            <div style='font-size: 9px;'>подпись                         ФИО</div>");
+                html.AppendLine("            <div style='margin-top: 3px;'>«__» _________ 20___ г.</div>");
+                html.AppendLine("        </div>");
+                html.AppendLine("    </div>");
+
                 html.AppendLine($"    <h1>Технологическая карта №{techCard.Номер}</h1>");
                 html.AppendLine("    <div class='info-grid'>");
                 html.AppendLine($"        <div class='info-label'>Блюдо:</div><div>{techCard.Блюда?.Наименование ?? "Неизвестно"}</div>");
@@ -671,22 +749,50 @@ namespace MenuStolovaya.Views
                 html.AppendLine("    <h2>Рецептура</h2>");
                 html.AppendLine("    <table>");
                 html.AppendLine("        <thead>");
-                html.AppendLine("            <tr><th>№</th><th>Артикул</th><th>Продукт</th><th>Ед. изм.</th><th>Кол-во брутто (кг)</th><th>Потери холод.</th><th>Потери гор.</th><th>Кол-во нетто (кг)</th></tr>");
+                html.AppendLine("            <tr><th>№</th><th>Артикул</th><th>Продукт</th><th>Ед. изм.</th><th>Кол-во брутто (кг)</th><th>Потери холод.</th><th>Потери гор.</th><th>Кол-во нетто (кг)</th><th>Цена (руб/кг)</th><th>Сумма (руб)</th></tr>");
                 html.AppendLine("        </thead>");
                 html.AppendLine("        <tbody>");
 
                 int index = 1;
-                foreach (var recipe in recipes)
+                foreach (var recipe in recipesWithPrices)
                 {
-                    html.AppendLine($"            <tr><td>{index++}</td><td>{recipe.Артикул}</td><td>{recipe.Продукт}</td><td>{recipe.Единица_измерения}</td><td>{recipe.Количество_брутто:F3}</td><td>{recipe.Потери_холодной:F1}%</td><td>{recipe.Потери_горячей:F1}%</td><td>{recipe.Количество_нетто:F3}</td></tr>");
+                    html.AppendLine($"            <tr><td style='text-align:center'>{index++}</td>");
+                    html.AppendLine($"            <td>{recipe.Артикул ?? ""}</td>");
+                    html.AppendLine($"            <td>{recipe.Продукт}</td>");
+                    html.AppendLine($"            <td>{recipe.Единица_измерения}</td>");
+                    html.AppendLine($"            <td>{recipe.Количество_брутто:F3}</td>");
+                    html.AppendLine($"            <td>{recipe.Потери_холодной:F1}%</td>");
+                    html.AppendLine($"            <td>{recipe.Потери_горячей:F1}%</td>");
+                    html.AppendLine($"            <td>{recipe.Количество_нетто:F3}</td>");
+                    html.AppendLine($"            <td>{recipe.Цена_за_кг:N2}</td>");
+                    html.AppendLine($"            <td>{recipe.Сумма:N2}</td>");
+                    html.AppendLine("            </tr>");
                 }
 
+                html.AppendLine($"            <tr class='total-row'><td colspan='9' style='text-align: right;'><strong>Общая себестоимость:</strong></td><td><strong>{totalCost:N2} руб.</strong></td></tr>");
                 html.AppendLine("        </tbody>");
                 html.AppendLine("    </table>");
                 html.AppendLine("    <h2>Технология приготовления</h2>");
                 html.AppendLine($"    <p>{techCard.Технология_приготовления ?? "Не указана"}</p>");
+
+                // Подписи снизу
+                html.AppendLine("    <div class='signatures'>");
+                html.AppendLine("    <div class='signature-item'>");
+                html.AppendLine("        <div class='signature-line'></div>");
+                html.AppendLine("        <div class='signature-name'>Технолог / Заведующий производством</div>");
+                html.AppendLine("        <div class='signature-name'>_______________ /_______________________/</div>");
+                html.AppendLine("        <div class='signature-name' style='font-size: 10px;'>подпись                         ФИО</div>");
+                html.AppendLine("    </div>");
+                html.AppendLine("        <div class='signature-item'>");
+                html.AppendLine("            <div class='signature-line'></div>");
+                html.AppendLine("            <div class='signature-name'>Бухгалтер</div>");
+                html.AppendLine("            <div class='signature-name'>_______________ /_______________________/</div>");
+                html.AppendLine("            <div class='signature-name' style='font-size: 10px;'>подпись                         ФИО</div>");
+                html.AppendLine("        </div>");
+                html.AppendLine("    </div>");
+
                 html.AppendLine("    <div class='footer'>");
-                html.AppendLine($"        <div>© {DateTime.Now.Year} MenuStolovaya. Все права защищены.</div>");
+                html.AppendLine($"        <div>© {DateTime.Now.Year} ООО «СФ „Белка-Фаворит“». Все права защищены.</div>");
                 html.AppendLine("        <button class='no-print' onclick='window.print()'>🖨️ Распечатать</button>");
                 html.AppendLine("    </div>");
                 html.AppendLine("</div>");
